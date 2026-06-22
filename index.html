@@ -2,34 +2,25 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سقوط فرشته‌ها | پرونده‌های فریمانت</title>
+    <title>S.F. Case File | سقوط فرشته‌ها</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="theme-noir">
+<body>
 
-    <div class="crt-overlay"></div>
+    <div class="scanlines"></div>
     <div class="vignette"></div>
 
-    <div class="game-wrapper">
-        <header class="game-header">
-            <div class="case-title">📁 پرونده‌ی جنایی: سقوط فرشته‌ها</div>
-            <div class="game-controls">
-                <button id="theme-noir-btn" class="ctrl-btn">🎬 نوآر</button>
-                <button id="theme-retro-btn" class="ctrl-btn">📟 رترو</button>
-                <button id="reset-btn" class="ctrl-btn reset-btn">🔄 شروع مجدد</button>
-            </div>
+    <div class="terminal-container">
+        <header class="terminal-header">
+            <div class="status-badge">SYSTEM: ONLINE</div>
+            <div class="title"> پرونده‌ی فریمانت // بخش ۱۶ </div>
         </header>
 
-        <main class="game-container">
-            <div id="story-text" class="story-viewport"></div>
+        <main id="story-text" class="content-box">
+            </main>
 
-            <div id="choices-container" class="choices-viewport"></div>
-        </main>
-
-        <footer class="game-footer">
-            <div class="footer-note">«هر خدایی نیاز به یک جانشین روی زمین دارد.»</div>
-        </footer>
+        <div id="choices-container" class="choices-box">
+            </div>
     </div>
 
     <script src="story.js"></script>
