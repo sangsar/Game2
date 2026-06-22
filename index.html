@@ -6,30 +6,29 @@
     <title>سقوط فرشته‌ها | پرونده‌های فریمانت</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="theme-noir">
 
-    <div class="noir-overlay"></div>
+    <div class="crt-overlay"></div>
+    <div class="vignette"></div>
 
-    <div class="game-container">
+    <div class="game-wrapper">
         <header class="game-header">
-            <div class="location">📍 پرونده‌ی سقوط فرشته‌ها</div>
-            <div class="controls">
-                <button id="theme-noir-btn" class="control-btn">🎬 تم نوآر</button>
-                <button id="theme-retro-btn" class="control-btn">📟 تم رترو</button>
-                <button id="reset-btn" class="control-btn reset">🔄 شروع مجدد</button>
+            <div class="case-title">📁 پرونده‌ی جنایی: سقوط فرشته‌ها</div>
+            <div class="game-controls">
+                <button id="theme-noir-btn" class="ctrl-btn">🎬 نوآر</button>
+                <button id="theme-retro-btn" class="ctrl-btn">📟 رترو</button>
+                <button id="reset-btn" class="ctrl-btn reset-btn">🔄 شروع مجدد</button>
             </div>
         </header>
 
-        <main class="game-main">
-            <div id="story-text" class="story-box">
-                </div>
+        <main class="game-container">
+            <div id="story-text" class="story-viewport"></div>
 
-            <div id="choices-container" class="choices-box">
-                </div>
+            <div id="choices-container" class="choices-viewport"></div>
         </main>
 
         <footer class="game-footer">
-            <p>فرمان یازدهم: هرگز از چیزی که هستید فرار نکنید.</p>
+            <div class="footer-note">«هر خدایی نیاز به یک جانشین روی زمین دارد.»</div>
         </footer>
     </div>
 
