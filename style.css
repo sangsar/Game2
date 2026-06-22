@@ -1,86 +1,247 @@
-@import url('https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap');
+/* تعریف فونت مونوپیس برای حفظ اتمسفر تایپ‌رایتری و بازجویی */
+@import url('https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
-:root {
-    --bg-color: #0b0b0b;
-    --card-bg: #141414;
-    --text-color: #d4d4d4;
-    --accent-red: #8b0000;
-    --neon-glow: #e50914;
-    --border-color: #2a2a2a;
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
     font-family: 'Courier Prime', 'Tahoma', monospace;
-    margin: 0; padding: 0;
-    display: flex; justify-content: center; align-items: center;
-    min-height: 100vh; overflow: hidden;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    transition: background-color 0.5s ease, color 0.5s ease;
 }
 
-/* افکت نویز سینمایی */
-.noir-overlay {
+/* ==========================================================================
+   ۱. مدیریت تم‌ها (Noir vs Retro) بر اساس کدهای story.js
+   ========================================================================== */
+
+/* 🎬 تم نوآر: سینمایی، تاریک، سایه‌های عمیق و رنگ سرخ خونی */
+body.theme-noir {
+    background-color: #080808;
+    color: #c5c5c5;
+    --accent: #8b0000;
+    --accent-glow: rgba(139, 0, 0, 0.6);
+    --btn-bg: #121212;
+    --border: #222;
+}
+
+/* 📟 تم رترو: مانیتورهای CRT قدیمی، سبز فسفری و درخشش کلاسیک */
+body.theme-retro {
+    background-color: #000a02;
+    color: #33ff33;
+    --accent: #00ff00;
+    --accent-glow: rgba(0, 255, 0, 0.5);
+    --btn-bg: #001504;
+    --border: #00440a;
+    text-shadow: 0 0 4px rgba(0, 255, 0, 0.6);
+}
+
+/* ==========================================================================
+   ۲. ساختار و کادر اصلی بازی
+   ========================================================================== */
+
+.game-wrapper {
+    width: 92%;
+    max-width: 780px;
+    background-color: rgba(10, 10, 10, 0.85);
+    border: 1px solid var(--border);
+    padding: 30px;
+    border-radius: 4px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
+    z-index: 10;
+    backdrop-filter: blur(4px);
+}
+
+.theme-retro .game-wrapper {
+    box-shadow: 0 0 20px rgba(0, 68, 10, 0.3);
+}
+
+/* هدر و کنترلرها */
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.ctrl-btn {
+    background-color: var(--btn-bg);
+    border: 1px solid var(--border);
+    color: inherit;
+    padding: 6px 12px;
+    font-family: inherit;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+    margin-right: 5px;
+}
+
+.ctrl-btn:hover {
+    background-color: var(--accent);
+    color: #fff;
+}
+
+.theme-retro .ctrl-btn:hover {
+    color: #000;
+    font-weight: bold;
+}
+
+.reset-btn:hover {
+    background-color: #ff3333 !important;
+    color: #fff !important;
+}
+
+/* ==========================================================================
+   ۳. بخش نمایش داستان و دیالوگ‌ها
+   ========================================================================== */
+
+.story-viewport {
+    min-height: 260px;
+    max-height: 420px;
+    overflow-y: auto;
+    padding-right: 10px;
+    line-height: 1.9;
+    font-size: 1.1rem;
+    text-align: justify;
+    margin-bottom: 25px;
+}
+
+/* استایل‌دهی به نام شخصیت‌ها که در متن با دو نقطه جدا می‌شوند */
+.story-viewport p {
+    margin-bottom: 15px;
+    animation: fadeInText 0.4s ease-in-out forwards;
+}
+
+@keyframes fadeInText {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   ۴. باکس گزینه‌ها و انتخاب‌ها
+   ========================================================================== */
+
+.choices-viewport {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.choices-viewport button {
+    background-color: var(--btn-bg);
+    color: inherit;
+    border: 1px solid var(--border);
+    padding: 14px 20px;
+    text-align: right;
+    font-family: inherit;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 2px;
+}
+
+.choices-viewport button:hover {
+    background-color: var(--accent);
+    color: #html-color-fix;
+    border-color: var(--accent);
+    padding-right: 28px;
+    box-shadow: 0 0 12px var(--accent-glow);
+}
+
+body.theme-noir .choices-viewport button:hover {
+    color: #fff;
+}
+body.theme-retro .choices-viewport button:hover {
+    color: #000;
+    font-weight: bold;
+}
+
+/* ==========================================================================
+   ۵. استایل اختصاصی برای پایان بازی (پرونده روانی پایانی)
+   ========================================================================== */
+
+/* زمانی که بازی به پایان می‌رسد و اطلاعات پارامترها تزریق می‌شود */
+.story-viewport strong, 
+.story-viewport h2, 
+.story-viewport ul {
+    color: var(--accent);
+    display: block;
+    margin: 15px 0;
+}
+
+.story-viewport h2 {
+    font-size: 1.5rem;
+    border-bottom: 1px dashed var(--border);
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+/* لیست امتیازات و پارامترهای پایانی کارآگاه */
+.story-viewport ul {
+    list-style: none;
+    background: rgba(0,0,0,0.4);
+    padding: 15px;
+    border: 1px solid var(--border);
+}
+
+.story-viewport li {
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dotted rgba(255,255,255,0.05);
+    padding-bottom: 4px;
+}
+
+/* ==========================================================================
+   ۶. افکت‌های محیطی (Vignette & Scanlines)
+   ========================================================================== */
+
+.vignette {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: radial-gradient(circle, transparent 60%, rgba(0,0,0,0.9)),
-                url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop') repeat;
-    opacity: 0.04;
-    pointer-events: none; z-index: 999;
+    background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.92));
+    pointer-events: none;
+    z-index: 5;
 }
 
-.game-container {
-    width: 90%; max-width: 750px;
-    background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.9);
-    padding: 25px; border-radius: 4px;
-    display: flex; flex-direction: column; gap: 20px;
+/* خطوط متحرک مانیتور رترو */
+.crt-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    background-size: 100% 4px, 6px 100%;
+    pointer-events: none;
+    z-index: 99;
+    opacity: 0;
+    transition: opacity 0.5s ease;
 }
 
-.game-header {
-    display: flex; justify-content: space-between; align-items: center;
-    border-bottom: 1px double var(--border-color); padding-bottom: 12px;
-    font-size: 0.9rem; color: #888;
-}
-
-/* دکمه‌های کنترل بالا */
-.control-btn {
-    background: none; border: 1px solid var(--border-color);
-    color: #888; padding: 5px 10px; font-family: inherit;
-    font-size: 0.8rem; cursor: pointer; border-radius: 3px; margin-right: 5px;
-    transition: all 0.2s;
-}
-.control-btn:hover {
-    color: #fff; border-color: #555; background-color: #222;
-}
-.control-btn.reset:hover {
-    background-color: var(--accent-red); color: #fff; border-color: var(--neon-glow);
-}
-
-.story-box {
-    min-height: 220px; max-height: 400px; overflow-y: auto;
-    line-height: 1.8; font-size: 1.1rem; padding: 10px; text-align: justify;
-}
-
-.choices-box { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
-
-.choice-btn {
-    background-color: #1a1a1a; color: var(--text-color);
-    border: 1px solid var(--border-color); padding: 14px 20px;
-    text-align: right; cursor: pointer; font-family: inherit; font-size: 1rem;
-    transition: all 0.2s ease; border-radius: 3px;
-}
-.choice-btn:hover {
-    background-color: var(--accent-red); color: #fff;
-    border-color: var(--neon-glow); transform: translateX(-5px);
-    box-shadow: 0 0 10px rgba(229, 9, 20, 0.3);
+body.theme-retro .crt-overlay {
+    opacity: 1;
 }
 
 .game-footer {
-    text-align: center; border-top: 1px solid var(--border-color);
-    padding-top: 10px; font-size: 0.8rem; color: #444;
+    margin-top: 25px;
+    text-align: center;
+    font-size: 0.8rem;
+    opacity: 0.4;
+    border-top: 1px solid var(--border);
+    padding-top: 15px;
 }
 
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: #111; }
-::-webkit-scrollbar-thumb { background: var(--border-color); }
+/* اسکرول‌بار اختصاصی */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #050505; }
+::-webkit-scrollbar-thumb { background: var(--border); }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
