@@ -4,14 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>سقوط فرشته‌ها | Fall of Angels</title>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Special+Elite&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Special+Elite&family=Cinzel:wght@400;700&family=Uncial+Antiqua&family=MedievalSharp&family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-    <!-- ========================================================= -->
-    <!-- MENU OVERLAY (صفحه‌ی شروع)                                -->
-    <!-- ========================================================= -->
+    <!-- ===== MENU OVERLAY ===== -->
     <div id="menu-overlay" class="menu-overlay">
         <div class="menu-panel">
             <div class="menu-logo">
@@ -30,9 +28,7 @@
         </div>
     </div>
 
-    <!-- ========================================================= -->
-    <!-- SETTINGS PANEL                                            -->
-    <!-- ========================================================= -->
+    <!-- ===== SETTINGS PANEL ===== -->
     <div id="settings-panel" class="settings-panel" style="display:none;">
         <div class="settings-content">
             <h2>تنظیمات</h2>
@@ -63,9 +59,7 @@
         </div>
     </div>
 
-    <!-- ========================================================= -->
-    <!-- HEADER (بالای صفحه حین بازی)                             -->
-    <!-- ========================================================= -->
+    <!-- ===== HEADER با دکمه‌های زبان و تم ===== -->
     <header id="game-header" class="game-header" style="display:none;">
         <div class="header-left">
             <span class="badge">📁</span>
@@ -76,30 +70,24 @@
             <span class="header-sub" id="header-sub">— A Noir Detective Story —</span>
         </div>
         <div class="header-right">
+            <button id="btn-lang" class="header-btn">🇮🇷 فارسی</button>
+            <button id="btn-theme" class="header-btn">🖤 Noir</button>
             <span class="status-dot"></span>
             <span class="status-text" id="status-text">ACTIVE</span>
         </div>
     </header>
 
-    <!-- ========================================================= -->
-    <!-- GAME CONTAINER (محل نمایش داستان)                        -->
-    <!-- ========================================================= -->
-    <main id="game-container" class="game-container" style="display:none;">
-        <!-- توسط جاوااسکریپت پر می‌شود -->
-    </main>
+    <!-- ===== GAME CONTAINER ===== -->
+    <main id="game-container" class="game-container" style="display:none;"></main>
 
-    <!-- ========================================================= -->
-    <!-- FOOTER                                                    -->
-    <!-- ========================================================= -->
+    <!-- ===== FOOTER ===== -->
     <footer id="game-footer" class="game-footer" style="display:none;">
         <span>🕵️‍♂️</span>
         <span>Fremant P.D. — Case Closed? Never.</span>
         <span>🔍</span>
     </footer>
 
-    <!-- ========================================================= -->
-    <!-- SCRIPTS (فایل‌های استوری دست نخورده)                    -->
-    <!-- ========================================================= -->
+    <!-- ===== SCRIPTS ===== -->
     <script src="story_fa.js"></script>
     <script src="story_en.js"></script>
     <script src="game.js"></script>
