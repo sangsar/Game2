@@ -1800,7 +1800,7 @@ const INITIAL_STATE = {
   theme: 'retro',
 };
 
-const SAVE_KEY = 'fallen_angels_save';
+const SAVE_KEY = 'fallen_angels_save_fa';
 
 // ─────────────────────────────────────────────
 //  GAME CLASS
