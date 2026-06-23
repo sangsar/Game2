@@ -1,7 +1,7 @@
 /**
  * ============================================================
  *  The Fall of Angels Case File
- *  story.js  –  Complete Game Logic, Story Data & State Manager
+ *  story-english.js  –  Complete Game Logic, Story Data & State Manager
  * ============================================================
  *
  *  Hidden Personality Parameters (never shown during gameplay):
