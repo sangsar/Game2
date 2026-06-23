@@ -2010,6 +2010,7 @@ class Game {
 // ─────────────────────────────────────────────
 //  BOOTSTRAP
 // ─────────────────────────────────────────────
+const STORY = STORY_PERSIAN;
 const game = new Game();
 
 document.addEventListener('DOMContentLoaded', () => {
