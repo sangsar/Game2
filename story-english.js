@@ -2009,6 +2009,7 @@ class Game {
 // ─────────────────────────────────────────────
 //  BOOTSTRAP
 // ─────────────────────────────────────────────
+const STORY = STORY_ENGLISH;
 const game = new Game();
 
 document.addEventListener('DOMContentLoaded', () => {
