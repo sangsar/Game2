@@ -1,3 +1,420 @@
-body{background:#222;color:#7CFF9B;font-family:monospace}
-.monitor{background:#021b0f;border:12px solid #444;padding:20px;height:70vh}
-button{padding:10px;margin:4px}
+/* ================================================================
+   FONTS & RESET
+   ================================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Special+Elite&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  background: #0a0a0a;
+  color: #d4c5a0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  /* گرادینت پس‌زمینه به جای تصویر (برای آفلاین) */
+  background: radial-gradient(ellipse at 30% 40%, #1a0a0a 0%, #0a0a0a 100%);
+  position: relative;
+}
+
+/* لایه‌ی نویز استاتیک (اختیاری) */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJmIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc0IiBudW1PY3RhdmVzPSIzIiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI2YpIiBvcGFjaXR5PSIwLjA1Ii8+PC9zdmc+');
+  opacity: 0.08;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ================================================================
+   HEADER – سبک پرونده جنایی
+   ================================================================ */
+.crime-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 30px;
+  background: rgba(10, 10, 10, 0.92);
+  border-bottom: 2px solid #8b0000;
+  backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.8);
+}
+
+.case-file-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #8b0000;
+  font-size: 14px;
+  letter-spacing: 2px;
+}
+
+.badge-icon {
+  font-size: 20px;
+}
+
+.header-title h1 {
+  font-size: 22px;
+  color: #d4c5a0;
+  letter-spacing: 4px;
+  margin: 0;
+  font-family: 'Special Elite', cursive;
+  text-shadow: 0 0 20px rgba(139, 0, 0, 0.3);
+}
+
+.header-title .subtitle {
+  font-size: 11px;
+  color: #666;
+  letter-spacing: 3px;
+  display: block;
+  text-align: center;
+}
+
+.header-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #8b0000;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background: #8b0000;
+  border-radius: 50%;
+  animation: pulse 1.5s ease-in-out infinite;
+  box-shadow: 0 0 20px rgba(139, 0, 0, 0.4);
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(0.8); }
+}
+
+/* ================================================================
+   دکمه‌ی تغییر زبان (Translate Switch)
+   ================================================================ */
+.lang-btn {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  padding: 10px 18px;
+  background: rgba(26, 26, 26, 0.9);
+  border: 2px solid #8b0000;
+  color: #d4c5a0;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 30px;
+  transition: all 0.4s ease;
+  z-index: 1000;
+  box-shadow: 0 0 25px rgba(139, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lang-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 50px rgba(139, 0, 0, 0.6);
+  background: rgba(40, 10, 10, 0.95);
+}
+
+.lang-btn:active {
+  transform: scale(0.95);
+}
+
+.lang-btn .icon {
+  display: inline-block;
+  transition: transform 0.6s ease;
+  font-size: 18px;
+}
+
+.lang-btn.switching .icon {
+  transform: rotate(360deg);
+}
+
+.lang-btn .label {
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+
+/* ================================================================
+   محفظه‌ی اصلی بازی (Game Container)
+   ================================================================ */
+.game-container {
+  flex: 1;
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 20px;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+/* جعبه‌ی داستان (Narrative Box) */
+.scene {
+  background: rgba(10, 10, 10, 0.88);
+  border: 1px solid #8b0000;
+  border-radius: 8px;
+  padding: 35px 30px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 50px rgba(139, 0, 0, 0.15), inset 0 0 30px rgba(139, 0, 0, 0.05);
+  position: relative;
+  animation: fadeSlideIn 0.5s ease forwards;
+}
+
+/* خط‌های تزئینی بالا و پایین جعبه */
+.scene::before,
+.scene::after {
+  content: '';
+  position: absolute;
+  left: 30px;
+  right: 30px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #8b0000, transparent);
+}
+
+.scene::before {
+  top: 15px;
+}
+.scene::after {
+  bottom: 15px;
+}
+
+/* انیمیشن ورود صحنه */
+@keyframes fadeSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(25px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.scene-exit {
+  animation: fadeSlideOut 0.3s ease forwards;
+}
+
+@keyframes fadeSlideOut {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-25px) scale(0.98);
+  }
+}
+
+/* متن روایت (Narrative) */
+.narrative {
+  font-family: 'Special Elite', 'Courier New', monospace;
+  font-size: 17px;
+  line-height: 1.9;
+  color: #d4c5a0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  margin-bottom: 25px;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+/* ================================================================
+   دکمه‌های انتخاب (Choices)
+   ================================================================ */
+.choices {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.choice-btn {
+  display: block;
+  width: 100%;
+  padding: 14px 22px;
+  background: rgba(26, 26, 26, 0.85);
+  border: 1px solid #3a3a3a;
+  color: #d4c5a0;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 15px;
+  text-align: right;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.choice-btn::before {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: #8b0000;
+  transition: width 0.35s ease;
+}
+
+.choice-btn:hover {
+  background: rgba(139, 0, 0, 0.15);
+  border-color: #8b0000;
+  transform: translateX(-8px);
+  box-shadow: 0 0 30px rgba(139, 0, 0, 0.15);
+}
+
+.choice-btn:hover::before {
+  width: 100%;
+  opacity: 0.08;
+}
+
+.choice-btn:active {
+  transform: scale(0.98);
+}
+
+.no-choices {
+  color: #666;
+  font-size: 14px;
+  text-align: center;
+  padding: 10px;
+}
+
+/* ================================================================
+   کارت پروفایل شخصیتی (پایان بازی)
+   ================================================================ */
+.profile-card {
+  background: rgba(20, 10, 10, 0.9);
+  border: 2px solid #8b0000;
+  border-radius: 8px;
+  padding: 25px 30px;
+  margin: 20px 0;
+  text-align: center;
+}
+
+.profile-title {
+  color: #8b0000;
+  font-size: 14px;
+  letter-spacing: 4px;
+  margin: 5px 0;
+}
+
+.profile-label {
+  font-family: 'Special Elite', cursive;
+  font-size: 28px;
+  color: #d4c5a0;
+  margin: 15px 0 10px;
+  text-shadow: 0 0 20px rgba(139, 0, 0, 0.3);
+}
+
+.profile-text {
+  font-size: 15px;
+  line-height: 1.8;
+  color: #b0a890;
+  padding: 10px 0;
+}
+
+/* ================================================================
+   دکمه‌ی شروع دوباره
+   ================================================================ */
+.restart-btn {
+  display: inline-block;
+  padding: 12px 35px;
+  margin: 20px auto 0;
+  background: #1a0a0a;
+  border: 2px solid #8b0000;
+  color: #d4c5a0;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  letter-spacing: 2px;
+}
+
+.restart-btn:hover {
+  background: #8b0000;
+  color: #0a0a0a;
+  box-shadow: 0 0 40px rgba(139, 0, 0, 0.5);
+  transform: scale(1.02);
+}
+
+/* ================================================================
+   فوتر
+   ================================================================ */
+.crime-footer {
+  text-align: center;
+  padding: 20px;
+  color: #444;
+  font-size: 13px;
+  letter-spacing: 2px;
+  border-top: 1px solid #1a1a1a;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  align-items: center;
+}
+
+/* ================================================================
+   واکنش‌گرایی (Responsive)
+   ================================================================ */
+@media (max-width: 768px) {
+  .crime-header {
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 15px;
+  }
+  .header-title h1 {
+    font-size: 18px;
+  }
+  .lang-btn {
+    top: auto;
+    bottom: 20px;
+    right: 20px;
+    font-size: 13px;
+    padding: 8px 14px;
+  }
+  .scene {
+    padding: 20px 15px;
+  }
+  .narrative {
+    font-size: 15px;
+  }
+  .choice-btn {
+    font-size: 14px;
+    padding: 12px 16px;
+  }
+  .profile-label {
+    font-size: 22px;
+  }
+  .case-file-badge {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .crime-header .subtitle {
+    font-size: 10px;
+  }
+  .lang-btn .label {
+    font-size: 11px;
+  }
+  .narrative {
+    font-size: 14px;
+  }
+}
