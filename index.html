@@ -27,7 +27,7 @@
     #game-container { max-width: 900px; margin: 80px auto 40px; padding: 20px; }
     .scene { 
       background: #1a1a1a; padding: 25px; border-radius: 8px; 
-      border: 1px solid #333; min-height: 320px; margin-bottom: 20px; white-space: pre-wrap;
+      border: 1px solid #333; min-height: 340px; margin-bottom: 20px; white-space: pre-wrap;
     }
     .choice-btn {
       display: block; width: 100%; margin: 12px 0;
@@ -97,7 +97,7 @@
       const choicesDiv = document.getElementById('choices');
       choicesDiv.innerHTML = '';
 
-      scene.choices.forEach(choice => {
+      scene.choices.forEach((choice, index) => {
         const btn = document.createElement('button');
         btn.className = 'choice-btn';
         btn.textContent = choice.label;
@@ -105,6 +105,7 @@
         choicesDiv.appendChild(btn);
       });
 
+      // بروزرسانی آمار
       document.getElementById('justice').textContent = playerParams.justice;
       document.getElementById('empathy').textContent = playerParams.empathy;
       document.getElementById('doubt').textContent = playerParams.doubt;
@@ -116,7 +117,7 @@
           playerParams[key] = (playerParams[key] || 0) + (choice.params[key] || 0);
         });
       }
-      currentSceneId = choice.next;
+      currentSceneId = choice.next || 'end';
       renderScene();
     }
 
@@ -124,7 +125,7 @@
       document.getElementById('game-screen').style.display = 'none';
       document.getElementById('end-screen').style.display = 'block';
 
-      let ending = `<p>تحقیقات به پایان رسید.</p><p><strong>شخصیت شما:</strong></p>`;
+      let ending = `<p>پرونده بسته شد.</p><p><strong>شخصیت نهایی شما:</strong></p>`;
       ending += `عدالت: ${playerParams.justice}<br>`;
       ending += `همدلی: ${playerParams.empathy}<br>`;
       ending += `عمل‌گرایی: ${playerParams.pragmatism}<br>`;
@@ -164,7 +165,7 @@
       currentStory = STORY_ENGLISH;
     }
 
-    console.log("✅ بازی با موفقیت به هر دو فایل داستان متصل شد");
+    console.log("✅ بازی با موفقیت لود شد - نسخه دیباگ");
   </script>
 </body>
 </html>
