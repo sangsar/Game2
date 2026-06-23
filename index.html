@@ -1,9 +1,65 @@
-<!doctype html>
-<html lang="fa" dir="rtl"><head>
-<meta charset="utf-8"><title>Fallen Angels</title>
-<link rel="stylesheet" href="style.css">
-</head><body>
-<div class="top"><button id="fa">FA</button><button id="en">EN</button></div>
-<div class="monitor"><div id="text">Story UI Ready</div><div id="choices"></div></div>
-<script src="engine.js"></script>
-</body></html>
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>پرونده‌ی سقوط فرشته‌ها – The Fall of Angels</title>
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Special+Elite&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ============================================================ -->
+  <!-- HEADER – پرونده جنایی                                        -->
+  <!-- ============================================================ -->
+  <header class="crime-header">
+    <div class="case-file-badge">
+      <span class="badge-icon">📁</span>
+      <span class="badge-text" id="case-id">CASE FILE #011</span>
+    </div>
+    <div class="header-title">
+      <h1 id="main-title">The Fall of Angels</h1>
+      <span class="subtitle" id="subtitle">— A Noir Detective Story —</span>
+    </div>
+    <div class="header-status">
+      <span class="status-dot"></span>
+      <span class="status-text" id="status-text">ACTIVE</span>
+    </div>
+  </header>
+
+  <!-- ============================================================ -->
+  <!-- دکمه‌ی تغییر زبان با انیمیشن حرفه‌ای                          -->
+  <!-- ============================================================ -->
+  <button id="lang-switch" class="lang-btn">
+    <span class="icon">🌐</span>
+    <span class="label" id="lang-label">English</span>
+  </button>
+
+  <!-- ============================================================ -->
+  <!-- محفظه‌ی اصلی بازی                                            -->
+  <!-- ============================================================ -->
+  <main id="game-container" class="game-container">
+    <!-- محتوای داستان توسط جاوااسکریپت رندر می‌شود -->
+  </main>
+
+  <!-- ============================================================ -->
+  <!-- فوتر – امضای کارآگاه                                         -->
+  <!-- ============================================================ -->
+  <footer class="crime-footer">
+    <span>🕵️‍♂️</span>
+    <span>Fremant P.D. — Case Closed? Never.</span>
+    <span>🔍</span>
+  </footer>
+
+  <!-- ============================================================ -->
+  <!-- اسکریپت‌ها                                                   -->
+  <!-- ============================================================ -->
+  <script src="story.js"></script>   <!-- داستان فارسی -->
+  <script src="story2.js"></script>  <!-- داستان انگلیسی -->
+  <script src="game.js"></script>    <!-- منطق بازی -->
+</body>
+</html>
