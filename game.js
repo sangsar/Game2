@@ -1,202 +1,325 @@
+/**
+ * =============================================================
+ *  FALL OF ANGELS — Game Engine
+ *  ورژن جدید با معماری تمیز، منو، تنظیمات، ۶ تم
+ *  فایل‌های استوری: story_fa.js (STORY_FA) و story_en.js (STORY_EN)
+ * =============================================================
+ */
+
 'use strict';
 
-// ─── متغیرهای سراسری ────────────────────────────────────────────
-let game = null;
-let currentLanguage = 'fa';
-let currentTheme = 'noir';
+// ─── STATE ──────────────────────────────────────────────────────
+const STATE = {
+    lang: 'fa',
+    theme: 'noir',
+    typingSpeed: 40,
+    gameStarted: false,
+    currentScene: 'intro',
+    params: { justice: 0, empathy: 0, pragmatism: 0, doubt: 0, resolve: 0 },
+    history: [],
+    choicesMade: {},
+    storyData: null
+};
 
-// ─── کلاس Game ──────────────────────────────────────────────────
-class Game {
-  constructor() {
-    this.state = null;
-    this.storyData = null;
-  }
+// ─── DOM REFS ──────────────────────────────────────────────────
+const DOM = {
+    menu: document.getElementById('menu-overlay'),
+    settings: document.getElementById('settings-panel'),
+    header: document.getElementById('game-header'),
+    container: document.getElementById('game-container'),
+    footer: document.getElementById('game-footer'),
+    caseId: document.getElementById('case-id'),
+    headerTitle: document.getElementById('header-title'),
+    headerSub: document.getElementById('header-sub'),
+    statusText: document.getElementById('status-text'),
+    speedSlider: document.getElementById('typing-speed'),
+    speedLabel: document.getElementById('speed-label'),
+};
 
-  setTheme(themeName) {
+// ─── UTILITY ──────────────────────────────────────────────────
+function escapeHtml(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+              .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+}
+
+function getStory() {
+    return STATE.lang === 'en' ? STORY_EN : STORY_FA;
+}
+
+function getProfile(params) {
+    for (const p of PROFILES) {
+        if (p.condition(params)) return p;
+    }
+    return PROFILES[PROFILES.length - 1];
+}
+
+// ─── SAVE / LOAD ──────────────────────────────────────────────
+function saveGame() {
+    try {
+        localStorage.setItem('fallen_angels_v2', JSON.stringify({
+            lang: STATE.lang,
+            theme: STATE.theme,
+            gameStarted: STATE.gameStarted,
+            currentScene: STATE.currentScene,
+            params: STATE.params,
+            history: STATE.history,
+            choicesMade: STATE.choicesMade
+        }));
+    } catch (e) {}
+}
+
+function loadGame() {
+    try {
+        const raw = localStorage.getItem('fallen_angels_v2');
+        if (!raw) return false;
+        const data = JSON.parse(raw);
+        STATE.lang = data.lang || 'fa';
+        STATE.theme = data.theme || 'noir';
+        STATE.gameStarted = data.gameStarted || false;
+        STATE.currentScene = data.currentScene || 'intro';
+        STATE.params = data.params || { justice:0, empathy:0, pragmatism:0, doubt:0, resolve:0 };
+        STATE.history = data.history || [];
+        STATE.choicesMade = data.choicesMade || {};
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
+// ─── THEME ─────────────────────────────────────────────────────
+function applyTheme(theme) {
     const themes = ['noir', 'blood', 'retro', 'ice', 'silver', 'royal'];
     document.body.classList.remove(...themes.map(t => `theme-${t}`));
-    document.body.classList.add(`theme-${themeName}`);
-    currentTheme = themeName;
-    if (this.state) {
-      this.state.theme = themeName;
-      this._save();
-    }
-  }
+    document.body.classList.add(`theme-${theme}`);
+    STATE.theme = theme;
+    document.querySelectorAll('.set-btn[data-theme]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.theme === theme);
+    });
+    saveGame();
+}
 
-  startNewGame() {
-    this.storyData = (currentLanguage === 'en') ? STORY_EN : STORY_FA;
-    this.state = {
-      currentScene: 'intro',
-      params: { justice: 0, empathy: 0, pragmatism: 0, doubt: 0, resolve: 0 },
-      history: [],
-      choicesMade: {},
-      theme: currentTheme,
-      language: currentLanguage,
-      gameStarted: true
-    };
-    this.renderScene('intro');
-    this._save();
-  }
+// ─── LANGUAGE ─────────────────────────────────────────────────
+function applyLanguage(lang) {
+    STATE.lang = lang;
+    STATE.storyData = getStory();
+    document.querySelectorAll('.set-btn[data-lang]').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    updateUIStrings();
+    saveGame();
+}
 
-  initGame() {
-    this.storyData = (currentLanguage === 'en') ? STORY_EN : STORY_FA;
-    const saved = this._load();
-    if (saved && saved.gameStarted) {
-      this.state = saved;
-      this.storyData = (currentLanguage === 'en') ? STORY_EN : STORY_FA;
-      if (saved.theme) this.setTheme(saved.theme);
-      this.renderScene(this.state.currentScene);
-    } else {
-      this.startNewGame();
-    }
-    this._save();
-  }
+function updateUIStrings() {
+    const isEn = STATE.lang === 'en';
+    DOM.caseId.textContent = isEn ? 'CASE FILE #011' : 'پرونده #۰۱۱';
+    DOM.headerTitle.textContent = isEn ? 'The Fall of Angels' : 'سقوط فرشته‌ها';
+    DOM.headerSub.textContent = isEn ? '— A Noir Detective Story —' : '— داستانی کارآگاهی نوآر —';
+    DOM.statusText.textContent = isEn ? 'ACTIVE' : 'فعال';
+    document.querySelector('.logo-title').textContent = isEn ? 'The Fall of Angels' : 'سقوط فرشته‌ها';
+    document.querySelector('.logo-sub').textContent = isEn ? '— Case File #011 —' : '— پرونده‌ی سقوط فرشته‌ها —';
+    document.getElementById('btn-start').textContent = isEn ? 'New Game' : 'شروع بازی جدید';
+    document.getElementById('btn-continue').textContent = isEn ? 'Continue' : 'ادامه بازی';
+    document.getElementById('btn-settings').textContent = isEn ? '⚙️ Settings' : '⚙️ تنظیمات';
+    document.querySelector('.menu-footer span').textContent = isEn ? '🕵️ Fremant P.D. — Case #011' : '🕵️ Fremant P.D. — پرونده #۰۱۱';
+    document.querySelector('#settings-panel h2').textContent = isEn ? 'Settings' : 'تنظیمات';
+    document.querySelector('#btn-close-settings').textContent = isEn ? 'Close' : 'بستن';
+}
 
-  renderScene(sceneId) {
-    if (!this.storyData) {
-      console.error('storyData is null');
-      return;
-    }
-    const scene = this.storyData[sceneId];
+// ─── RENDER ────────────────────────────────────────────────────
+function renderScene(sceneId) {
+    const story = STATE.storyData || getStory();
+    const scene = story[sceneId];
     if (!scene) {
-      console.error('Scene not found:', sceneId);
-      return;
+        console.error('Scene not found:', sceneId);
+        return;
     }
-    if (!this.state.history.includes(sceneId)) {
-      this.state.history.push(sceneId);
-    }
-    this.state.currentScene = sceneId;
-    this._save();
+
+    STATE.currentScene = sceneId;
+    if (!STATE.history.includes(sceneId)) STATE.history.push(sceneId);
+    saveGame();
 
     if (scene.isEnding) {
-      this.showEnding(scene);
-      return;
+        renderEnding(scene);
+        return;
     }
 
-    const container = document.getElementById('game-container');
-    if (!container) return;
+    const narrative = scene.text.join('\n');
+    const choicesHtml = (scene.choices && scene.choices.length > 0)
+        ? scene.choices.map((c, i) =>
+            `<button class="choice-btn" data-scene="${sceneId}" data-choice="${i}">${c.label}</button>`
+          ).join('')
+        : '<p class="no-choices">[ پایان صحنه ]</p>';
 
-    const narrativeText = scene.text.join('\n');
-    const choicesHtml = scene.choices && scene.choices.length > 0
-      ? scene.choices.map((choice, idx) =>
-          `<button class="choice-btn" data-scene="${sceneId}" data-choice="${idx}">${choice.label}</button>`
-        ).join('')
-      : '<p class="no-choices">[ پایان صحنه ]</p>';
-
-    container.innerHTML = `
-      <div class="scene">
-        <pre class="narrative">${this._escapeHtml(narrativeText)}</pre>
-        <div class="choices">${choicesHtml}</div>
-      </div>
+    DOM.container.innerHTML = `
+        <div class="scene-box">
+            <pre class="narrative">${escapeHtml(narrative)}</pre>
+            <div class="choices">${choicesHtml}</div>
+        </div>
     `;
 
-    this._attachChoiceListeners(sceneId);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  _attachChoiceListeners(sceneId) {
-    document.querySelectorAll('.choice-btn').forEach((btn) => {
-      btn.onclick = () => {
-        const choiceIdx = parseInt(btn.dataset.choice, 10);
-        this.makeChoice(sceneId, choiceIdx);
-      };
+    document.querySelectorAll('.choice-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const idx = parseInt(this.dataset.choice, 10);
+            makeChoice(sceneId, idx);
+        });
     });
-  }
 
-  makeChoice(sceneId, choiceIndex) {
-    const scene = this.storyData[sceneId];
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function makeChoice(sceneId, choiceIndex) {
+    const story = STATE.storyData || getStory();
+    const scene = story[sceneId];
     if (!scene) return;
     const choice = scene.choices[choiceIndex];
     if (!choice) return;
-    this.state.choicesMade[sceneId] = choiceIndex;
+
+    STATE.choicesMade[sceneId] = choiceIndex;
     if (choice.params) {
-      for (const [param, delta] of Object.entries(choice.params)) {
-        if (this.state.params.hasOwnProperty(param)) {
-          this.state.params[param] += delta;
+        for (const [key, val] of Object.entries(choice.params)) {
+            if (STATE.params.hasOwnProperty(key)) STATE.params[key] += val;
         }
-      }
     }
-    this._save();
-    this.renderScene(choice.next);
-  }
-
-  showEnding(scene) {
-    const p = this.state.params;
-    const profile = this._findProfile(p);
-    const sceneText = scene.text.join('\n');
-    const container = document.getElementById('game-container');
-    if (!container) return;
-    container.innerHTML = `
-      <div class="scene ending">
-        <pre class="narrative">${this._escapeHtml(sceneText)}</pre>
-        <div class="profile-card">
-          <div class="profile-title">━━━━━━━━━━━━━━━━━━━━━</div>
-          <div class="profile-title">${currentLanguage === 'en' ? "William's Profile" : 'پروفایل ویلیام'}</div>
-          <div class="profile-title">━━━━━━━━━━━━━━━━━━━━━</div>
-          <div class="profile-label">${profile.label}</div>
-          <div class="profile-text">${profile.text}</div>
-        </div>
-        <div class="choices">
-          <button class="choice-btn restart-btn" id="restart-btn">${currentLanguage === 'en' ? 'Start Over' : 'شروع دوباره'}</button>
-        </div>
-      </div>
-    `;
-    document.getElementById('restart-btn')?.addEventListener('click', () => this.reset());
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  reset() {
-    this.state = {
-      currentScene: 'intro',
-      params: { justice: 0, empathy: 0, pragmatism: 0, doubt: 0, resolve: 0 },
-      history: [],
-      choicesMade: {},
-      theme: currentTheme,
-      language: currentLanguage,
-      gameStarted: true
-    };
-    this.storyData = (currentLanguage === 'en') ? STORY_EN : STORY_FA;
-    this.renderScene('intro');
-    this._save();
-  }
-
-  _findProfile(params) {
-    for (const pr of PROFILES) {
-      if (pr.condition(params)) return pr;
-    }
-    return PROFILES[PROFILES.length - 1];
-  }
-
-  _save() {
-    try {
-      localStorage.setItem('fallen_angels_save', JSON.stringify(this.state));
-    } catch (e) {}
-  }
-
-  _load() {
-    try {
-      const raw = localStorage.getItem('fallen_angels_save');
-      if (!raw) return null;
-      const parsed = JSON.parse(raw);
-      if (!parsed.currentScene || !parsed.params) return null;
-      return parsed;
-    } catch (e) {
-      return null;
-    }
-  }
-
-  _escapeHtml(str) {
-    return str
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
-  }
+    saveGame();
+    renderScene(choice.next);
 }
 
-// ─── راه‌اندازی ────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', function() {
-  game = new Game();
-  game.initGame();
-});
+function renderEnding(scene) {
+    const profile = getProfile(STATE.params);
+    const sceneText = scene.text.join('\n');
+    const isEn = STATE.lang === 'en';
+
+    DOM.container.innerHTML = `
+        <div class="scene-box ending">
+            <pre class="narrative">${escapeHtml(sceneText)}</pre>
+            <div class="profile-card">
+                <div class="profile-title">━━━━━━━━━━━━━━━━━━━━━</div>
+                <div class="profile-title">${isEn ? "William's Profile" : 'پروفایل ویلیام'}</div>
+                <div class="profile-title">━━━━━━━━━━━━━━━━━━━━━</div>
+                <div class="profile-label">${profile.label}</div>
+                <div class="profile-text">${profile.text}</div>
+            </div>
+            <div class="choices">
+                <button class="choice-btn restart-btn" id="btn-restart">${isEn ? 'Start Over' : 'شروع دوباره'}</button>
+            </div>
+        </div>
+    `;
+
+    document.getElementById('btn-restart')?.addEventListener('click', startNewGame);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─── GAME ACTIONS ─────────────────────────────────────────────
+function startNewGame() {
+    STATE.gameStarted = true;
+    STATE.currentScene = 'intro';
+    STATE.params = { justice: 0, empathy: 0, pragmatism: 0, doubt: 0, resolve: 0 };
+    STATE.history = [];
+    STATE.choicesMade = {};
+    STATE.storyData = getStory();
+    hideMenu();
+    renderScene('intro');
+    saveGame();
+}
+
+function continueGame() {
+    if (STATE.gameStarted) {
+        STATE.storyData = getStory();
+        hideMenu();
+        renderScene(STATE.currentScene);
+    } else {
+        startNewGame();
+    }
+}
+
+// ─── MENU ──────────────────────────────────────────────────────
+function showMenu() {
+    DOM.menu.classList.remove('hidden');
+    DOM.header.style.display = 'none';
+    DOM.container.style.display = 'none';
+    DOM.footer.style.display = 'none';
+}
+
+function hideMenu() {
+    DOM.menu.classList.add('hidden');
+    DOM.header.style.display = 'flex';
+    DOM.container.style.display = 'block';
+    DOM.footer.style.display = 'flex';
+}
+
+// ─── SETTINGS ──────────────────────────────────────────────────
+function toggleSettings() {
+    const show = DOM.settings.style.display === 'none';
+    DOM.settings.style.display = show ? 'flex' : 'none';
+}
+
+function closeSettings() {
+    DOM.settings.style.display = 'none';
+}
+
+// ─── INIT ──────────────────────────────────────────────────────
+function init() {
+    const hasSave = loadGame();
+    STATE.storyData = getStory();
+
+    // اعمال تم و زبان
+    applyTheme(STATE.theme);
+    applyLanguage(STATE.lang);
+
+    // سرعت تایپ
+    DOM.speedSlider.value = STATE.typingSpeed;
+    DOM.speedLabel.textContent = STATE.typingSpeed;
+
+    if (hasSave && STATE.gameStarted) {
+        showMenu();
+        // دکمه ادامه فعال
+    } else {
+        STATE.gameStarted = false;
+        showMenu();
+    }
+
+    // ===== رویدادها =====
+    document.getElementById('btn-start').addEventListener('click', startNewGame);
+    document.getElementById('btn-continue').addEventListener('click', continueGame);
+    document.getElementById('btn-settings').addEventListener('click', toggleSettings);
+    document.getElementById('btn-close-settings').addEventListener('click', closeSettings);
+
+    // تنظیمات: زبان
+    document.querySelectorAll('.set-btn[data-lang]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            applyLanguage(this.dataset.lang);
+        });
+    });
+
+    // تنظیمات: تم
+    document.querySelectorAll('.set-btn[data-theme]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            applyTheme(this.dataset.theme);
+        });
+    });
+
+    // تنظیمات: سرعت تایپ
+    DOM.speedSlider.addEventListener('input', function() {
+        STATE.typingSpeed = parseInt(this.value);
+        DOM.speedLabel.textContent = STATE.typingSpeed;
+        saveGame();
+    });
+
+    // کلیک بیرون تنظیمات
+    DOM.settings.addEventListener('click', function(e) {
+        if (e.target === this) closeSettings();
+    });
+
+    // Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeSettings();
+    });
+
+    // اگر بازی ذخیره شده بود و کاربر ادامه داد
+    if (hasSave && STATE.gameStarted) {
+        // منو نمایش داده میشه، کاربر خودش انتخاب میکنه
+    }
+}
+
+// ─── START ─────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', init);
