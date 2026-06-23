@@ -1,1 +1,0 @@
-console.log('Ready for story1.js and story2.js');
