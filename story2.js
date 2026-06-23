@@ -1951,7 +1951,7 @@ class Game {
 
         <div class="profile-card" aria-label="Personality Profile">
           <div class="profile-title">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</div>
-          <div class="profile-title">William\'s Profile</div>
+          <div class="profile-title">William's Profile</div>
           <div class="profile-title">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</div>
           <div class="profile-label">${profile.label}</div>
           <div class="profile-text">${profile.text}</div>
