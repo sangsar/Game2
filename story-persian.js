@@ -1,7 +1,7 @@
 /**
  * ============================================================
  *  پرونده‌ی سقوط فرشته‌ها  –  The Fall of Angels Case File
- *  story.js  –  Complete Game Logic, Story Data & State Manager
+ *  story-persian.js  –  Complete Game Logic, Story Data & State Manager
  * ============================================================
  *
  *  Hidden Personality Parameters (never shown during gameplay):
@@ -33,7 +33,7 @@
 //                  params: object of { paramName: delta } applied on selection
 //    isEnding    – (optional) true → triggers showEnding()
 // ─────────────────────────────────────────────
-const STORY_FA = {
+const STORY_PERSIAN = {
 
   // ══════════════════════════════════════════
   //  OPENING
