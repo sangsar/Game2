@@ -1,127 +1,70 @@
-/**
- * ============================================================
- *  GAME ENGINE – The Fall of Angels (Ultimate Edition)
- *  با منو، تنظیمات، ۶ تم، افکت تایپ، ذخیره‌سازی پیشرفته
- * ============================================================
- */
-
-'use strict';
-
 // ─── متغیرهای سراسری ────────────────────────────────────────────
+let game = null;
 let currentLanguage = 'fa';
 let currentTheme = 'noir';
 let typingSpeed = 40;
-let game = null;
-let currentStory = typeof STORY_FA !== 'undefined' ? STORY_FA : STORY;
-
-// لیست تم‌ها
-const THEMES = ['noir', 'blood', 'retro', 'ice', 'silver', 'royal'];
-let themeIndex = 0;
+let currentStory = null;
 
 // ─── کلاس Game ──────────────────────────────────────────────────
 class Game {
   constructor() {
     this.state = null;
-    this.storyData = currentStory;
+    this.storyData = null;
     this.isTyping = false;
     this.typingTimer = null;
   }
 
-  // ── تنظیم تم ──────────────────────────────────────────────────
-  setTheme(themeName) {
-    document.body.classList.remove(...THEMES.map(t => `theme-${t}`));
-    document.body.classList.add(`theme-${themeName}`);
-    currentTheme = themeName;
-    if (this.state) {
-      this.state.theme = themeName;
-      this._save();
-    }
-    // به‌روزرسانی دکمه‌های تنظیمات
-    document.querySelectorAll('.setting-btn[data-theme]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.theme === themeName);
-    });
-  }
-
-  // ── تنظیم زبان ──────────────────────────────────────────────────
-  setLanguage(lang) {
-    currentLanguage = lang;
-    currentStory = (lang === 'en') ? STORY_EN : STORY_FA;
-    this.storyData = currentStory;
-    this._updateUIStrings();
-    // به‌روزرسانی دکمه‌های تنظیمات
-    document.querySelectorAll('.setting-btn[data-lang]').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.lang === lang);
-    });
-    if (this.state) {
-      this.state.language = lang;
-      this._save();
-    }
-    this.reset();
-  }
-
-  // ── به‌روزرسانی متن‌های UI ──────────────────────────────────
-  _updateUIStrings() {
-    const isEn = currentLanguage === 'en';
-    document.getElementById('case-id').textContent = isEn ? 'CASE FILE #011' : 'پرونده #۰۱۱';
-    document.getElementById('main-title').textContent = isEn ? 'The Fall of Angels' : 'سقوط فرشته‌ها';
-    document.getElementById('subtitle').textContent = isEn ? '— A Noir Detective Story —' : '— داستانی کارآگاهی نوآر —';
-    document.getElementById('status-text').textContent = isEn ? 'ACTIVE' : 'فعال';
-    document.getElementById('lang-label').textContent = isEn ? 'Fa' : 'En';
-    document.getElementById('menu-new-game').textContent = isEn ? 'New Game' : 'شروع بازی جدید';
-    document.getElementById('menu-continue').textContent = isEn ? 'Continue' : 'ادامه بازی';
-    document.getElementById('menu-settings').textContent = isEn ? 'Settings' : 'تنظیمات';
-    document.querySelector('.logo-title').textContent = isEn ? 'The Fall of Angels' : 'سقوط فرشته‌ها';
-    document.querySelector('.logo-sub').textContent = isEn ? '— Case File #011 —' : '— پرونده‌ی سقوط فرشته‌ها —';
-  }
-
-  // ── مقداردهی اولیه ────────────────────────────────────────────
-  initGame() {
-    const saved = this._load();
-    if (saved) {
-      this.state = saved;
-      if (saved.theme) this.setTheme(saved.theme);
-      if (saved.language) {
-        currentLanguage = saved.language;
-        currentStory = (saved.language === 'en') ? STORY_EN : STORY_FA;
-        this.storyData = currentStory;
-        this._updateUIStrings();
-      }
-    } else {
-      this.state = this._getInitialState();
-      this.setTheme('noir');
-    }
-    // نمایش منو اگر بازی جدیدی شروع نشده
-    if (!this.state || !this.state.gameStarted) {
-      this.showMenu();
-    } else {
-      this.hideMenu();
-      this.renderScene(this.state.currentScene);
-    }
-  }
-
   // ── نمایش منو ──────────────────────────────────────────────────
   showMenu() {
-    document.getElementById('main-menu').classList.remove('hidden');
-    document.getElementById('game-header').style.display = 'none';
-    document.getElementById('game-container').style.display = 'none';
-    document.getElementById('game-footer').style.display = 'none';
+    const menu = document.getElementById('main-menu');
+    const header = document.getElementById('game-header');
+    const container = document.getElementById('game-container');
+    const footer = document.getElementById('game-footer');
+    
+    if (menu) menu.classList.remove('hidden');
+    if (header) header.style.display = 'none';
+    if (container) container.style.display = 'none';
+    if (footer) footer.style.display = 'none';
   }
 
   // ── مخفی کردن منو ──────────────────────────────────────────────
   hideMenu() {
-    document.getElementById('main-menu').classList.add('hidden');
-    document.getElementById('game-header').style.display = 'flex';
-    document.getElementById('game-container').style.display = 'block';
-    document.getElementById('game-footer').style.display = 'flex';
+    const menu = document.getElementById('main-menu');
+    const header = document.getElementById('game-header');
+    const container = document.getElementById('game-container');
+    const footer = document.getElementById('game-footer');
+    
+    if (menu) menu.classList.add('hidden');
+    if (header) header.style.display = 'flex';
+    if (container) container.style.display = 'block';
+    if (footer) footer.style.display = 'flex';
   }
 
   // ── شروع بازی جدید ────────────────────────────────────────────
   startNewGame() {
-    this.state = this._getInitialState();
-    this.state.gameStarted = true;
-    this.storyData = currentStory;
+    console.log('startNewGame() called');
+    
+    // تنظیم داستان بر اساس زبان فعلی
+    this.storyData = (currentLanguage === 'en') ? STORY_EN : STORY_FA;
+    
+    // حالت اولیه
+    this.state = {
+      currentScene: 'intro',
+      params: { justice: 0, empathy: 0, pragmatism: 0, doubt: 0, resolve: 0 },
+      history: [],
+      choicesMade: {},
+      theme: currentTheme,
+      language: currentLanguage,
+      gameStarted: true
+    };
+    
+    // مخفی کردن منو و نمایش بازی
     this.hideMenu();
+    
+    // رندر صحنه اول
     this.renderScene('intro');
+    
+    // ذخیره
     this._save();
   }
 
@@ -130,7 +73,7 @@ class Game {
     const saved = this._load();
     if (saved && saved.gameStarted) {
       this.state = saved;
-      this.storyData = currentStory;
+      this.storyData = (currentLanguage === 'en') ? STORY_EN : STORY_FA;
       this.hideMenu();
       if (saved.theme) this.setTheme(saved.theme);
       this.renderScene(this.state.currentScene);
@@ -139,21 +82,49 @@ class Game {
     }
   }
 
-  // ── ریست ──────────────────────────────────────────────────────
-  reset() {
-    this.state = this._getInitialState();
-    this.state.gameStarted = true;
-    this.storyData = currentStory;
-    this.hideMenu();
-    this.renderScene('intro');
+  // ── مقداردهی اولیه ────────────────────────────────────────────
+  initGame() {
+    console.log('initGame() called');
+    
+    // تنظیم داستان
+    this.storyData = (currentLanguage === 'en') ? STORY_EN : STORY_FA;
+    
+    // بارگذاری ذخیره
+    const saved = this._load();
+    if (saved && saved.gameStarted) {
+      this.state = saved;
+      this.storyData = (currentLanguage === 'en') ? STORY_EN : STORY_FA;
+      if (saved.theme) this.setTheme(saved.theme);
+      this.hideMenu();
+      this.renderScene(this.state.currentScene);
+    } else {
+      this.state = {
+        currentScene: 'intro',
+        params: { justice: 0, empathy: 0, pragmatism: 0, doubt: 0, resolve: 0 },
+        history: [],
+        choicesMade: {},
+        theme: currentTheme,
+        language: currentLanguage,
+        gameStarted: false
+      };
+      this.showMenu();
+    }
+    
     this._save();
   }
 
   // ── رندر صحنه ────────────────────────────────────────────────
   renderScene(sceneId) {
+    console.log('renderScene() called for:', sceneId);
+    
+    if (!this.storyData) {
+      console.error('storyData is null!');
+      return;
+    }
+    
     const scene = this.storyData[sceneId];
     if (!scene) {
-      console.error(`Scene not found: ${sceneId}`);
+      console.error('Scene not found:', sceneId);
       return;
     }
 
@@ -169,11 +140,14 @@ class Game {
     }
 
     const container = document.getElementById('game-container');
-    if (!container) return;
+    if (!container) {
+      console.error('game-container not found');
+      return;
+    }
 
     const narrativeText = scene.text.join('\n');
 
-    const choicesHtml = scene.choices.length > 0
+    const choicesHtml = scene.choices && scene.choices.length > 0
       ? scene.choices.map((choice, idx) =>
           `<button class="choice-btn" data-scene="${sceneId}" data-choice="${idx}">
             ${choice.label}
@@ -184,49 +158,20 @@ class Game {
     container.innerHTML = `
       <div class="scene" role="main">
         <pre class="narrative" id="narrative-text">${this._escapeHtml(narrativeText)}</pre>
-        <div class="choices" id="choices-container" style="display:none;">${choicesHtml}</div>
+        <div class="choices" id="choices-container" style="display:flex;">${choicesHtml}</div>
       </div>
     `;
 
-    // افکت تایپ
-    this._typeWriter('narrative-text', () => {
-      document.getElementById('choices-container').style.display = 'flex';
-      this._attachChoiceListeners(sceneId);
-    });
-
+    this._attachChoiceListeners(sceneId);
     container.scrollTop = 0;
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  // ── افکت تایپ ──────────────────────────────────────────────────
-  _typeWriter(elementId, callback) {
-    const el = document.getElementById(elementId);
-    if (!el) return;
-    const text = el.textContent;
-    el.textContent = '';
-    this.isTyping = true;
-    let index = 0;
-    const speed = 200 - typingSpeed; // 10 → 190ms, 100 → 100ms
-
-    if (this.typingTimer) clearInterval(this.typingTimer);
-
-    this.typingTimer = setInterval(() => {
-      if (index < text.length) {
-        el.textContent += text.charAt(index);
-        index++;
-      } else {
-        clearInterval(this.typingTimer);
-        this.isTyping = false;
-        if (callback) callback();
-      }
-    }, Math.max(10, speed));
   }
 
   // ── اتصال رویدادهای انتخاب ──────────────────────────────────
   _attachChoiceListeners(sceneId) {
     document.querySelectorAll('.choice-btn').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        if (this.isTyping) return;
+      btn.removeEventListener('click', this._choiceHandler);
+      btn.addEventListener('click', this._choiceHandler = (e) => {
         const choiceIdx = parseInt(btn.dataset.choice, 10);
         this.makeChoice(sceneId, choiceIdx);
       });
@@ -253,59 +198,6 @@ class Game {
 
     this._save();
     this.renderScene(choice.next);
-  }
-
-  // ── نمایش پایان ──────────────────────────────────────────────
-  showEnding(scene) {
-    const p = this.state.params;
-    const profile = this._findProfile(p);
-    const sceneText = scene.text.join('\n');
-
-    const container = document.getElementById('game-container');
-    if (!container) return;
-
-    container.innerHTML = `
-      <div class="scene ending">
-        <pre class="narrative">${this._escapeHtml(sceneText)}</pre>
-        <div class="profile-card">
-          <div class="profile-title">━━━━━━━━━━━━━━━━━━━━━</div>
-          <div class="profile-title">${currentLanguage === 'en' ? "William's Profile" : 'پروفایل ویلیام'}</div>
-          <div class="profile-title">━━━━━━━━━━━━━━━━━━━━━</div>
-          <div class="profile-label">${profile.label}</div>
-          <div class="profile-text">${profile.text}</div>
-        </div>
-        <div class="choices">
-          <button class="choice-btn restart-btn" id="restart-btn">${currentLanguage === 'en' ? 'Start Over' : 'شروع دوباره'}</button>
-        </div>
-      </div>
-    `;
-
-    document.getElementById('restart-btn')?.addEventListener('click', () => {
-      this.reset();
-    });
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  // ── یافتن پروفایل ────────────────────────────────────────────
-  _findProfile(params) {
-    for (const pr of PROFILES) {
-      if (pr.condition(params)) return pr;
-    }
-    return PROFILES[PROFILES.length - 1];
-  }
-
-  // ── وضعیت اولیه ──────────────────────────────────────────────
-  _getInitialState() {
-    return {
-      currentScene: 'intro',
-      params: { justice: 0, empathy: 0, pragmatism: 0, doubt: 0, resolve: 0 },
-      history: [],
-      choicesMade: {},
-      theme: 'noir',
-      language: 'fa',
-      gameStarted: false,
-    };
   }
 
   // ── ذخیره ────────────────────────────────────────────────────
@@ -342,109 +234,71 @@ class Game {
   }
 }
 
-// ─── توابع تغییر زبان و تم ─────────────────────────────────────
-
-// تغییر زبان
-function switchLanguage() {
-  const btn = document.getElementById('lang-switch');
-  btn.classList.add('switching');
-
-  const newLang = currentLanguage === 'fa' ? 'en' : 'fa';
-  if (game) {
-    game.setLanguage(newLang);
-  }
-
-  setTimeout(() => {
-    btn.classList.remove('switching');
-  }, 600);
-}
-
-// تغییر تم (چرخشی)
-function switchTheme() {
-  themeIndex = (themeIndex + 1) % THEMES.length;
-  const newTheme = THEMES[themeIndex];
-  if (game) {
-    game.setTheme(newTheme);
-  } else {
-    document.body.classList.remove(...THEMES.map(t => `theme-${t}`));
-    document.body.classList.add(`theme-${newTheme}`);
-  }
-}
-
-// ─── تنظیمات ─────────────────────────────────────────────────────
-function toggleSettings() {
-  const overlay = document.getElementById('settings-overlay');
-  overlay.style.display = overlay.style.display === 'none' ? 'flex' : 'none';
-}
-
-function closeSettings() {
-  document.getElementById('settings-overlay').style.display = 'none';
-}
-
 // ─── راه‌اندازی ────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  // نمونه بازی
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('DOMContentLoaded fired');
+  
+  // ایجاد نمونه بازی
   game = new Game();
+  
+  // تنظیم داستان
+  currentStory = (currentLanguage === 'en') ? STORY_EN : STORY_FA;
+  
+  // مقداردهی اولیه
   game.initGame();
-
-  // دکمه‌های منو
-  document.getElementById('menu-new-game')?.addEventListener('click', () => {
-    game.startNewGame();
-  });
-
-  document.getElementById('menu-continue')?.addEventListener('click', () => {
-    game.continueGame();
-  });
-
-  document.getElementById('menu-settings')?.addEventListener('click', toggleSettings);
-  document.getElementById('settings-close')?.addEventListener('click', closeSettings);
-  document.getElementById('menu-toggle')?.addEventListener('click', () => {
-    document.getElementById('main-menu').classList.toggle('hidden');
-  });
-
-  // دکمه‌های تنظیمات – زبان
-  document.querySelectorAll('.setting-btn[data-lang]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const lang = btn.dataset.lang;
-      if (game) game.setLanguage(lang);
-    });
-  });
-
-  // دکمه‌های تنظیمات – تم
-  document.querySelectorAll('.setting-btn[data-theme]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const theme = btn.dataset.theme;
-      if (game) game.setTheme(theme);
-    });
-  });
-
-  // سرعت تایپ
-  const speedSlider = document.getElementById('typing-speed');
-  const speedLabel = document.getElementById('typing-speed-label');
-  if (speedSlider) {
-    speedSlider.addEventListener('input', () => {
-      typingSpeed = parseInt(speedSlider.value);
-      speedLabel.textContent = typingSpeed;
-    });
+  
+  // ============================================================
+  // دکمه‌های منو – با چند روش مختلف برای اطمینان
+  // ============================================================
+  
+  const startBtn = document.getElementById('menu-new-game');
+  const continueBtn = document.getElementById('menu-continue');
+  const settingsBtn = document.getElementById('menu-settings');
+  
+  if (startBtn) {
+    console.log('Start button found');
+    startBtn.onclick = function(e) {
+      e.preventDefault();
+      console.log('Start button clicked');
+      if (game) {
+        game.startNewGame();
+      } else {
+        console.error('game is null!');
+      }
+    };
+  } else {
+    console.error('Start button not found!');
   }
-
+  
+  if (continueBtn) {
+    continueBtn.onclick = function(e) {
+      e.preventDefault();
+      if (game) game.continueGame();
+    };
+  }
+  
+  if (settingsBtn) {
+    settingsBtn.onclick = function(e) {
+      e.preventDefault();
+      toggleSettings();
+    };
+  }
+  
   // دکمه‌های هدر
-  document.getElementById('lang-switch')?.addEventListener('click', switchLanguage);
-  document.getElementById('theme-switch')?.addEventListener('click', switchTheme);
-
-  // کلیک بیرون از تنظیمات برای بستن
-  document.getElementById('settings-overlay')?.addEventListener('click', (e) => {
-    if (e.target === e.currentTarget) closeSettings();
-  });
-
-  // میانبر صفحه کلید
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeSettings();
-  });
+  const langBtn = document.getElementById('lang-switch');
+  if (langBtn) {
+    langBtn.onclick = function() {
+      switchLanguage();
+    };
+  }
+  
+  const themeBtn = document.getElementById('theme-switch');
+  if (themeBtn) {
+    themeBtn.onclick = function() {
+      switchTheme();
+    };
+  }
 });
 
 // ─── متغیرهای سراسری ────────────────────────────────────────────
-window.switchLanguage = switchLanguage;
-window.switchTheme = switchTheme;
-window.toggleSettings = toggleSettings;
 window.game = game;
