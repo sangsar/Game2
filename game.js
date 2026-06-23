@@ -4,7 +4,6 @@
 let game = null;
 let currentLanguage = 'fa';
 let currentTheme = 'noir';
-let typingSpeed = 40;
 
 // ─── کلاس Game ──────────────────────────────────────────────────
 class Game {
@@ -24,22 +23,7 @@ class Game {
     }
   }
 
-  showMenu() {
-    document.getElementById('main-menu').classList.remove('hidden');
-    document.getElementById('game-header').style.display = 'none';
-    document.getElementById('game-container').style.display = 'none';
-    document.getElementById('game-footer').style.display = 'none';
-  }
-
-  hideMenu() {
-    document.getElementById('main-menu').classList.add('hidden');
-    document.getElementById('game-header').style.display = 'flex';
-    document.getElementById('game-container').style.display = 'block';
-    document.getElementById('game-footer').style.display = 'flex';
-  }
-
   startNewGame() {
-    console.log('startNewGame called');
     this.storyData = (currentLanguage === 'en') ? STORY_EN : STORY_FA;
     this.state = {
       currentScene: 'intro',
@@ -50,22 +34,8 @@ class Game {
       language: currentLanguage,
       gameStarted: true
     };
-    this.hideMenu();
     this.renderScene('intro');
     this._save();
-  }
-
-  continueGame() {
-    const saved = this._load();
-    if (saved && saved.gameStarted) {
-      this.state = saved;
-      this.storyData = (currentLanguage === 'en') ? STORY_EN : STORY_FA;
-      this.hideMenu();
-      if (saved.theme) this.setTheme(saved.theme);
-      this.renderScene(this.state.currentScene);
-    } else {
-      this.startNewGame();
-    }
   }
 
   initGame() {
@@ -75,19 +45,9 @@ class Game {
       this.state = saved;
       this.storyData = (currentLanguage === 'en') ? STORY_EN : STORY_FA;
       if (saved.theme) this.setTheme(saved.theme);
-      this.hideMenu();
       this.renderScene(this.state.currentScene);
     } else {
-      this.state = {
-        currentScene: 'intro',
-        params: { justice: 0, empathy: 0, pragmatism: 0, doubt: 0, resolve: 0 },
-        history: [],
-        choicesMade: {},
-        theme: currentTheme,
-        language: currentLanguage,
-        gameStarted: false
-      };
-      this.showMenu();
+      this.startNewGame();
     }
     this._save();
   }
@@ -196,7 +156,6 @@ class Game {
       gameStarted: true
     };
     this.storyData = (currentLanguage === 'en') ? STORY_EN : STORY_FA;
-    this.hideMenu();
     this.renderScene('intro');
     this._save();
   }
@@ -238,76 +197,6 @@ class Game {
 
 // ─── راه‌اندازی ────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('DOM loaded');
   game = new Game();
   game.initGame();
-
-  const startBtn = document.getElementById('menu-new-game');
-  if (startBtn) {
-    console.log('Start button found');
-    startBtn.onclick = function(e) {
-      e.preventDefault();
-      console.log('Start button clicked');
-      if (game) {
-        game.startNewGame();
-      } else {
-        console.error('game is null');
-      }
-    };
-  } else {
-    console.error('Start button NOT found');
-  }
-
-  const continueBtn = document.getElementById('menu-continue');
-  if (continueBtn) {
-    continueBtn.onclick = function(e) {
-      e.preventDefault();
-      if (game) game.continueGame();
-    };
-  }
-
-  const settingsBtn = document.getElementById('menu-settings');
-  if (settingsBtn) {
-    settingsBtn.onclick = function(e) {
-      e.preventDefault();
-      const overlay = document.getElementById('settings-overlay');
-      if (overlay) overlay.style.display = overlay.style.display === 'none' ? 'flex' : 'none';
-    };
-  }
-
-  const langBtn = document.getElementById('lang-switch');
-  if (langBtn) {
-    langBtn.onclick = function() {
-      currentLanguage = (currentLanguage === 'fa') ? 'en' : 'fa';
-      if (game) {
-        game.storyData = (currentLanguage === 'en') ? STORY_EN : STORY_FA;
-        game.reset();
-      }
-    };
-  }
-
-  const themeBtn = document.getElementById('theme-switch');
-  if (themeBtn) {
-    themeBtn.onclick = function() {
-      const themes = ['noir', 'blood', 'retro', 'ice', 'silver', 'royal'];
-      const currentIndex = themes.indexOf(currentTheme);
-      const nextIndex = (currentIndex + 1) % themes.length;
-      currentTheme = themes[nextIndex];
-      if (game) game.setTheme(currentTheme);
-    };
-  }
-
-  const closeSettings = document.getElementById('settings-close');
-  if (closeSettings) {
-    closeSettings.onclick = function() {
-      document.getElementById('settings-overlay').style.display = 'none';
-    };
-  }
-
-  const menuToggle = document.getElementById('menu-toggle');
-  if (menuToggle) {
-    menuToggle.onclick = function() {
-      document.getElementById('main-menu').classList.toggle('hidden');
-    };
-  }
 });
