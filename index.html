@@ -11,21 +11,12 @@
 <div class="crt-frame">
     <div class="crt-screen">
 
+        <!-- BOOT SCREEN -->
         <div id="boot-sequence" class="boot">
-            <pre class="boot-text">
-FREEMONT POLICE DEPARTMENT
-SECURE TERMINAL SYSTEM v1.98
-
-Booting...
-Checking memory............. OK
-Loading kernel.............. OK
-Decrypting case files....... OK
-Establishing secure link.... OK
-
-<span class="blink">PRESS ANY KEY TO CONTINUE_</span>
-            </pre>
+            <pre id="boot-text"></pre>
         </div>
 
+        <!-- TERMINAL SCREEN -->
         <div id="terminal" class="hidden">
             <div id="output" class="terminal-output"></div>
             <div id="choices" class="terminal-choices"></div>
@@ -35,13 +26,74 @@ Establishing secure link.... OK
 </div>
 
 <script src="story.js"></script>
-<script src="game.js"></script>
 
 <script>
+// ─────────────────────────────────────────────
+// BOOT SEQUENCE (TYPEWRITER)
+// ─────────────────────────────────────────────
+const bootLines = [
+"SECURE TERMINAL SYSTEM v1.98",
+"",
+"Booting...",
+"Checking memory............. OK",
+"Loading kernel.............. OK",
+"Decrypting case files....... OK",
+"Establishing secure link.... OK",
+"",
+"PRESS ANY KEY TO CONTINUE_"
+];
+
+let index = 0;
+let speed = 40;
+
+function typeLine() {
+    if (index < bootLines.length) {
+        document.getElementById("boot-text").innerText += bootLines[index] + "\n";
+        index++;
+        setTimeout(typeLine, speed);
+    }
+}
+
+window.onload = typeLine;
+
+// ─────────────────────────────────────────────
+// SWITCH TO TERMINAL AFTER KEY PRESS
+// ─────────────────────────────────────────────
 document.addEventListener("keydown", () => {
     document.getElementById("boot-sequence").classList.add("hidden");
     document.getElementById("terminal").classList.remove("hidden");
+    startGame();
 });
+
+// ─────────────────────────────────────────────
+// GAME ENGINE (MINIMAL VERSION)
+// ─────────────────────────────────────────────
+let currentScene = STORY.intro;
+
+function startGame() {
+    renderScene(currentScene);
+}
+
+function renderScene(scene) {
+    const output = document.getElementById("output");
+    const choices = document.getElementById("choices");
+
+    output.innerText = scene.text.join("\n");
+    choices.innerHTML = "";
+
+    scene.choices.forEach(choice => {
+        const btn = document.createElement("button");
+        btn.className = "choice-btn";
+        btn.innerText = choice.label;
+
+        btn.onclick = () => {
+            currentScene = STORY[choice.next];
+            renderScene(currentScene);
+        };
+
+        choices.appendChild(btn);
+    });
+}
 </script>
 
 </body>
