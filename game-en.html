@@ -7,9 +7,93 @@
   <link rel="stylesheet" href="style.css" />
   <style>
     .choice-btn { text-align: left; padding-left: 44px; }
+    
+    /* دکمه زنگوله */
+    .music-toggle {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 110;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(10, 10, 10, 0.75);
+      border: 1.5px solid #c9a96e;
+      color: #c9a96e;
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      padding: 0;
+      line-height: 1;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+    }
+    .music-toggle:hover {
+      border-color: #e0c37b;
+      box-shadow: 0 0 22px rgba(200, 160, 80, 0.3);
+      background: rgba(20, 18, 12, 0.85);
+    }
+    .music-toggle:active {
+      transform: scale(0.9);
+      transition: transform 0.12s ease;
+    }
+    .music-toggle.muted {
+      border-color: rgba(150, 130, 90, 0.5);
+      color: rgba(180, 150, 100, 0.55);
+    }
+    .music-toggle svg {
+      width: 15px;
+      height: 15px;
+      pointer-events: none;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .music-toggle.muted .bell-body {
+      opacity: 0.45;
+    }
+    .music-toggle .mute-line {
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .music-toggle.muted .mute-line {
+      opacity: 1;
+    }
+    @media (max-width: 600px) {
+      .music-toggle {
+        top: 10px;
+        right: 10px;
+        width: 32px;
+        height: 32px;
+        font-size: 0.85rem;
+      }
+      .music-toggle svg {
+        width: 13px;
+        height: 13px;
+      }
+    }
   </style>
 </head>
 <body class="game-page theme-noir">
+  <!-- دکمه زنگوله -->
+  <button class="music-toggle" id="musicToggle" title="Music On/Off">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <g class="bell-body">
+        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+        <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+      </g>
+      <line class="mute-line" x1="2" y1="2" x2="22" y2="22" />
+    </svg>
+  </button>
+
   <div class="game-header">
     <a href="index.html">← Back</a>
     <span class="header-title">FALL OF ANGELS</span>
@@ -20,8 +104,165 @@
   </div>
 
   <canvas class="atmosphere-canvas"></canvas>
+  
+  <audio id="bgAudio" preload="auto"></audio>
+  
   <script src="themes.js"></script>
   <script>initAtmosphere();</script>
+  
+  <!-- موسیقی -->
+  <script>
+    (function() {
+      const MUSIC_URLS = [
+        'https://dl.just-music.ir/music//Soundtrack/Dark/Dark%20Cycle%201%20(2019)/320/02.%20Ein%20Mensch%20-%20Ein%20Schmetterling.mp3',
+        'https://dl.just-music.ir/music//Soundtrack/Dark/Dark%20Cycle%201%20(2019)/320/04.%20Tick%20Tack,%20Tick%20Tack.mp3',
+        'https://dl.just-music.ir/music//Soundtrack/Dark/Dark%20Cycle%201%20(2019)/320/06.%20Apokalypse.mp3',
+        'https://dl.just-music.ir/music//Soundtrack/Dark/Dark%20Cycle%201%20(2019)/320/07.%20Kein%20DeLorean.mp3'
+      ];
+
+      const STORAGE_KEY_MUSIC = 'foa_music_playing';
+      const STORAGE_KEY_TRACK = 'foa_track_index';
+
+      const bgAudio = document.getElementById('bgAudio');
+      const musicToggle = document.getElementById('musicToggle');
+      
+      let currentTrackIndex = 0;
+      let isPlaying = false;
+
+      function loadTrack(index) {
+        if (index >= MUSIC_URLS.length) {
+          bgAudio.pause();
+          isPlaying = false;
+          musicToggle.classList.add('muted');
+          return;
+        }
+        currentTrackIndex = index;
+        bgAudio.src = MUSIC_URLS[index];
+        bgAudio.load();
+        try {
+          localStorage.setItem(STORAGE_KEY_TRACK, String(index));
+        } catch (e) {}
+      }
+
+      function playTrack() {
+        if (!bgAudio.src || bgAudio.src === window.location.href) {
+          loadTrack(currentTrackIndex);
+        }
+        const promise = bgAudio.play();
+        if (promise !== undefined) {
+          promise
+            .then(() => {
+              isPlaying = true;
+              musicToggle.classList.remove('muted');
+              try {
+                localStorage.setItem(STORAGE_KEY_MUSIC, '1');
+              } catch (e) {}
+            })
+            .catch(() => {
+              isPlaying = false;
+              musicToggle.classList.add('muted');
+              try {
+                localStorage.setItem(STORAGE_KEY_MUSIC, '0');
+              } catch (e) {}
+            });
+        } else {
+          isPlaying = true;
+          musicToggle.classList.remove('muted');
+          try {
+            localStorage.setItem(STORAGE_KEY_MUSIC, '1');
+          } catch (e) {}
+        }
+      }
+
+      function toggleMusic() {
+        if (isPlaying) {
+          bgAudio.pause();
+          isPlaying = false;
+          musicToggle.classList.add('muted');
+          try {
+            localStorage.setItem(STORAGE_KEY_MUSIC, '0');
+          } catch (e) {}
+        } else {
+          if (!bgAudio.src || bgAudio.src === window.location.href) {
+            let savedTrack = parseInt(localStorage.getItem(STORAGE_KEY_TRACK), 10);
+            if (isNaN(savedTrack) || savedTrack < 0 || savedTrack >= MUSIC_URLS.length) {
+              savedTrack = 0;
+            }
+            loadTrack(savedTrack);
+          }
+          playTrack();
+        }
+      }
+
+      musicToggle.addEventListener('click', toggleMusic);
+
+      bgAudio.addEventListener('ended', function() {
+        const next = currentTrackIndex + 1;
+        if (next >= MUSIC_URLS.length) {
+          isPlaying = false;
+          musicToggle.classList.add('muted');
+          try {
+            localStorage.setItem(STORAGE_KEY_MUSIC, '0');
+          } catch (e) {}
+          return;
+        }
+        loadTrack(next);
+        playTrack();
+      });
+
+      bgAudio.addEventListener('error', function() {
+        console.warn('خطا در پخش آهنگ:', bgAudio.src);
+        const next = currentTrackIndex + 1;
+        if (next >= MUSIC_URLS.length) {
+          isPlaying = false;
+          musicToggle.classList.add('muted');
+          try {
+            localStorage.setItem(STORAGE_KEY_MUSIC, '0');
+          } catch (e) {}
+          return;
+        }
+        loadTrack(next);
+        if (isPlaying) playTrack();
+      });
+
+      // راه‌اندازی
+      function initMusic() {
+        let savedMusic = localStorage.getItem(STORAGE_KEY_MUSIC);
+        let savedTrack = parseInt(localStorage.getItem(STORAGE_KEY_TRACK), 10);
+        if (isNaN(savedTrack) || savedTrack < 0 || savedTrack >= MUSIC_URLS.length) {
+          savedTrack = 0;
+        }
+        loadTrack(savedTrack);
+
+        if (savedMusic === '1') {
+          isPlaying = true;
+          musicToggle.classList.remove('muted');
+          // پخش با کلیک کاربر
+          function startOnClick() {
+            if (!isPlaying) return;
+            if (!bgAudio.paused) return;
+            playTrack();
+            document.removeEventListener('click', startOnClick);
+            document.removeEventListener('touchstart', startOnClick);
+            document.removeEventListener('keydown', startOnClick);
+          }
+          document.addEventListener('click', startOnClick);
+          document.addEventListener('touchstart', startOnClick);
+          document.addEventListener('keydown', startOnClick);
+        } else {
+          isPlaying = false;
+          musicToggle.classList.add('muted');
+        }
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initMusic);
+      } else {
+        initMusic();
+      }
+    })();
+  </script>
+  
   <script src="story-english.js"></script>
 </body>
 </html>
