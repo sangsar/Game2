@@ -10,7 +10,6 @@
     <script src="https://raw.githubusercontent.com/sangsar/Game2/refs/heads/main/themes.js" defer></script>
 
     <style>
-        /* استایل‌های اضافی برای هماهنگی */
         :root {
             --gold: #c9a96e;
             --gold-bright: #e0c37b;
@@ -105,16 +104,40 @@
             margin-bottom: 1.8rem;
         }
 
-        /* لوگو با استایل فایل خارجی هماهنگ می‌شه */
+        /* ===== لوگوی طلایی لاکچری با نورپردازی و انیمیشن ===== */
         .title-en {
             font-family: var(--font-serif);
             font-size: clamp(1.8rem, 4vw, 2.6rem);
             font-weight: 400;
             letter-spacing: 0.15em;
-            color: #e8e8e8;
+            color: #d4af37;
             text-transform: uppercase;
-            text-shadow: 0 0 40px rgba(200, 170, 110, 0.25);
             line-height: 1.2;
+            text-shadow:
+                0 0 10px rgba(212, 175, 55, 0.4),
+                0 0 20px rgba(212, 175, 55, 0.25),
+                0 0 40px rgba(212, 175, 55, 0.15),
+                0 0 80px rgba(212, 175, 55, 0.08);
+            animation: shimmer 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes shimmer {
+            0% {
+                text-shadow:
+                    0 0 10px rgba(212, 175, 55, 0.3),
+                    0 0 20px rgba(212, 175, 55, 0.15),
+                    0 0 40px rgba(212, 175, 55, 0.08),
+                    0 0 80px rgba(212, 175, 55, 0.04);
+                color: #d4af37;
+            }
+            100% {
+                text-shadow:
+                    0 0 15px rgba(212, 175, 55, 0.6),
+                    0 0 30px rgba(212, 175, 55, 0.4),
+                    0 0 60px rgba(212, 175, 55, 0.25),
+                    0 0 100px rgba(212, 175, 55, 0.12);
+                color: #e8c84a;
+            }
         }
 
         .case-meta {
@@ -565,14 +588,14 @@
             const musicToggle = document.getElementById('musicToggle');
             const bgAudio = document.getElementById('bgAudio');
 
-            // ==================== وضعیت موزیک (ساده) ====================
+            // ==================== وضعیت موزیک ====================
             let currentTrackIndex = 0;
             let isPlaying = false;
 
             // ==================== تابع‌های موزیک ====================
             function loadTrack(index) {
                 if (index >= MUSIC_URLS.length) {
-                    // آخر آهنگ → متوقف کن
+                    // آخر لیست → توقف
                     bgAudio.pause();
                     isPlaying = false;
                     musicToggle.classList.add('muted');
@@ -611,17 +634,17 @@
                     }
                     playTrack();
                 }
-                // ذخیره وضعیت
                 try {
                     localStorage.setItem(STORAGE_KEY_MUSIC, isPlaying ? '1' : '0');
                 } catch (e) {}
             }
 
-            // ==================== رویدادهای موزیک ====================
+            musicToggle.addEventListener('click', toggleMusic);
+
+            // ==================== رویدادهای آهنگ ====================
             bgAudio.addEventListener('ended', function() {
                 const next = currentTrackIndex + 1;
                 if (next >= MUSIC_URLS.length) {
-                    // آخرین آهنگ تموم شد → متوقف کن
                     isPlaying = false;
                     musicToggle.classList.add('muted');
                     return;
@@ -632,7 +655,6 @@
 
             bgAudio.addEventListener('error', function() {
                 console.warn('خطا در پخش آهنگ:', bgAudio.src);
-                // رد شدن از آهنگ خراب
                 const next = currentTrackIndex + 1;
                 if (next >= MUSIC_URLS.length) {
                     isPlaying = false;
@@ -642,8 +664,6 @@
                 loadTrack(next);
                 if (isPlaying) playTrack();
             });
-
-            musicToggle.addEventListener('click', toggleMusic);
 
             // ==================== Image Overlay ====================
             function getImageIndex() {
@@ -782,14 +802,14 @@
                 showOverlayImage(imgIdx);
                 startOverlayCountdown();
 
-                // وضعیت موزیک از localStorage
+                // بازیابی وضعیت موزیک
                 try {
                     const saved = localStorage.getItem(STORAGE_KEY_MUSIC);
                     if (saved === '1') {
                         isPlaying = true;
                         musicToggle.classList.remove('muted');
                         loadTrack(0);
-                        // پخش خودکار نمی‌کنیم، کاربر باید بزنه
+                        // ولی پخش خودکار نمی‌کنیم
                     } else {
                         isPlaying = false;
                         musicToggle.classList.add('muted');
