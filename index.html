@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fall of Angels | سقوط فرشته‌ها</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Special+Elite&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@700&family=Special+Elite&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg:      #050400;
@@ -485,7 +485,7 @@
           <!-- Using foreignObject for Cinzel Decorative font -->
           <foreignObject x="60" y="22" width="300" height="65">
             <div xmlns="http://www.w3.org/1999/xhtml" style="
-              font-family: 'Cinzel Decorative', serif;
+              font-family: 'Cormorant SC', serif;
               font-weight: 700;
               font-size: 36px;
               letter-spacing: 4px;
@@ -591,31 +591,37 @@
     const muteX = document.getElementById('mute-x');
     let muted = false;
 
-    function loadTrack(idx) {
+    function loadAndPlay(idx) {
       audio.src = playlist[idx];
       audio.volume = 0.45;
-    }
-
-    audio.addEventListener('ended', () => {
-      trackIdx = (trackIdx + 1) % playlist.length;
-      loadTrack(trackIdx);
-      if (!muted) audio.play().catch(() => {});
-    });
-
-    function tryAutoplay() {
-      loadTrack(0);
       audio.play().then(() => {
         muted = false;
         bellBtn.classList.remove('muted');
         bellBtn.classList.add('playing');
         muteX.setAttribute('opacity', '0');
-      }).catch(() => {
-        muted = true;
-        bellBtn.classList.add('muted');
-        bellBtn.classList.remove('playing');
-        muteX.setAttribute('opacity', '1');
-      });
+      }).catch(() => {});
     }
+
+    // When a track ends, move to next (loops back to 0 after last)
+    audio.addEventListener('ended', () => {
+      trackIdx = (trackIdx + 1) % playlist.length;
+      loadAndPlay(trackIdx);
+    });
+
+    function tryAutoplay() {
+      loadAndPlay(0);
+    }
+
+    // Also try to autoplay immediately on page load (before intro ends)
+    // in case user has interacted with the page already
+    document.addEventListener('click', function startOnInteraction() {
+      if (muted === false && !audio.src) {
+        loadAndPlay(trackIdx);
+      } else if (audio.paused && !muted) {
+        audio.play().catch(() => {});
+      }
+      document.removeEventListener('click', startOnInteraction);
+    }, { once: true });
 
     bellBtn.addEventListener('click', () => {
       muted = !muted;
@@ -625,8 +631,8 @@
         bellBtn.classList.remove('playing');
         muteX.setAttribute('opacity', '1');
       } else {
-        if (!audio.src) loadTrack(trackIdx);
-        audio.play().catch(() => {});
+        if (!audio.src) loadAndPlay(trackIdx);
+        else audio.play().catch(() => {});
         bellBtn.classList.remove('muted');
         bellBtn.classList.add('playing');
         muteX.setAttribute('opacity', '0');
