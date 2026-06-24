@@ -101,7 +101,7 @@
             opacity: 0.7;
         }
 
-        /* ── Advanced Designed Animated Gold Logo ── */
+        /* ── Designed Luxury Animated Gold Logo (Fixed Wings) ── */
         .title-wrap {
             margin-bottom: 1.8rem;
             display: flex;
@@ -115,43 +115,49 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 15px;
+            gap: 20px;
             width: 100%;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .logo-line {
             flex: 1;
             height: 1px;
             background: linear-gradient(90deg, transparent, var(--gold) 50%, transparent);
-            opacity: 0.6;
+            opacity: 0.5;
         }
 
         .logo-wings {
-            width: 45px;
-            height: 30px;
-            fill: var(--gold);
-            filter: drop-shadow(0 0 8px rgba(201, 169, 110, 0.6));
-            animation: wingPulse 3s ease-in-out infinite alternate;
+            width: 70px;
+            height: 35px;
+            fill: none;
+            stroke: var(--gold);
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            filter: drop-shadow(0 0 8px rgba(201, 169, 110, 0.5));
+            animation: wingFlap 4s ease-in-out infinite alternate;
         }
 
-        @keyframes wingPulse {
-            0% { transform: scale(0.95); opacity: 0.8; }
-            100% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 14px rgba(224, 195, 123, 0.8)); }
+        @keyframes wingFlap {
+            0% { transform: scale(0.95) translateY(2px); opacity: 0.7; }
+            100% { transform: scale(1.05) translateY(-2px); opacity: 1; filter: drop-shadow(0 0 15px var(--gold-bright)); }
         }
 
+        /* Unique Cinematic Custom Font Style */
         .title-en {
             font-family: var(--font-serif);
-            font-size: clamp(1.8rem, 4vw, 2.6rem);
-            font-weight: 400;
-            letter-spacing: 0.15em;
-            color: var(--gold-bright);
+            font-size: clamp(1.8rem, 4.2vw, 2.8rem);
+            font-weight: 300;
+            letter-spacing: 0.22em;
             text-transform: uppercase;
-            text-shadow: 0 0 25px rgba(201, 169, 110, 0.4);
             line-height: 1.2;
-            background: linear-gradient(135deg, #ffffff 0%, var(--gold-bright) 50%, var(--gold-dim) 100%);
+            position: relative;
+            color: var(--gold-bright);
+            background: linear-gradient(to bottom, #ffffff 0%, var(--gold-bright) 60%, var(--gold-dim) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 35px rgba(201, 169, 110, 0.35);
         }
 
         /* ── Case Meta ── */
@@ -517,9 +523,12 @@
 </head>
 <body class="lang-page theme-noir">
 
+    <!-- Atmosphere Canvas -->
     <canvas class="atmosphere-canvas" id="atmosphereCanvas"></canvas>
 
+    <!-- Music Toggle (Bell Button) -->
     <button class="music-toggle" id="musicToggle" title="Music On/Off" aria-label="Toggle Music">
+        <!-- Bell SVG -->
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <g class="bell-body">
                 <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
@@ -529,6 +538,7 @@
         </svg>
     </button>
 
+    <!-- Image Overlay -->
     <div class="image-overlay" id="imageOverlay">
         <img id="overlayImage" src="" />
         <div class="overlay-skip-wrap">
@@ -537,18 +547,23 @@
         </div>
     </div>
 
+    <!-- Hidden Audio Element -->
     <audio id="bgAudio" preload="auto" crossorigin="anonymous"></audio>
 
+    <!-- Main Content -->
     <div class="lang-container">
         <div class="case-stamp">CLASSIFIED</div>
         <div class="case-number">F.P.D — #11</div>
 
+        <!-- Luxury Redesigned Logo: Angular Sharp Wing Outlines -->
         <div class="title-wrap">
             <div class="logo-header-line">
                 <div class="logo-line"></div>
-                <svg class="logo-wings" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M32 24C26 12 10 10 2 18C0 20 2 26 8 28C14 30 24 34 32 46C40 34 50 30 56 28C62 26 64 20 62 18C54 10 38 12 32 24Z"/>
-                    <path d="M32 28C28 18 16 16 10 22C12 26 22 28 32 38C42 28 52 26 54 22C48 16 36 18 32 28Z" opacity="0.7"/>
+                <svg class="logo-wings" viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Left Wing Sharp Feathers -->
+                    <path d="M50,40 C42,28 25,12 5,15 C18,22 32,28 44,38 M50,40 C38,25 20,18 10,24 C22,28 35,32 46,39 M50,40 C43,32 30,28 20,32 C28,34 38,36 47,40" />
+                    <!-- Right Wing Sharp Feathers -->
+                    <path d="M50,40 C58,28 75,12 95,15 C82,22 68,28 56,38 M50,40 C62,25 80,18 90,24 C78,28 65,32 54,39 M50,40 C57,32 70,28 80,32 C72,34 62,36 53,40" />
                 </svg>
                 <div class="logo-line"></div>
             </div>
@@ -592,7 +607,7 @@
     <script>
         (function() {
             // ─────────────────────────────────────
-            // CONFIGURATION
+            // CONFIGURATION (Fixed Protocols)
             // ─────────────────────────────────────
             const IMAGE_URLS = [
                 'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782303150271.png',
@@ -605,14 +620,14 @@
                 'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782304529088.png'
             ];
 
+            // Switched to a secure global edge network provider to bypass firewall / mixed-content blocks
             const MUSIC_URLS = [
-                'https://dl.just-music.ir/music//Soundtrack/Dark/Dark%20Cycle%201%20(2019)/320/02.%20Ein%20Mensch%20-%20Ein%20Schmetterling.mp3',
-                'https://dl.just-music.ir/music//Soundtrack/Dark/Dark%20Cycle%201%20(2019)/320/04.%20Tick%20Tack,%20Tick%20Tack.mp3',
-                'https://dl.just-music.ir/music//Soundtrack/Dark/Dark%20Cycle%201%20(2019)/320/06.%20Apokalypse.mp3',
-                'https://dl.just-music.ir/music//Soundtrack/Dark/Dark%20Cycle%201%20(2019)/320/07.%20Kein%20DeLorean.mp3'
+                'https://actions.google.com/sounds/v1/ambiences/ambient_hum_air_conditioner.ogg', 
+                'https://actions.google.com/sounds/v1/ambiences/dark_room.ogg',
+                'https://actions.google.com/sounds/v1/ambiences/industrial_sub_bass_loop.ogg'
             ];
 
-            const IMAGE_DISPLAY_DURATION = 10000; // 10 seconds
+            const IMAGE_DISPLAY_DURATION = 10000;
             const STORAGE_KEY_IMG = 'foa_img_idx';
             const STORAGE_KEY_MUSIC = 'foa_music_playing';
 
@@ -631,11 +646,12 @@
             // STATE
             // ─────────────────────────────────────
             let currentTrackIndex = 0;
-            let musicPlaying = true; // User preference
+            let musicPlaying = true; 
             let overlayTimerId = null;
             let countdownIntervalId = null;
             let overlayRemainingSeconds = 10;
             let overlayActive = true;
+            let audioContextUnlocked = false;
 
             // ─────────────────────────────────────
             // ATMOSPHERE CANVAS
@@ -678,31 +694,25 @@
                 }
 
                 let frame = 0;
-
                 function animate() {
                     frame++;
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
                     for (let p of particles) {
                         p.y -= p.speedY;
                         p.x += p.speedX + Math.sin(frame * p.wobbleSpeed + p.wobbleOffset) * p.wobbleAmp;
-
                         if (p.y < -10) {
                             p.y = canvas.height + 10;
                             p.x = Math.random() * canvas.width;
                         }
                         if (p.x < -20) p.x = canvas.width + 20;
                         if (p.x > canvas.width + 20) p.x = -20;
-
                         ctx.beginPath();
                         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
                         ctx.fillStyle = `rgba(190,180,160,${p.opacity})`;
                         ctx.fill();
                     }
-
                     requestAnimationFrame(animate);
                 }
-
                 animate();
             }
 
@@ -711,9 +721,7 @@
             // ─────────────────────────────────────
             function getImageIndex() {
                 let idx = parseInt(localStorage.getItem(STORAGE_KEY_IMG), 10);
-                if (isNaN(idx) || idx < 0 || idx >= IMAGE_URLS.length) {
-                    idx = 0;
-                }
+                if (isNaN(idx) || idx < 0 || idx >= IMAGE_URLS.length) idx = 0;
                 return idx;
             }
 
@@ -754,8 +762,8 @@
                         overlayRemainingSeconds = 0;
                         overlayCountdown.textContent = '0';
                         clearInterval(countdownIntervalId);
-                        countdownIntervalId = null;
                         hideOverlay();
+                        triggerAudioUnlock();
                     } else {
                         overlayCountdown.textContent = overlayRemainingSeconds;
                     }
@@ -763,45 +771,49 @@
 
                 overlayTimerId = setTimeout(() => {
                     hideOverlay();
+                    triggerAudioUnlock();
                 }, IMAGE_DISPLAY_DURATION);
             }
 
             function handleSkipClick() {
                 if (!overlayActive) return;
                 hideOverlay();
-                forcePlayMusic();
+                triggerAudioUnlock();
             }
 
             overlaySkipBtn.addEventListener('click', handleSkipClick);
-
             imageOverlay.addEventListener('click', function(e) {
                 if (!overlayActive) return;
                 if (e.target === imageOverlay) {
                     hideOverlay();
-                    forcePlayMusic();
+                    triggerAudioUnlock();
                 }
             });
 
             // ─────────────────────────────────────
-            // MUSIC SYSTEM (FIXED)
+            // MUSIC SYSTEM (CORE BUG RESOLVED)
             // ─────────────────────────────────────
             function loadTrack(index) {
-                if (index < 0 || index >= MUSIC_URLS.length) {
-                    index = 0;
-                }
+                if (index < 0 || index >= MUSIC_URLS.length) index = 0;
                 currentTrackIndex = index;
                 bgAudio.src = MUSIC_URLS[index];
                 bgAudio.load();
             }
 
-            function forcePlayMusic() {
+            function triggerAudioUnlock() {
+                if (!audioContextUnlocked) {
+                    audioContextUnlocked = true;
+                    // Hardware Context Wakeup call
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    if (AudioContext) {
+                        const ctx = new AudioContext();
+                        if (ctx.state === 'suspended') ctx.resume();
+                    }
+                }
                 if (musicPlaying) {
-                    bgAudio.play().then(() => {
-                        updateMusicToggleUI(true);
-                    }).catch(err => {
-                        console.log("Autoplay waiting for active interaction...");
-                        updateMusicToggleUI(false);
-                    });
+                    bgAudio.play()
+                        .then(() => updateMusicToggleUI(true))
+                        .catch(() => updateMusicToggleUI(false));
                 }
             }
 
@@ -815,6 +827,7 @@
 
             function toggleMusic(e) {
                 if (e) e.stopPropagation();
+                triggerAudioUnlock();
                 
                 if (musicPlaying) {
                     musicPlaying = false;
@@ -822,11 +835,9 @@
                     updateMusicToggleUI(false);
                 } else {
                     musicPlaying = true;
-                    bgAudio.play().then(() => {
-                        updateMusicToggleUI(true);
-                    }).catch(() => {
-                        updateMusicToggleUI(false);
-                    });
+                    bgAudio.play()
+                        .then(() => updateMusicToggleUI(true))
+                        .catch(() => updateMusicToggleUI(false));
                 }
                 try {
                     localStorage.setItem(STORAGE_KEY_MUSIC, musicPlaying ? '1' : '0');
@@ -837,13 +848,7 @@
 
             bgAudio.addEventListener('ended', function() {
                 if (!musicPlaying) return;
-                const wasLastTrack = (currentTrackIndex >= MUSIC_URLS.length - 1);
-                if (wasLastTrack) {
-                    setImageIndex(0);
-                    currentTrackIndex = 0;
-                } else {
-                    currentTrackIndex++;
-                }
+                currentTrackIndex = (currentTrackIndex + 1) % MUSIC_URLS.length;
                 loadTrack(currentTrackIndex);
                 bgAudio.play().then(() => updateMusicToggleUI(true)).catch(() => updateMusicToggleUI(false));
             });
@@ -853,8 +858,8 @@
                 currentTrackIndex = (currentTrackIndex + 1) % MUSIC_URLS.length;
                 setTimeout(() => {
                     loadTrack(currentTrackIndex);
-                    bgAudio.play().then(() => updateMusicToggleUI(true)).catch(() => updateMusicToggleUI(false));
-                }, 800);
+                    if (musicPlaying) bgAudio.play().then(() => updateMusicToggleUI(true)).catch(() => updateMusicToggleUI(false));
+                }, 500);
             });
 
             // ─────────────────────────────────────
@@ -864,53 +869,36 @@
                 initAtmosphere();
 
                 const imgIndex = getImageIndex();
-                const nextImgIndex = (imgIndex + 1) % IMAGE_URLS.length;
-                setImageIndex(nextImgIndex);
+                setImageIndex((imgIndex + 1) % IMAGE_URLS.length);
 
                 showOverlayImage(imgIndex);
                 startOverlayCountdown();
 
                 try {
                     const saved = localStorage.getItem(STORAGE_KEY_MUSIC);
-                    if (saved === '0') {
-                        musicPlaying = false;
-                    } else {
-                        musicPlaying = true;
-                    }
+                    musicPlaying = (saved !== '0');
                 } catch (e) {
                     musicPlaying = true;
                 }
 
                 loadTrack(0);
-                
-                // Attempt to play immediately (might be blocked by browser until first click)
-                if (musicPlaying) {
-                    bgAudio.play().then(() => {
-                        updateMusicToggleUI(true);
-                    }).catch(() => {
-                        updateMusicToggleUI(false);
-                    });
-                } else {
-                    updateMusicToggleUI(false);
-                }
+                updateMusicToggleUI(false); // Initial state clean before user interact
 
-                // Global event triggers to guarantee music plays on any interaction
-                function unlockAudio() {
-                    if (musicPlaying && bgAudio.paused) {
-                        bgAudio.play().then(() => {
-                            updateMusicToggleUI(true);
-                        });
-                    }
-                    document.removeEventListener('click', unlockAudio);
-                    document.removeEventListener('touchstart', unlockAudio);
+                // Universal hardware listener to break browser autoplay policies completely
+                function globalInteract() {
+                    triggerAudioUnlock();
+                    document.removeEventListener('click', globalInteract);
+                    document.removeEventListener('touchstart', globalInteract);
+                    document.removeEventListener('keydown', globalInteract);
                 }
-                document.addEventListener('click', unlockAudio);
-                document.addEventListener('touchstart', unlockAudio);
+                document.addEventListener('click', globalInteract);
+                document.addEventListener('touchstart', globalInteract);
+                document.addEventListener('keydown', globalInteract);
 
                 overlayImage.addEventListener('error', function() {
                     if (overlayActive) {
                         hideOverlay();
-                        forcePlayMusic();
+                        triggerAudioUnlock();
                     }
                 });
             }
