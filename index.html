@@ -101,51 +101,58 @@
             opacity: 0.7;
         }
 
-        /* ── Title Wrap (Crimson Noir Cinematic Style) ── */
+        /* ── Advanced Designed Animated Gold Logo ── */
         .title-wrap {
             margin-bottom: 1.8rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             position: relative;
-            padding: 10px 0;
+        }
+
+        .logo-header-line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .logo-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold) 50%, transparent);
+            opacity: 0.6;
+        }
+
+        .logo-wings {
+            width: 45px;
+            height: 30px;
+            fill: var(--gold);
+            filter: drop-shadow(0 0 8px rgba(201, 169, 110, 0.6));
+            animation: wingPulse 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes wingPulse {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            100% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 14px rgba(224, 195, 123, 0.8)); }
         }
 
         .title-en {
             font-family: var(--font-serif);
             font-size: clamp(1.8rem, 4vw, 2.6rem);
-            font-weight: 700;
-            letter-spacing: 0.18em;
-            color: #e0e0e0;
+            font-weight: 400;
+            letter-spacing: 0.15em;
+            color: var(--gold-bright);
             text-transform: uppercase;
+            text-shadow: 0 0 25px rgba(201, 169, 110, 0.4);
             line-height: 1.2;
-            position: relative;
-            display: inline-block;
-            /* افکت متنی پرونده‌های جنایی مخدوش */
-            text-shadow: 
-                2px 2px 0px rgba(150, 20, 20, 0.6),
-                -1px -1px 0px rgba(200, 170, 110, 0.3),
-                0 0 30px rgba(180, 40, 40, 0.4);
-            background: linear-gradient(180deg, #ffffff 0%, #b5b5b5 100%);
+            background: linear-gradient(135deg, #ffffff 0%, var(--gold-bright) 50%, var(--gold-dim) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
-        /* خطوط بالا و پایین جنایی (نوار سبک پرونده مکتوم) */
-        .title-wrap::before, .title-wrap::after {
-            content: '';
-            position: absolute;
-            left: 10%;
-            width: 80%;
-            height: 2px;
-            background: repeating-linear-gradient(
-                90deg,
-                transparent,
-                transparent 4px,
-                var(--red-stamp) 4px,
-                var(--red-stamp) 8px
-            );
-            opacity: 0.6;
-        }
-        .title-wrap::before { top: 0; }
-        .title-wrap::after { bottom: 0; }
 
         /* ── Case Meta ── */
         .case-meta {
@@ -523,7 +530,7 @@
     </button>
 
     <div class="image-overlay" id="imageOverlay">
-        <img id="overlayImage" src="" alt="" />
+        <img id="overlayImage" src="" />
         <div class="overlay-skip-wrap">
             <span class="overlay-countdown" id="overlayCountdown">10</span>
             <button class="overlay-skip-btn" id="overlaySkipBtn">SKIP</button>
@@ -537,6 +544,14 @@
         <div class="case-number">F.P.D — #11</div>
 
         <div class="title-wrap">
+            <div class="logo-header-line">
+                <div class="logo-line"></div>
+                <svg class="logo-wings" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M32 24C26 12 10 10 2 18C0 20 2 26 8 28C14 30 24 34 32 46C40 34 50 30 56 28C62 26 64 20 62 18C54 10 38 12 32 24Z"/>
+                    <path d="M32 28C28 18 16 16 10 22C12 26 22 28 32 38C42 28 52 26 54 22C48 16 36 18 32 28Z" opacity="0.7"/>
+                </svg>
+                <div class="logo-line"></div>
+            </div>
             <div class="title-en">FALL OF ANGELS</div>
         </div>
 
@@ -616,13 +631,11 @@
             // STATE
             // ─────────────────────────────────────
             let currentTrackIndex = 0;
-            let musicPlaying = true; // intent to play
-            let musicActuallyPlaying = false;
+            let musicPlaying = true; // User preference
             let overlayTimerId = null;
             let countdownIntervalId = null;
             let overlayRemainingSeconds = 10;
             let overlayActive = true;
-            let userInteractedForAudio = false;
 
             // ─────────────────────────────────────
             // ATMOSPHERE CANVAS
@@ -756,7 +769,7 @@
             function handleSkipClick() {
                 if (!overlayActive) return;
                 hideOverlay();
-                attemptMusicPlay();
+                forcePlayMusic();
             }
 
             overlaySkipBtn.addEventListener('click', handleSkipClick);
@@ -765,12 +778,12 @@
                 if (!overlayActive) return;
                 if (e.target === imageOverlay) {
                     hideOverlay();
-                    attemptMusicPlay();
+                    forcePlayMusic();
                 }
             });
 
             // ─────────────────────────────────────
-            // MUSIC SYSTEM (FIXED & IMPROVED)
+            // MUSIC SYSTEM (FIXED)
             // ─────────────────────────────────────
             function loadTrack(index) {
                 if (index < 0 || index >= MUSIC_URLS.length) {
@@ -781,48 +794,19 @@
                 bgAudio.load();
             }
 
-            function playCurrentTrack() {
-                if (!musicPlaying) return;
-                
-                const playPromise = bgAudio.play();
-                if (playPromise !== undefined) {
-                    playPromise
-                        .then(() => {
-                            musicActuallyPlaying = true;
-                            updateMusicToggleUI();
-                        })
-                        .catch(() => {
-                            musicActuallyPlaying = false;
-                            updateMusicToggleUI();
-                        });
-                }
-            }
-
-            function attemptMusicPlay() {
-                userInteractedForAudio = true;
+            function forcePlayMusic() {
                 if (musicPlaying) {
-                    if (!bgAudio.src || bgAudio.src === window.location.href) {
-                        loadTrack(currentTrackIndex);
-                    }
-                    playCurrentTrack();
+                    bgAudio.play().then(() => {
+                        updateMusicToggleUI(true);
+                    }).catch(err => {
+                        console.log("Autoplay waiting for active interaction...");
+                        updateMusicToggleUI(false);
+                    });
                 }
             }
 
-            function pauseMusic() {
-                bgAudio.pause();
-                musicActuallyPlaying = false;
-                updateMusicToggleUI();
-            }
-
-            function resumeMusic() {
-                if (!bgAudio.src || bgAudio.src === window.location.href) {
-                    loadTrack(currentTrackIndex);
-                }
-                playCurrentTrack();
-            }
-
-            function updateMusicToggleUI() {
-                if (musicPlaying && musicActuallyPlaying) {
+            function updateMusicToggleUI(isPlaying) {
+                if (musicPlaying && isPlaying) {
                     musicToggle.classList.remove('muted');
                 } else {
                     musicToggle.classList.add('muted');
@@ -830,20 +814,23 @@
             }
 
             function toggleMusic(e) {
-                if(e) e.stopPropagation();
-                userInteractedForAudio = true;
+                if (e) e.stopPropagation();
                 
-                if (musicActuallyPlaying) {
+                if (musicPlaying) {
                     musicPlaying = false;
-                    pauseMusic();
+                    bgAudio.pause();
+                    updateMusicToggleUI(false);
                 } else {
                     musicPlaying = true;
-                    resumeMusic();
+                    bgAudio.play().then(() => {
+                        updateMusicToggleUI(true);
+                    }).catch(() => {
+                        updateMusicToggleUI(false);
+                    });
                 }
-                
                 try {
                     localStorage.setItem(STORAGE_KEY_MUSIC, musicPlaying ? '1' : '0');
-                } catch (err) { /* ignore */ }
+                } catch (e) {}
             }
 
             musicToggle.addEventListener('click', toggleMusic);
@@ -858,21 +845,15 @@
                     currentTrackIndex++;
                 }
                 loadTrack(currentTrackIndex);
-                playCurrentTrack();
+                bgAudio.play().then(() => updateMusicToggleUI(true)).catch(() => updateMusicToggleUI(false));
             });
 
             bgAudio.addEventListener('error', function() {
                 if (!musicPlaying) return;
-                const wasLastTrack = (currentTrackIndex >= MUSIC_URLS.length - 1);
-                if (wasLastTrack) {
-                    setImageIndex(0);
-                    currentTrackIndex = 0;
-                } else {
-                    currentTrackIndex++;
-                }
+                currentTrackIndex = (currentTrackIndex + 1) % MUSIC_URLS.length;
                 setTimeout(() => {
                     loadTrack(currentTrackIndex);
-                    playCurrentTrack();
+                    bgAudio.play().then(() => updateMusicToggleUI(true)).catch(() => updateMusicToggleUI(false));
                 }, 800);
             });
 
@@ -902,30 +883,34 @@
 
                 loadTrack(0);
                 
-                // پخش خودکار در صورت اجازه مرورگر
+                // Attempt to play immediately (might be blocked by browser until first click)
                 if (musicPlaying) {
-                    playCurrentTrack();
+                    bgAudio.play().then(() => {
+                        updateMusicToggleUI(true);
+                    }).catch(() => {
+                        updateMusicToggleUI(false);
+                    });
                 } else {
-                    updateMusicToggleUI();
+                    updateMusicToggleUI(false);
                 }
 
-                // باز کردن قفل مدیا با اولین کلیک کاربر در هر کجای صفحه
-                function onUserInteraction() {
-                    if (musicPlaying && !musicActuallyPlaying) {
-                        attemptMusicPlay();
+                // Global event triggers to guarantee music plays on any interaction
+                function unlockAudio() {
+                    if (musicPlaying && bgAudio.paused) {
+                        bgAudio.play().then(() => {
+                            updateMusicToggleUI(true);
+                        });
                     }
-                    document.removeEventListener('click', onUserInteraction);
-                    document.removeEventListener('touchstart', onUserInteraction);
-                    document.removeEventListener('keydown', onUserInteraction);
+                    document.removeEventListener('click', unlockAudio);
+                    document.removeEventListener('touchstart', unlockAudio);
                 }
-                document.addEventListener('click', onUserInteraction);
-                document.addEventListener('touchstart', onUserInteraction);
-                document.addEventListener('keydown', onUserInteraction);
+                document.addEventListener('click', unlockAudio);
+                document.addEventListener('touchstart', unlockAudio);
 
                 overlayImage.addEventListener('error', function() {
                     if (overlayActive) {
                         hideOverlay();
-                        attemptMusicPlay();
+                        forcePlayMusic();
                     }
                 });
             }
