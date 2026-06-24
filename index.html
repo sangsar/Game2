@@ -194,6 +194,14 @@
       50%      { text-shadow: 0 0 30px rgba(240,208,96,0.7), 0 0 70px rgba(201,162,39,0.35), 0 0 100px rgba(201,162,39,0.1); }
     }
 
+    .title-fa {
+      font-size: 1rem;
+      letter-spacing: 4px;
+      color: var(--mid);
+      direction: rtl;
+      margin-top: 8px;
+    }
+
     .title-divider {
       color: var(--gold);
       margin: 10px 0;
@@ -377,7 +385,6 @@
   <div id="intro">
     <img id="intro-img" src="" alt="" />
     <div id="intro-progress"></div>
-    <div id="intro-counter">1 / 8</div>
     <button id="intro-skip">SKIP ▶</button>
   </div>
 
@@ -389,10 +396,10 @@
       <div class="corner corner-bl"></div>
       <div class="corner corner-br"></div>
 
-      <!-- Logo English only -->
+      <!-- Logo -->
       <div class="logo-wrap">
         <div class="title-en">FALL OF ANGELS</div>
-        <div class="title-divider">◆ ◆ ◆</div>
+        <div class="title-fa">سقوط فرشته‌ها</div>
       </div>
 
       <div class="separator"></div>
@@ -431,7 +438,6 @@
   <audio id="bg-music"></audio>
 
   <script>
-    // ── Images ──
     const images = [
       'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782303150271.png',
       'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782303780335.png',
@@ -443,60 +449,22 @@
       'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782304529088.png',
     ];
 
-    // Shuffle
-    function shuffle(arr) {
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr;
-    }
+    const randomImg = images[Math.floor(Math.random() * images.length)];
+    const imgEl = document.getElementById('intro-img');
+    const introEl = document.getElementById('intro');
+    const progressEl = document.getElementById('intro-progress');
+    const skipBtn = document.getElementById('intro-skip');
 
-    const shuffled = shuffle([...images]);
-    const TOTAL_DURATION = 8000; // 8 seconds total
-    const PER_IMAGE = TOTAL_DURATION / shuffled.length; // ~1000ms each
+    imgEl.src = randomImg;
+    imgEl.onload = () => { imgEl.style.opacity = '1'; };
+    setTimeout(() => { imgEl.style.opacity = '1'; }, 100);
 
-    const introEl   = document.getElementById('intro');
-    const imgEl     = document.getElementById('intro-img');
-    const counter   = document.getElementById('intro-counter');
-    const progressEl= document.getElementById('intro-progress');
-    const skipBtn   = document.getElementById('intro-skip');
+    progressEl.style.transition = 'width 8000ms linear';
+    setTimeout(() => { progressEl.style.width = '100%'; }, 50);
 
-    let current = 0;
-    let slideTimer, endTimer;
-
-    function showSlide(idx) {
-      imgEl.style.opacity = '0';
-      counter.textContent = `${idx + 1} / ${shuffled.length}`;
-      imgEl.src = shuffled[idx];
-      imgEl.onload = () => { imgEl.style.opacity = '1'; };
-      // fallback if already cached
-      setTimeout(() => { imgEl.style.opacity = '1'; }, 100);
-    }
-
-    function nextSlide() {
-      current++;
-      if (current < shuffled.length) {
-        showSlide(current);
-      }
-    }
-
-    function startIntro() {
-      showSlide(0);
-
-      // Advance slides
-      slideTimer = setInterval(nextSlide, PER_IMAGE);
-
-      // Progress bar
-      progressEl.style.transition = `width ${TOTAL_DURATION}ms linear`;
-      setTimeout(() => { progressEl.style.width = '100%'; }, 50);
-
-      // End intro
-      endTimer = setTimeout(endIntro, TOTAL_DURATION);
-    }
+    let endTimer = setTimeout(endIntro, 8000);
 
     function endIntro() {
-      clearInterval(slideTimer);
       clearTimeout(endTimer);
       introEl.style.opacity = '0';
       introEl.style.transition = 'opacity 0.5s ease';
@@ -509,7 +477,6 @@
     }
 
     skipBtn.addEventListener('click', endIntro);
-    startIntro();
 
     // ── Music ──
     const playlist = [
