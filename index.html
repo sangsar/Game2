@@ -1,655 +1,717 @@
 <!DOCTYPE html>
 <html lang="fa">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fall of Angels | سقوط فرشته‌ها</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg:      #050400;
-      --paper:   #0a0900;
-      --border:  #2a2000;
-      --dim:     #5a4800;
-      --mid:     #a07820;
-      --text:    #e8d890;
-      --accent:  #c9a227;
-      --accent2: #f0d060;
-      --danger:  #8a2a2a;
-      --glow:    rgba(201,162,39,0.12);
-      --gold:    #c9a227;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>سقوط فرشته‌ها | Fall of Angels</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@900&family=Cinzel:wght@400;600;700&family=Share+Tech+Mono&family=Vazirmatn:wght@300;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050400;
+            --paper: #0a0900;
+            --gold: #c9a227;
+            --gold2: #f0d060;
+            --text: #e8d890;
+            --mid: #a07820;
+            --dim: #3a3000;
+        }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Share Tech Mono', monospace;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Share Tech Mono', monospace;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
 
-    /* ── INTRO SLIDESHOW ── */
-    #intro {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: #000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+        /* ── SLIDESHOW ── */
+        #intro {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #intro-img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        #intro-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            width: 0%;
+            background: var(--gold);
+            box-shadow: 0 0 8px var(--gold);
+        }
+        #intro-skip {
+            position: absolute;
+            bottom: 24px;
+            right: 24px;
+            background: transparent;
+            border: 1px solid rgba(201, 162, 39, 0.4);
+            color: rgba(201, 162, 39, 0.7);
+            padding: 7px 18px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 3px;
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+        #intro-skip:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+            box-shadow: 0 0 12px rgba(201, 162, 39, 0.2);
+        }
 
-    #intro-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0;
-      transition: opacity 0.6s ease;
-      position: absolute;
-      inset: 0;
-    }
+        /* ── BELL (always on top - moved to LEFT) ── */
+        #bell-wrap {
+            position: fixed;
+            top: 18px;
+            left: 22px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        #bell-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            outline: none;
+        }
+        #bell-btn svg {
+            width: 34px;
+            height: 34px;
+            filter: drop-shadow(0 0 6px rgba(201, 162, 39, 0.5));
+            transition: filter 0.2s, transform 0.2s;
+        }
+        #bell-btn:hover svg {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 14px rgba(240, 208, 96, 0.8));
+        }
+        #bell-btn.off svg {
+            opacity: 0.4;
+            filter: none;
+        }
+        @keyframes swing {
+            0%,
+            100% {
+                transform: rotate(0)
+            }
+            20% {
+                transform: rotate(12deg)
+            }
+            50% {
+                transform: rotate(-10deg)
+            }
+            75% {
+                transform: rotate(6deg)
+            }
+        }
+        #bell-btn.on svg {
+            animation: swing 3s ease-in-out infinite;
+            transform-origin: top center;
+        }
+        #bell-lbl {
+            font-size: 0.42rem;
+            letter-spacing: 2px;
+            color: rgba(201, 162, 39, 0.4);
+        }
 
-    #intro-progress {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      height: 3px;
-      background: var(--gold);
-      width: 0%;
-      transition: width linear;
-      box-shadow: 0 0 8px var(--gold);
-    }
+        /* ── MAIN PAGE ── */
+        #main {
+            display: none;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            position: relative;
+        }
+        #main.show {
+            display: flex;
+        }
+        #main::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 255, 255, 0.007) 2px, rgba(255, 255, 255, 0.007) 4px);
+        }
+        #main::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background: radial-gradient(ellipse at center, rgba(201, 162, 39, 0.04) 0%, transparent 65%);
+        }
 
-    #intro-skip {
-      position: absolute;
-      bottom: 24px;
-      right: 24px;
-      background: transparent;
-      border: 1px solid rgba(201,162,39,0.4);
-      color: rgba(201,162,39,0.7);
-      padding: 7px 18px;
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 0.6rem;
-      letter-spacing: 3px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    #intro-skip:hover {
-      border-color: var(--gold);
-      color: var(--gold);
-      box-shadow: 0 0 12px rgba(201,162,39,0.2);
-    }
+        .box {
+            max-width: 560px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid #2a2000;
+            padding: 48px 36px 40px;
+            position: relative;
+            background: var(--paper);
+            box-shadow: 0 0 80px rgba(0, 0, 0, 0.95), 0 0 40px rgba(201, 162, 39, 0.05), inset 0 0 60px rgba(0, 0, 0, 0.6);
+            z-index: 2;
+        }
+        .box::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: 8px;
+            bottom: 8px;
+            border: 1px solid #1a1400;
+            pointer-events: none;
+        }
+        .c {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border-style: solid;
+            border-color: var(--gold);
+            opacity: 0.5;
+        }
+        .tl {
+            top: 4px;
+            left: 4px;
+            border-width: 1px 0 0 1px
+        }
+        .tr {
+            top: 4px;
+            right: 4px;
+            border-width: 1px 1px 0 0
+        }
+        .bl {
+            bottom: 4px;
+            left: 4px;
+            border-width: 0 0 1px 1px
+        }
+        .br {
+            bottom: 4px;
+            right: 4px;
+            border-width: 0 1px 1px 0
+        }
 
-    /* ── MUSIC BELL (top right, always fixed) ── */
-    #music-bell-wrap {
-      position: fixed;
-      top: 18px;
-      right: 22px;
-      z-index: 10000;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-    }
+        /* ── LOGO AREA ── */
+        .logo-area {
+            margin: 0 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+        .logo-svg {
+            display: block;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 380px;
+            height: auto;
+            filter: drop-shadow(0 0 16px rgba(201, 162, 39, 0.35));
+        }
 
-    #music-bell-btn {
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      padding: 0;
-      outline: none;
-      position: relative;
-    }
+        /* ── SEPARATOR ── */
+        .sep {
+            border: none;
+            border-top: 1px solid #1a1400;
+            margin: 22px 0 28px;
+            position: relative;
+        }
+        .sep::before {
+            content: '◆';
+            position: absolute;
+            top: -7px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--paper);
+            padding: 0 8px;
+            font-size: 0.45rem;
+            color: var(--gold);
+        }
 
-    #music-bell-btn svg {
-      width: 36px;
-      height: 36px;
-      filter: drop-shadow(0 0 6px rgba(201,162,39,0.5));
-      transition: filter 0.2s, transform 0.2s;
-    }
+        /* ── BUTTONS ── */
+        .btns {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 0;
+            margin-bottom: 28px;
+            position: relative;
+            z-index: 1;
+        }
+        .btn {
+            background: transparent;
+            border: 1px solid #3a3000;
+            color: var(--text);
+            padding: 14px 0;
+            width: 160px;
+            min-width: 160px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.9rem;
+            cursor: pointer;
+            letter-spacing: 4px;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--gold);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+        .btn:hover {
+            border-color: var(--gold);
+            color: var(--gold2);
+            box-shadow: 0 0 20px rgba(201, 162, 39, 0.1), inset 0 0 20px rgba(201, 162, 39, 0.04);
+        }
+        .btn:hover::after {
+            transform: scaleX(1);
+        }
 
-    #music-bell-btn:hover svg {
-      filter: drop-shadow(0 0 14px rgba(240,208,96,0.8));
-      transform: scale(1.1);
-    }
+        .footer {
+            font-size: 0.48rem;
+            letter-spacing: 2px;
+            color: #1a1400;
+            line-height: 2.2;
+            position: relative;
+            z-index: 1;
+        }
 
-    #music-bell-btn.muted svg {
-      filter: drop-shadow(0 0 3px rgba(201,162,39,0.2));
-      opacity: 0.45;
-    }
-
-    @keyframes bell-swing {
-      0%,100% { transform: rotate(0deg); }
-      15%      { transform: rotate(12deg); }
-      45%      { transform: rotate(-10deg); }
-      70%      { transform: rotate(6deg); }
-      85%      { transform: rotate(-4deg); }
-    }
-
-    #music-bell-btn.playing svg {
-      animation: bell-swing 3.5s ease-in-out infinite;
-      transform-origin: top center;
-    }
-
-    #bell-label {
-      font-size: 0.45rem;
-      letter-spacing: 2px;
-      color: rgba(201,162,39,0.45);
-      font-family: 'Share Tech Mono', monospace;
-    }
-
-    /* ── MAIN PAGE ── */
-    #main-page {
-      display: none;
-      min-height: 100vh;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 20px;
-      position: relative;
-    }
-    #main-page.visible {
-      display: flex;
-    }
-
-    #main-page::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(255,255,255,0.008) 2px,
-        rgba(255,255,255,0.008) 4px
-      );
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    #main-page::after {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(ellipse at center, rgba(201,162,39,0.04) 0%, transparent 65%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .lang-container {
-      max-width: 560px;
-      width: 100%;
-      text-align: center;
-      border: 1px solid #2a2000;
-      padding: 52px 40px;
-      position: relative;
-      background: var(--paper);
-      box-shadow:
-        0 0 80px rgba(0,0,0,0.95),
-        0 0 40px rgba(201,162,39,0.06),
-        inset 0 0 60px rgba(0,0,0,0.6);
-      z-index: 2;
-    }
-
-    .lang-container::before {
-      content: '';
-      position: absolute;
-      top: 8px; left: 8px; right: 8px; bottom: 8px;
-      border: 1px solid #1a1400;
-      pointer-events: none;
-    }
-
-    .corner {
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      border-color: var(--gold);
-      border-style: solid;
-      opacity: 0.5;
-    }
-    .corner-tl { top: 4px; left: 4px; border-width: 1px 0 0 1px; }
-    .corner-tr { top: 4px; right: 4px; border-width: 1px 1px 0 0; }
-    .corner-bl { bottom: 4px; left: 4px; border-width: 0 0 1px 1px; }
-    .corner-br { bottom: 4px; right: 4px; border-width: 0 1px 1px 0; }
-
-    /* ── LOGO ── */
-    .logo-wrap {
-      margin: 10px 0 28px;
-      position: relative;
-      z-index: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .logo-svg {
-      width: 100%;
-      max-width: 420px;
-      height: auto;
-      overflow: visible;
-    }
-
-    /* ── TAGLINE — more readable font ── */
-    .separator {
-      border: none;
-      border-top: 1px solid #1a1400;
-      margin: 22px 0;
-      position: relative;
-    }
-    .separator::before {
-      content: '◆';
-      position: absolute;
-      top: -8px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--paper);
-      padding: 0 8px;
-      font-size: 0.5rem;
-      color: var(--gold);
-    }
-
-    .tagline {
-      font-family: 'Cinzel', serif;
-      font-size: 0.78rem;
-      line-height: 2;
-      color: var(--mid);
-      position: relative;
-      z-index: 1;
-      letter-spacing: 0.5px;
-    }
-
-    .tagline .en {
-      font-size: 0.76rem;
-      letter-spacing: 1.5px;
-      display: block;
-      margin-bottom: 6px;
-      color: rgba(201,162,39,0.75);
-      font-weight: 400;
-    }
-
-    .tagline .fa {
-      direction: rtl;
-      display: block;
-      font-size: 0.88rem;
-      color: rgba(201,162,39,0.55);
-      font-family: 'Share Tech Mono', monospace;
-      letter-spacing: 0;
-    }
-
-    /* ── BUTTONS — equal size ── */
-    .lang-label {
-      font-size: 0.55rem;
-      letter-spacing: 4px;
-      color: #3a3000;
-      margin-bottom: 18px;
-      position: relative; z-index: 1;
-    }
-
-    .buttons {
-      display: flex;
-      gap: 16px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-bottom: 32px;
-      position: relative; z-index: 1;
-    }
-
-    .btn {
-      background: transparent;
-      border: 1px solid #3a3000;
-      color: var(--text);
-      padding: 14px 0;
-      width: 160px;        /* both fixed same width */
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 0.95rem;
-      cursor: pointer;
-      letter-spacing: 4px;
-      transition: all 0.3s;
-      text-decoration: none;
-      display: inline-block;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .btn::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, transparent 40%, rgba(201,162,39,0.06) 100%);
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-
-    .btn::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 1px;
-      background: var(--gold);
-      transform: scaleX(0);
-      transition: transform 0.3s;
-    }
-
-    .btn:hover {
-      border-color: var(--gold);
-      color: var(--accent2);
-      box-shadow: 0 0 20px rgba(201,162,39,0.1), inset 0 0 20px rgba(201,162,39,0.04);
-    }
-    .btn:hover::before { opacity: 1; }
-    .btn:hover::after  { transform: scaleX(1); }
-
-    .footer-line {
-      font-size: 0.5rem;
-      letter-spacing: 2px;
-      color: #1a1400;
-      line-height: 2.2;
-      position: relative; z-index: 1;
-    }
-  </style>
+        /* ── RESPONSIVE ── */
+        @media (max-width: 480px) {
+            .box {
+                padding: 32px 18px 30px;
+            }
+            .btns {
+                flex-direction: column;
+                align-items: center;
+                gap: 12px;
+            }
+            .btn {
+                width: 180px;
+                min-width: 180px;
+            }
+            .logo-svg {
+                max-width: 280px;
+            }
+            #bell-wrap {
+                top: 10px;
+                left: 12px;
+            }
+            #bell-btn svg {
+                width: 28px;
+                height: 28px;
+            }
+            #intro-skip {
+                bottom: 16px;
+                right: 12px;
+                padding: 5px 12px;
+                font-size: 0.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
 
-  <!-- ══ INTRO SLIDESHOW ══ -->
-  <div id="intro">
-    <img id="intro-img" src="" alt="" />
-    <div id="intro-progress"></div>
-    <button id="intro-skip">SKIP ▶</button>
-  </div>
-
-  <!-- ══ MUSIC BELL — always visible, top right ══ -->
-  <div id="music-bell-wrap">
-    <button id="music-bell-btn" class="muted" title="Toggle Music">
-      <svg viewBox="0 0 64 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <line x1="32" y1="2" x2="32" y2="10" stroke="#c9a227" stroke-width="2.5" stroke-linecap="round"/>
-        <path d="M32 10 C18 10 12 22 12 36 L12 50 Q12 54 16 54 L48 54 Q52 54 52 50 L52 36 C52 22 46 10 32 10 Z"
-              fill="url(#bellGrad)" stroke="#c9a227" stroke-width="1.5"/>
-        <path d="M22 18 C20 22 18 28 18 34" stroke="rgba(255,235,120,0.35)" stroke-width="2.5" stroke-linecap="round"/>
-        <rect x="11" y="50" width="42" height="6" rx="3"
-              fill="url(#rimGrad)" stroke="#c9a227" stroke-width="1"/>
-        <circle cx="32" cy="61" r="4.5" fill="url(#clapperGrad)" stroke="#c9a227" stroke-width="1"/>
-        <g id="mute-x" opacity="0">
-          <line x1="44" y1="4" x2="58" y2="18" stroke="#8a2a2a" stroke-width="2.5" stroke-linecap="round"/>
-          <line x1="58" y1="4" x2="44" y2="18" stroke="#8a2a2a" stroke-width="2.5" stroke-linecap="round"/>
-        </g>
-        <line x1="20" y1="42" x2="44" y2="42" stroke="rgba(201,162,39,0.3)" stroke-width="1"/>
-        <line x1="17" y1="46" x2="47" y2="46" stroke="rgba(201,162,39,0.2)" stroke-width="0.8"/>
-        <defs>
-          <linearGradient id="bellGrad" x1="12" y1="10" x2="52" y2="54" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stop-color="#f0d060"/>
-            <stop offset="40%" stop-color="#c9a227"/>
-            <stop offset="100%" stop-color="#7a5c00"/>
-          </linearGradient>
-          <linearGradient id="rimGrad" x1="11" y1="50" x2="53" y2="56" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stop-color="#e8c040"/>
-            <stop offset="50%" stop-color="#c9a227"/>
-            <stop offset="100%" stop-color="#6a4e00"/>
-          </linearGradient>
-          <radialGradient id="clapperGrad" cx="50%" cy="40%" r="60%">
-            <stop offset="0%" stop-color="#e8c040"/>
-            <stop offset="100%" stop-color="#7a5c00"/>
-          </radialGradient>
-        </defs>
-      </svg>
-    </button>
-    <span id="bell-label">MUSIC</span>
-  </div>
-
-  <!-- ══ MAIN MENU PAGE ══ -->
-  <div id="main-page">
-    <div class="lang-container">
-      <div class="corner corner-tl"></div>
-      <div class="corner corner-tr"></div>
-      <div class="corner corner-bl"></div>
-      <div class="corner corner-br"></div>
-
-      <!-- Logo SVG — Cinzel Decorative font, text centered & lower -->
-      <div class="logo-wrap">
-        <svg class="logo-svg" viewBox="0 0 420 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="textGold" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%"   stop-color="#fff8c0"/>
-              <stop offset="18%"  stop-color="#f0d060"/>
-              <stop offset="50%"  stop-color="#c9a227"/>
-              <stop offset="82%"  stop-color="#a07820"/>
-              <stop offset="100%" stop-color="#7a5c00"/>
-            </linearGradient>
-            <linearGradient id="wingGold" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%"   stop-color="#f0d060" stop-opacity="0.9"/>
-              <stop offset="100%" stop-color="#7a5c00" stop-opacity="0.4"/>
-            </linearGradient>
-            <linearGradient id="shimmer" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%"   stop-color="#c9a227" stop-opacity="0"/>
-              <stop offset="50%"  stop-color="#fff8c0" stop-opacity="0.6"/>
-              <stop offset="100%" stop-color="#c9a227" stop-opacity="0"/>
-              <animateTransform attributeName="gradientTransform" type="translate"
-                from="-1 0" to="2 0" dur="3s" repeatCount="indefinite"/>
-            </linearGradient>
-          </defs>
-
-          <!-- Left wing -->
-          <g opacity="0.7">
-            <path d="M 60 62 C 40 47, 10 35, 2 17" stroke="url(#wingGold)" stroke-width="1.4" fill="none" stroke-linecap="round"/>
-            <path d="M 60 62 C 42 52, 16 45, 8 27" stroke="url(#wingGold)" stroke-width="1.1" fill="none" stroke-linecap="round"/>
-            <path d="M 60 62 C 44 57, 22 55, 14 37" stroke="url(#wingGold)" stroke-width="0.9" fill="none" stroke-linecap="round"/>
-            <path d="M 60 62 C 46 61, 28 65, 20 49" stroke="url(#wingGold)" stroke-width="0.7" fill="none" stroke-linecap="round"/>
-            <path d="M 60 62 C 48 65, 34 75, 24 63" stroke="url(#wingGold)" stroke-width="0.6" fill="none" stroke-linecap="round" opacity="0.6"/>
-            <circle cx="2"  cy="17" r="1.5" fill="#f0d060" opacity="0.7"/>
-            <circle cx="8"  cy="27" r="1.2" fill="#f0d060" opacity="0.5"/>
-            <circle cx="14" cy="37" r="1"   fill="#f0d060" opacity="0.4"/>
-          </g>
-
-          <!-- Right wing (mirrored) -->
-          <g opacity="0.7" transform="translate(420,0) scale(-1,1)">
-            <path d="M 60 62 C 40 47, 10 35, 2 17" stroke="url(#wingGold)" stroke-width="1.4" fill="none" stroke-linecap="round"/>
-            <path d="M 60 62 C 42 52, 16 45, 8 27" stroke="url(#wingGold)" stroke-width="1.1" fill="none" stroke-linecap="round"/>
-            <path d="M 60 62 C 44 57, 22 55, 14 37" stroke="url(#wingGold)" stroke-width="0.9" fill="none" stroke-linecap="round"/>
-            <path d="M 60 62 C 46 61, 28 65, 20 49" stroke="url(#wingGold)" stroke-width="0.7" fill="none" stroke-linecap="round"/>
-            <path d="M 60 62 C 48 65, 34 75, 24 63" stroke="url(#wingGold)" stroke-width="0.6" fill="none" stroke-linecap="round" opacity="0.6"/>
-            <circle cx="2"  cy="17" r="1.5" fill="#f0d060" opacity="0.7"/>
-            <circle cx="8"  cy="27" r="1.2" fill="#f0d060" opacity="0.5"/>
-            <circle cx="14" cy="37" r="1"   fill="#f0d060" opacity="0.4"/>
-          </g>
-
-          <!-- Decorative lines -->
-          <line x1="65" y1="24" x2="178" y2="24" stroke="#c9a227" stroke-width="0.5" opacity="0.5"/>
-          <line x1="242" y1="24" x2="355" y2="24" stroke="#c9a227" stroke-width="0.5" opacity="0.5"/>
-          <circle cx="210" cy="24" r="2.5" fill="none" stroke="#c9a227" stroke-width="0.7" opacity="0.6"/>
-          <circle cx="210" cy="24" r="1"   fill="#c9a227" opacity="0.7"/>
-
-          <!-- MAIN TEXT using Cinzel Decorative — centered, moved down -->
-          <foreignObject x="55" y="30" width="310" height="72">
-            <div xmlns="http://www.w3.org/1999/xhtml" style="
-              font-family: 'Cinzel Decorative', serif;
-              font-weight: 900;
-              font-size: 30px;
-              letter-spacing: 2px;
-              text-align: center;
-              line-height: 1.25;
-              background: linear-gradient(180deg, #fff8c0 0%, #f0d060 18%, #c9a227 50%, #a07820 82%, #7a5c00 100%);
-              -webkit-background-clip: text;
-              -webkit-text-fill-color: transparent;
-              background-clip: text;
-              filter: drop-shadow(0 0 10px rgba(201,162,39,0.7));
-              white-space: nowrap;
-              overflow: visible;
-              display: flex;
-              flex-direction: column;
-              align-items: center;
-              justify-content: center;
-              height: 100%;
-            ">
-              <div>FALL OF</div>
-              <div style="font-size:26px; letter-spacing:6px;">ANGELS</div>
-            </div>
-          </foreignObject>
-
-          <!-- shimmer overlay -->
-          <rect x="55" y="30" width="310" height="72" fill="url(#shimmer)" opacity="0.25"/>
-
-          <!-- Bottom rule -->
-          <line x1="80" y1="108" x2="340" y2="108" stroke="#c9a227" stroke-width="0.6" opacity="0.4"/>
-          <line x1="105" y1="112" x2="315" y2="112" stroke="#c9a227" stroke-width="0.3" opacity="0.25"/>
-          <path d="M210 105 L213 108 L210 111 L207 108 Z" fill="#c9a227" opacity="0.6"/>
-        </svg>
-      </div>
-
-      <div class="separator"></div>
-
-      <!-- Tagline — Cinzel for readability -->
-      <div class="tagline">
-        <span class="en">Angels will fall, just as humans did.</span>
-        <span class="fa">فرشته‌ها سقوط خواهند کرد، همان‌گونه که انسان‌ها کردند.</span>
-      </div>
-
-      <div class="separator"></div>
-
-      <div class="lang-label">SELECT LANGUAGE — انتخاب زبان</div>
-
-      <div class="buttons">
-        <a class="btn" href="game-fa.html">فارسی</a>
-        <a class="btn" href="game-en.html">ENGLISH</a>
-      </div>
-
-      <div class="footer-line">
-        ████████████████████████████████<br>
-        EVIDENCE FILE — DO NOT DISTRIBUTE — CASE OPEN
-      </div>
+    <!-- BELL always visible - positioned on LEFT side -->
+    <div id="bell-wrap">
+        <button id="bell-btn" class="off" title="Toggle Music">
+            <svg viewBox="0 0 64 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <line x1="32" y1="2" x2="32" y2="10" stroke="#c9a227" stroke-width="2.5" stroke-linecap="round" />
+                <path d="M32 10 C18 10 12 22 12 36 L12 50 Q12 54 16 54 L48 54 Q52 54 52 50 L52 36 C52 22 46 10 32 10Z"
+                fill="url(#bg)" stroke="#c9a227" stroke-width="1.5" />
+                <path d="M22 18 C20 22 18 28 18 34" stroke="rgba(255,235,120,0.3)" stroke-width="2.5" stroke-linecap="round" />
+                <rect x="11" y="50" width="42" height="6" rx="3" fill="url(#rim)" stroke="#c9a227" stroke-width="1" />
+                <circle cx="32" cy="61" r="4.5" fill="url(#clap)" stroke="#c9a227" stroke-width="1" />
+                <line x1="20" y1="42" x2="44" y2="42" stroke="rgba(201,162,39,0.3)" stroke-width="1" />
+                <defs>
+                    <linearGradient id="bg" x1="12" y1="10" x2="52" y2="54" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stop-color="#f0d060" /><stop offset="40%" stop-color="#c9a227" /><stop offset="100%" stop-color="#7a5c00" />
+                    </linearGradient>
+                    <linearGradient id="rim" x1="11" y1="50" x2="53" y2="56" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stop-color="#e8c040" /><stop offset="100%" stop-color="#6a4e00" />
+                    </linearGradient>
+                    <radialGradient id="clap" cx="50%" cy="40%" r="60%">
+                        <stop offset="0%" stop-color="#e8c040" /><stop offset="100%" stop-color="#7a5c00" />
+                    </radialGradient>
+                </defs>
+            </svg>
+        </button>
+        <span id="bell-lbl">MUSIC</span>
     </div>
-  </div>
 
-  <audio id="bg-music" loop></audio>
+    <!-- SLIDESHOW -->
+    <div id="intro">
+        <img id="intro-img" alt="" />
+        <div id="intro-bar"></div>
+        <button id="intro-skip">SKIP &#9654;</button>
+    </div>
 
-  <script>
-    const images = [
-      'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782303150271.png',
-      'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782303780335.png',
-      'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782303829426.png',
-      'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782303879821.png',
-      'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782303927143.png',
-      'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782304117198.png',
-      'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782304316279.png',
-      'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782304529088.png',
-    ];
+    <!-- MAIN PAGE -->
+    <div id="main">
+        <div class="box">
+            <div class="c tl"></div><div class="c tr"></div>
+            <div class="c bl"></div><div class="c br"></div>
 
-    const imgEl       = document.getElementById('intro-img');
-    const introEl     = document.getElementById('intro');
-    const progressEl  = document.getElementById('intro-progress');
-    const skipBtn     = document.getElementById('intro-skip');
-    const mainPage    = document.getElementById('main-page');
-    const bellWrap    = document.getElementById('music-bell-wrap');
-    const bellBtn     = document.getElementById('music-bell-btn');
-    const bellLabel   = document.getElementById('bell-label');
-    const muteX       = document.getElementById('mute-x');
-    const audio       = document.getElementById('bg-music');
+            <!-- LOGO: Luxury Gold/Black English Logo with Wings & Square Frame -->
+            <div class="logo-area">
+                <svg class="logo-svg" viewBox="0 0 400 115" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <!-- Gold gradient for wings -->
+                        <linearGradient id="wingGrad" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#f0d060" />
+                            <stop offset="35%" stop-color="#d4a830" />
+                            <stop offset="70%" stop-color="#a07820" />
+                            <stop offset="100%" stop-color="#5a3e00" />
+                        </linearGradient>
+                        <!-- Gold gradient for frame -->
+                        <linearGradient id="frameGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#f0d060" />
+                            <stop offset="50%" stop-color="#c9a227" />
+                            <stop offset="100%" stop-color="#7a5c00" />
+                        </linearGradient>
+                        <!-- Gold gradient for text -->
+                        <linearGradient id="textGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#fff8c0" />
+                            <stop offset="25%" stop-color="#f0d060" />
+                            <stop offset="55%" stop-color="#c9a227" />
+                            <stop offset="85%" stop-color="#a07820" />
+                            <stop offset="100%" stop-color="#6a4e00" />
+                        </linearGradient>
+                        <!-- Glow filter -->
+                        <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feGaussianBlur stdDeviation="1.8" result="blur" />
+                            <feMerge>
+                                <feMergeNode in="blur" />
+                                <feMergeNode in="SourceGraphic" />
+                            </feMerge>
+                        </filter>
+                        <!-- Subtle outer glow -->
+                        <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+                            <feGaussianBlur stdDeviation="3" result="blur" />
+                            <feMerge>
+                                <feMergeNode in="blur" />
+                                <feMergeNode in="SourceGraphic" />
+                            </feMerge>
+                        </filter>
+                    </defs>
 
-    // ── Music setup ──
-    // Replace with your actual music URL
-    const MUSIC_URL = 'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/music.mp3';
-    audio.src = MUSIC_URL;
-    audio.volume = 0.5;
+                    <!-- === HALO / ANGEL SYMBOL ABOVE === -->
+                    <g filter="url(#softGlow)" opacity="0.8">
+                        <ellipse cx="200" cy="14" rx="16" ry="4" stroke="#c9a227" stroke-width="0.8" fill="none" />
+                        <ellipse cx="200" cy="14" rx="16" ry="4" fill="url(#textGrad)" opacity="0.15" />
+                        <!-- Tiny diamond inside halo -->
+                        <path d="M200 6 L204 14 L200 22 L196 14 Z" fill="#f0d060" opacity="0.7" />
+                        <circle cx="200" cy="14" r="2.5" fill="#fff8c0" opacity="0.9" />
+                    </g>
 
-    let musicPlaying = false;
+                    <!-- === LEFT WING === -->
+                    <g filter="url(#glow)">
+                        <!-- Main wing sweep -->
+                        <path d="M108 32 C85 24, 50 18, 18 10 C35 22, 55 30, 75 42"
+                        stroke="url(#wingGrad)" stroke-width="2.2" fill="none" stroke-linecap="round" />
+                        <!-- Upper feathers -->
+                        <path d="M108 38 C80 32, 45 28, 10 22 C32 34, 58 40, 80 50"
+                        stroke="url(#wingGrad)" stroke-width="1.6" fill="none" stroke-linecap="round" />
+                        <!-- Mid feathers -->
+                        <path d="M108 46 C82 42, 50 40, 16 36 C40 48, 62 52, 82 58"
+                        stroke="url(#wingGrad)" stroke-width="1.2" fill="none" stroke-linecap="round" />
+                        <!-- Lower feathers -->
+                        <path d="M108 54 C84 52, 55 52, 22 50 C48 60, 68 62, 84 66"
+                        stroke="url(#wingGrad)" stroke-width="0.9" fill="none" stroke-linecap="round" opacity="0.8" />
+                        <!-- Decorative dots on wing tips -->
+                        <circle cx="18" cy="10" r="2" fill="#f0d060" opacity="0.9" />
+                        <circle cx="10" cy="22" r="1.6" fill="#f0d060" opacity="0.7" />
+                        <circle cx="16" cy="36" r="1.3" fill="#f0d060" opacity="0.5" />
+                        <circle cx="22" cy="50" r="1" fill="#f0d060" opacity="0.35" />
+                    </g>
 
-    function startMusic() {
-      audio.play().then(() => {
-        musicPlaying = true;
-        bellBtn.classList.remove('muted');
-        bellBtn.classList.add('playing');
-        muteX.style.opacity = '0';
-        bellLabel.textContent = 'MUSIC';
-      }).catch(() => {
-        // autoplay blocked — show bell as muted, user must click
-        bellBtn.classList.add('muted');
-      });
-    }
+                    <!-- === RIGHT WING (mirrored) === -->
+                    <g filter="url(#glow)" transform="translate(400,0) scale(-1,1)">
+                        <path d="M108 32 C85 24, 50 18, 18 10 C35 22, 55 30, 75 42"
+                        stroke="url(#wingGrad)" stroke-width="2.2" fill="none" stroke-linecap="round" />
+                        <path d="M108 38 C80 32, 45 28, 10 22 C32 34, 58 40, 80 50"
+                        stroke="url(#wingGrad)" stroke-width="1.6" fill="none" stroke-linecap="round" />
+                        <path d="M108 46 C82 42, 50 40, 16 36 C40 48, 62 52, 82 58"
+                        stroke="url(#wingGrad)" stroke-width="1.2" fill="none" stroke-linecap="round" />
+                        <path d="M108 54 C84 52, 55 52, 22 50 C48 60, 68 62, 84 66"
+                        stroke="url(#wingGrad)" stroke-width="0.9" fill="none" stroke-linecap="round" opacity="0.8" />
+                        <circle cx="18" cy="10" r="2" fill="#f0d060" opacity="0.9" />
+                        <circle cx="10" cy="22" r="1.6" fill="#f0d060" opacity="0.7" />
+                        <circle cx="16" cy="36" r="1.3" fill="#f0d060" opacity="0.5" />
+                        <circle cx="22" cy="50" r="1" fill="#f0d060" opacity="0.35" />
+                    </g>
 
-    function toggleMusic() {
-      if (musicPlaying) {
-        audio.pause();
-        musicPlaying = false;
-        bellBtn.classList.remove('playing');
-        bellBtn.classList.add('muted');
-        muteX.style.opacity = '1';
-        bellLabel.textContent = 'MUTED';
-      } else {
-        audio.play();
-        musicPlaying = true;
-        bellBtn.classList.remove('muted');
-        bellBtn.classList.add('playing');
-        muteX.style.opacity = '0';
-        bellLabel.textContent = 'MUSIC';
-      }
-    }
+                    <!-- === CENTRAL FRAME (square/rectangle around logo) === -->
+                    <rect x="105" y="30" width="190" height="60" rx="0"
+                    stroke="url(#frameGrad)" stroke-width="1.2" fill="none" opacity="0.9" />
+                    <!-- Inner subtle line -->
+                    <rect x="109" y="34" width="182" height="52" rx="0"
+                    stroke="url(#frameGrad)" stroke-width="0.5" fill="none" opacity="0.35" />
 
-    bellBtn.addEventListener('click', toggleMusic);
+                    <!-- === ORNATE CORNERS ON FRAME === -->
+                    <!-- Top-left corner -->
+                    <path d="M105 30 L118 30 L105 43 Z" fill="#c9a227" opacity="0.5" />
+                    <circle cx="105" cy="30" r="2.5" fill="#f0d060" opacity="0.8" />
+                    <!-- Top-right corner -->
+                    <path d="M295 30 L282 30 L295 43 Z" fill="#c9a227" opacity="0.5" />
+                    <circle cx="295" cy="30" r="2.5" fill="#f0d060" opacity="0.8" />
+                    <!-- Bottom-left corner -->
+                    <path d="M105 90 L118 90 L105 77 Z" fill="#c9a227" opacity="0.5" />
+                    <circle cx="105" cy="90" r="2.5" fill="#f0d060" opacity="0.8" />
+                    <!-- Bottom-right corner -->
+                    <path d="M295 90 L282 90 L295 77 Z" fill="#c9a227" opacity="0.5" />
+                    <circle cx="295" cy="90" r="2.5" fill="#f0d060" opacity="0.8" />
 
-    // ── Slideshow ──
-    const shuffled = [...images].sort(() => Math.random() - 0.5);
-    const PER_IMAGE = 1200;
-    const FADE_TIME = 400;
-    const TOTAL_DURATION = shuffled.length * PER_IMAGE;
+                    <!-- === "FALL OF" TEXT (upper line) === -->
+                    <text x="200" y="52" text-anchor="middle"
+                    font-family="'Cinzel', serif" font-weight="400" font-size="16"
+                    letter-spacing="10" fill="url(#textGrad)" filter="url(#glow)">
+                        FALL OF
+                    </text>
 
-    let currentIdx = 0;
-    let slideshowDone = false;
+                    <!-- === "ANGELS" TEXT (lower line, larger) === -->
+                    <text x="200" y="78" text-anchor="middle"
+                    font-family="'Cinzel Decorative', 'Cinzel', serif" font-weight="900" font-size="26"
+                    letter-spacing="6" fill="url(#textGrad)" filter="url(#glow)">
+                        ANGELS
+                    </text>
 
-    progressEl.style.transition = `width ${TOTAL_DURATION}ms linear`;
-    setTimeout(() => { progressEl.style.width = '100%'; }, 50);
+                    <!-- === DECORATIVE BOTTOM LINE === -->
+                    <line x1="140" y1="92" x2="260" y2="92" stroke="#c9a227" stroke-width="0.6" opacity="0.4" />
+                    <circle cx="200" cy="92" r="1.8" fill="#f0d060" opacity="0.6" />
+                </svg>
+            </div>
 
-    function showImage(idx) {
-      if (slideshowDone) return;
-      imgEl.style.opacity = '0';
-      imgEl.style.transition = `opacity ${FADE_TIME}ms ease`;
-      setTimeout(() => {
-        imgEl.src = shuffled[idx];
-        imgEl.onload = () => { imgEl.style.opacity = '1'; };
-        if (imgEl.complete) imgEl.style.opacity = '1';
-      }, FADE_TIME);
-    }
+            <div class="sep"></div>
 
-    function endIntro() {
-      if (slideshowDone) return;
-      slideshowDone = true;
-      introEl.style.transition = 'opacity 0.8s ease';
-      introEl.style.opacity = '0';
-      setTimeout(() => {
-        introEl.style.display = 'none';
-        mainPage.classList.add('visible');
-        // Try to start music after slideshow (user has interacted via skip or natural end)
-        startMusic();
-      }, 800);
-    }
+            <!-- BUTTONS - equal size -->
+            <div class="btns">
+                <a class="btn" href="game-fa.html">PERSIAN</a>
+                <a class="btn" href="game-en.html">ENGLISH</a>
+            </div>
 
-    showImage(0);
+            <div class="footer">
+                &#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;&#x2588;<br>
+                EVIDENCE FILE — DO NOT DISTRIBUTE — CASE OPEN
+            </div>
+        </div>
+    </div>
 
-    const slideInterval = setInterval(() => {
-      currentIdx++;
-      if (currentIdx >= shuffled.length) {
-        clearInterval(slideInterval);
-        endIntro();
-        return;
-      }
-      showImage(currentIdx);
-    }, PER_IMAGE);
+    <audio id="snd" loop preload="auto"></audio>
 
-    skipBtn.addEventListener('click', () => {
-      clearInterval(slideInterval);
-      endIntro();
-    });
+    <script>
+        // ── Images ──
+        const IMGS = [
+            'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782303150271.png',
+            'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782303780335.png',
+            'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782303829426.png',
+            'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782303879821.png',
+            'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782303927143.png',
+            'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782304117198.png',
+            'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782304316279.png',
+            'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782304529088.png',
+        ];
 
-    // Try autoplay on page load (works if browser allows it)
-    window.addEventListener('load', () => {
-      audio.play().then(() => {
-        musicPlaying = true;
-        bellBtn.classList.remove('muted');
-        bellBtn.classList.add('playing');
-        muteX.style.opacity = '0';
-      }).catch(() => {
-        // Autoplay blocked — will try again after slideshow ends (user interaction via skip)
-      });
-    });
-  </script>
+        // ── Music ──
+        const MUSIC = 'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/music.mp3';
+        const snd = document.getElementById('snd');
+        snd.src = MUSIC;
+        snd.volume = 0.5;
+
+        const bellBtn = document.getElementById('bell-btn');
+        const bellLbl = document.getElementById('bell-lbl');
+        let playing = false;
+        let userToggledBell = false; // track if user manually toggled the bell
+
+        function setPlaying(v) {
+            playing = v;
+            bellBtn.className = v ? 'on' : 'off';
+            bellLbl.textContent = v ? 'MUSIC' : 'MUTED';
+        }
+
+        function tryPlay() {
+            if (userToggledBell && !playing) return; // respect user's choice to mute
+            snd.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+        }
+
+        // Bell button click handler
+        bellBtn.addEventListener('click', () => {
+            userToggledBell = true;
+            if (playing) {
+                snd.pause();
+                setPlaying(false);
+            } else {
+                snd.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+            }
+        });
+
+        // ── Aggressive music autoplay ──
+        // Try immediately on script execution
+        tryPlay();
+
+        // Try on DOM load
+        window.addEventListener('DOMContentLoaded', tryPlay);
+
+        // Try on full load
+        window.addEventListener('load', tryPlay);
+
+        // Try on ANY user interaction (first click, tap, or keypress anywhere on page)
+        function interactionHandler() {
+            if (!playing) tryPlay();
+        }
+        document.addEventListener('click', interactionHandler, { once: false });
+        document.addEventListener('touchstart', interactionHandler, { once: false });
+        document.addEventListener('keydown', interactionHandler, { once: false });
+
+        // ── Slideshow ──
+        const imgEl = document.getElementById('intro-img');
+        const introEl = document.getElementById('intro');
+        const barEl = document.getElementById('intro-bar');
+        const skipBtn = document.getElementById('intro-skip');
+        const mainEl = document.getElementById('main');
+
+        // Shuffle images
+        const list = [...IMGS].sort(() => Math.random() - 0.5);
+        const PER = 1400; // ms per image
+        const FADE = 350; // ms fade
+        const totalDuration = list.length * PER;
+
+        let idx = 0;
+        let timer = null;
+        let done = false;
+        let firstImageShown = false;
+
+        // ── Start slideshow IMMEDIATELY (no waiting for all images to preload) ──
+        function startSlideshow() {
+            if (done) return;
+
+            // Animate bar over total duration
+            barEl.style.transition = `width ${totalDuration}ms linear`;
+            requestAnimationFrame(() => {
+                barEl.style.width = '100%';
+            });
+
+            // Show first image right away
+            showImage(0);
+
+            // Start the rotation timer
+            timer = setInterval(() => {
+                idx++;
+                if (idx >= list.length) {
+                    clearInterval(timer);
+                    endIntro();
+                    return;
+                }
+                showImage(idx);
+            }, PER);
+        }
+
+        function showImage(i) {
+            // Fade out current
+            imgEl.style.opacity = '0';
+
+            setTimeout(() => {
+                imgEl.src = list[i];
+                imgEl.style.transition = `opacity ${FADE}ms ease`;
+                // When this image loads, fade it in
+                const onLoad = () => {
+                    imgEl.style.opacity = '1';
+                    imgEl.removeEventListener('load', onLoad);
+                    imgEl.removeEventListener('error', onLoad);
+                    if (!firstImageShown) {
+                        firstImageShown = true;
+                    }
+                };
+                const onError = () => {
+                    // If image fails, skip to next after a short delay
+                    imgEl.removeEventListener('load', onLoad);
+                    imgEl.removeEventListener('error', onError);
+                    if (!firstImageShown && i < list.length - 1) {
+                        // Try next image for first display
+                        idx = i + 1;
+                        showImage(idx);
+                    } else if (!firstImageShown) {
+                        // All failed, just show main page
+                        firstImageShown = true;
+                        imgEl.style.opacity = '0';
+                    }
+                };
+                imgEl.addEventListener('load', onLoad);
+                imgEl.addEventListener('error', onError);
+
+                // Fallback: if image doesn't load within 2s, fade in anyway
+                setTimeout(() => {
+                    if (!firstImageShown && i === 0) {
+                        firstImageShown = true;
+                        imgEl.style.opacity = '1';
+                    }
+                }, 2000);
+
+            }, FADE);
+        }
+
+        function endIntro() {
+            if (done) return;
+            done = true;
+            clearInterval(timer);
+            introEl.style.transition = 'opacity 0.8s ease';
+            introEl.style.opacity = '0';
+            setTimeout(() => {
+                introEl.style.display = 'none';
+                mainEl.classList.add('show');
+                // Try music after slideshow ends (user has seen the intro)
+                tryPlay();
+            }, 800);
+        }
+
+        // Skip button
+        skipBtn.addEventListener('click', () => {
+            endIntro();
+        });
+
+        // ── KICK OFF ──
+        // Start slideshow immediately - first image will load asap
+        startSlideshow();
+
+        // Preload remaining images in background
+        list.forEach((src, i) => {
+            if (i > 0) {
+                const preloadImg = new Image();
+                preloadImg.src = src;
+            }
+        });
+    </script>
 </body>
 </html>
