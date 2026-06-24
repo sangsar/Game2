@@ -4,56 +4,556 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fall of Angels | سقوط فرشته‌ها</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Special+Elite&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:      #050400;
+      --paper:   #0a0900;
+      --border:  #2a2000;
+      --dim:     #5a4800;
+      --mid:     #a07820;
+      --text:    #e8d890;
+      --accent:  #c9a227;
+      --accent2: #f0d060;
+      --danger:  #8a2a2a;
+      --glow:    rgba(201,162,39,0.12);
+      --gold:    #c9a227;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Share Tech Mono', monospace;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── INTRO SLIDESHOW ── */
+    #intro {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #intro-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+      position: absolute;
+      inset: 0;
+    }
+
+    #intro-progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 3px;
+      background: var(--gold);
+      width: 0%;
+      transition: width linear;
+      box-shadow: 0 0 8px var(--gold);
+    }
+
+    #intro-counter {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      font-size: 0.6rem;
+      letter-spacing: 3px;
+      color: rgba(201,162,39,0.6);
+      font-family: 'Share Tech Mono', monospace;
+    }
+
+    #intro-skip {
+      position: absolute;
+      bottom: 24px;
+      right: 24px;
+      background: transparent;
+      border: 1px solid rgba(201,162,39,0.4);
+      color: rgba(201,162,39,0.7);
+      padding: 7px 18px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 3px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    #intro-skip:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+      box-shadow: 0 0 12px rgba(201,162,39,0.2);
+    }
+
+    /* ── MAIN PAGE ── */
+    #main-page {
+      display: none;
+      min-height: 100vh;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      position: relative;
+    }
+    #main-page.visible {
+      display: flex;
+    }
+
+    /* scanlines */
+    #main-page::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(255,255,255,0.008) 2px,
+        rgba(255,255,255,0.008) 4px
+      );
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* gold radial bg */
+    #main-page::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(201,162,39,0.04) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .lang-container {
+      max-width: 560px;
+      width: 100%;
+      text-align: center;
+      border: 1px solid #2a2000;
+      padding: 52px 40px;
+      position: relative;
+      background: var(--paper);
+      box-shadow:
+        0 0 80px rgba(0,0,0,0.95),
+        0 0 40px rgba(201,162,39,0.06),
+        inset 0 0 60px rgba(0,0,0,0.6);
+      z-index: 2;
+    }
+
+    /* double border frame */
+    .lang-container::before {
+      content: '';
+      position: absolute;
+      top: 8px; left: 8px; right: 8px; bottom: 8px;
+      border: 1px solid #1a1400;
+      pointer-events: none;
+    }
+
+    /* corner ornaments */
+    .corner {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border-color: var(--gold);
+      border-style: solid;
+      opacity: 0.5;
+    }
+    .corner-tl { top: 4px; left: 4px; border-width: 1px 0 0 1px; }
+    .corner-tr { top: 4px; right: 4px; border-width: 1px 1px 0 0; }
+    .corner-bl { bottom: 4px; left: 4px; border-width: 0 0 1px 1px; }
+    .corner-br { bottom: 4px; right: 4px; border-width: 0 1px 1px 0; }
+
+    /* ── LOGO (English only) ── */
+    .logo-wrap {
+      margin: 10px 0 32px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .title-en {
+      font-family: 'Cinzel Decorative', 'Special Elite', serif;
+      font-size: 2rem;
+      letter-spacing: 6px;
+      color: var(--accent2);
+      line-height: 1.1;
+      text-shadow:
+        0 0 20px rgba(201,162,39,0.5),
+        0 0 50px rgba(201,162,39,0.2);
+      animation: gold-pulse 4s ease-in-out infinite;
+    }
+
+    @keyframes gold-pulse {
+      0%,100% { text-shadow: 0 0 20px rgba(201,162,39,0.5), 0 0 50px rgba(201,162,39,0.2); }
+      50%      { text-shadow: 0 0 30px rgba(240,208,96,0.7), 0 0 70px rgba(201,162,39,0.35), 0 0 100px rgba(201,162,39,0.1); }
+    }
+
+    .title-divider {
+      color: var(--gold);
+      margin: 10px 0;
+      font-size: 0.65rem;
+      letter-spacing: 10px;
+      opacity: 0.7;
+    }
+
+    /* ── TAGLINE ── */
+    .separator {
+      border: none;
+      border-top: 1px solid #1a1400;
+      margin: 22px 0;
+      position: relative;
+    }
+    .separator::before {
+      content: '◆';
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--paper);
+      padding: 0 8px;
+      font-size: 0.5rem;
+      color: var(--gold);
+    }
+
+    .tagline {
+      font-family: 'Special Elite', serif;
+      font-style: italic;
+      font-size: 0.88rem;
+      line-height: 2;
+      color: var(--mid);
+      position: relative;
+      z-index: 1;
+    }
+
+    .tagline .en {
+      font-size: 0.82rem;
+      letter-spacing: 1px;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .tagline .fa {
+      direction: rtl;
+      display: block;
+      font-size: 0.9rem;
+      color: rgba(201,162,39,0.6);
+    }
+
+    /* ── BUTTONS ── */
+    .lang-label {
+      font-size: 0.55rem;
+      letter-spacing: 4px;
+      color: #3a3000;
+      margin-bottom: 18px;
+      position: relative; z-index: 1;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+      position: relative; z-index: 1;
+    }
+
+    .btn {
+      background: transparent;
+      border: 1px solid #3a3000;
+      color: var(--text);
+      padding: 14px 44px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 1rem;
+      cursor: pointer;
+      letter-spacing: 4px;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-block;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent 40%, rgba(201,162,39,0.06) 100%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .btn::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transition: transform 0.3s;
+    }
+
+    .btn:hover {
+      border-color: var(--gold);
+      color: var(--accent2);
+      box-shadow: 0 0 20px rgba(201,162,39,0.1), inset 0 0 20px rgba(201,162,39,0.04);
+    }
+    .btn:hover::before { opacity: 1; }
+    .btn:hover::after  { transform: scaleX(1); }
+
+    /* ── MUSIC BAR ── */
+    #music-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 42px;
+      background: rgba(5,4,0,0.95);
+      border-top: 1px solid #2a2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      z-index: 50;
+      backdrop-filter: blur(4px);
+    }
+
+    #music-toggle {
+      background: transparent;
+      border: 1px solid #3a3000;
+      color: var(--mid);
+      padding: 5px 18px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 3px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    #music-toggle:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    #music-label {
+      font-size: 0.55rem;
+      letter-spacing: 2px;
+      color: #3a3000;
+    }
+
+    .music-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--gold);
+      opacity: 0;
+      animation: beat 1.2s ease-in-out infinite;
+    }
+    .music-dot:nth-child(2) { animation-delay: 0.2s; }
+    .music-dot:nth-child(3) { animation-delay: 0.4s; }
+    #music-bar.muted .music-dot { animation: none; opacity: 0.15; }
+
+    @keyframes beat {
+      0%,100% { opacity: 0.2; transform: scaleY(0.6); }
+      50%      { opacity: 0.9; transform: scaleY(1.4); }
+    }
+
+    .footer-line {
+      font-size: 0.5rem;
+      letter-spacing: 2px;
+      color: #1a1400;
+      line-height: 2.2;
+      position: relative; z-index: 1;
+    }
+  </style>
 </head>
-<body class="lang-page theme-noir">
+<body>
 
-  <div class="lang-container">
-    <div class="case-stamp">CLASSIFIED</div>
-    <div class="case-number">F.P.D — #11</div>
+  <!-- ══ INTRO SLIDESHOW ══ -->
+  <div id="intro">
+    <img id="intro-img" src="" alt="" />
+    <div id="intro-progress"></div>
+    <div id="intro-counter">1 / 8</div>
+    <button id="intro-skip">SKIP ▶</button>
+  </div>
 
-    <div class="title-wrap">
-      <div class="title-en">FALL OF ANGELS</div>
-      <div class="title-divider">◆ ◆ ◆</div>
-      <div class="title-fa">سقوط فرشته‌ها</div>
-    </div>
+  <!-- ══ MAIN MENU PAGE ══ -->
+  <div id="main-page">
+    <div class="lang-container">
+      <div class="corner corner-tl"></div>
+      <div class="corner corner-tr"></div>
+      <div class="corner corner-bl"></div>
+      <div class="corner corner-br"></div>
 
-    <div class="case-meta">
-      <span>FREMONT P.D.</span>
-      <span>HOMICIDE</span>
-      <span>UNSOLVED</span>
-    </div>
+      <!-- Logo English only -->
+      <div class="logo-wrap">
+        <div class="title-en">FALL OF ANGELS</div>
+        <div class="title-divider">◆ ◆ ◆</div>
+      </div>
 
-    <div class="separator"></div>
+      <div class="separator"></div>
 
-    <div class="description">
-      <p>A quiet town where doors were never locked.<br>Until the angel started his work.</p>
-      <p class="fa">شهری آرام که درهایش هرگز قفل نمی‌شد.<br>تا زمانی که فرشته کارش را آغاز کرد.</p>
-    </div>
+      <!-- Tagline bilingual -->
+      <div class="tagline">
+        <span class="en">Angels will fall, just as humans did.</span>
+        <span class="fa">فرشته‌ها سقوط خواهند کرد، همان‌گونه که انسان‌ها کردند.</span>
+      </div>
 
-    <div class="separator"></div>
+      <div class="separator"></div>
 
-    <div class="lang-label">SELECT LANGUAGE — انتخاب زبان</div>
+      <div class="lang-label">SELECT LANGUAGE — انتخاب زبان</div>
 
-    <div class="buttons">
-      <a class="btn" href="game-fa.html">
-        <span class="btn-label">فارسی</span>
-        <span class="btn-sub">نسخه فارسی</span>
-      </a>
-      <a class="btn" href="game-en.html">
-        <span class="btn-label">ENGLISH</span>
-        <span class="btn-sub">English Version</span>
-      </a>
-    </div>
+      <div class="buttons">
+        <a class="btn" href="game-fa.html">فارسی</a>
+        <a class="btn" href="game-en.html">ENGLISH</a>
+      </div>
 
-    <div class="footer-line">
-      ████████████████████████████████<br>
-      EVIDENCE FILE — DO NOT DISTRIBUTE — CASE OPEN
+      <div class="footer-line">
+        ████████████████████████████████<br>
+        EVIDENCE FILE — DO NOT DISTRIBUTE — CASE OPEN
+      </div>
     </div>
   </div>
 
-  <canvas class="atmosphere-canvas"></canvas>
-  <script src="themes.js"></script>
-  <script>initAtmosphere();</script>
+  <!-- ══ MUSIC BAR ══ -->
+  <div id="music-bar" class="muted" style="display:none;">
+    <div class="music-dot"></div>
+    <div class="music-dot"></div>
+    <div class="music-dot"></div>
+    <button id="music-toggle">⏸ MUTE</button>
+    <span id="music-label">AMBIENT SCORE</span>
+  </div>
+
+  <audio id="bg-music"></audio>
+
+  <script>
+    // ── Images ──
+    const images = [
+      'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782303150271.png',
+      'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782303780335.png',
+      'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782303829426.png',
+      'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782303879821.png',
+      'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782303927143.png',
+      'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782304117198.png',
+      'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782304316279.png',
+      'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782304529088.png',
+    ];
+
+    // Shuffle
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    const shuffled = shuffle([...images]);
+    const TOTAL_DURATION = 8000; // 8 seconds total
+    const PER_IMAGE = TOTAL_DURATION / shuffled.length; // ~1000ms each
+
+    const introEl   = document.getElementById('intro');
+    const imgEl     = document.getElementById('intro-img');
+    const counter   = document.getElementById('intro-counter');
+    const progressEl= document.getElementById('intro-progress');
+    const skipBtn   = document.getElementById('intro-skip');
+
+    let current = 0;
+    let slideTimer, endTimer;
+
+    function showSlide(idx) {
+      imgEl.style.opacity = '0';
+      counter.textContent = `${idx + 1} / ${shuffled.length}`;
+      imgEl.src = shuffled[idx];
+      imgEl.onload = () => { imgEl.style.opacity = '1'; };
+      // fallback if already cached
+      setTimeout(() => { imgEl.style.opacity = '1'; }, 100);
+    }
+
+    function nextSlide() {
+      current++;
+      if (current < shuffled.length) {
+        showSlide(current);
+      }
+    }
+
+    function startIntro() {
+      showSlide(0);
+
+      // Advance slides
+      slideTimer = setInterval(nextSlide, PER_IMAGE);
+
+      // Progress bar
+      progressEl.style.transition = `width ${TOTAL_DURATION}ms linear`;
+      setTimeout(() => { progressEl.style.width = '100%'; }, 50);
+
+      // End intro
+      endTimer = setTimeout(endIntro, TOTAL_DURATION);
+    }
+
+    function endIntro() {
+      clearInterval(slideTimer);
+      clearTimeout(endTimer);
+      introEl.style.opacity = '0';
+      introEl.style.transition = 'opacity 0.5s ease';
+      setTimeout(() => {
+        introEl.style.display = 'none';
+        document.getElementById('main-page').classList.add('visible');
+        document.getElementById('music-bar').style.display = 'flex';
+        tryAutoplay();
+      }, 500);
+    }
+
+    skipBtn.addEventListener('click', endIntro);
+    startIntro();
+
+    // ── Music ──
+    const playlist = [
+      'https://dl.just-music.ir/music//Soundtrack/Dark/Dark%20Cycle%201%20(2019)/320/02.%20Ein%20Mensch%20-%20Ein%20Schmetterling.mp3',
+      'https://dl.just-music.ir/music//Soundtrack/Dark/Dark%20Cycle%201%20(2019)/320/11.%20Gott%20Gib%20Mir%20Gelassenheit.mp3',
+      'https://dl.just-music.ir/music//Soundtrack/Dark/Dark%20Cycle%203%20(2020)/320/04%20Die%20Welt%20Geht%20Heute%20Unter.mp3',
+    ];
+    let trackIdx = 0;
+    const audio = document.getElementById('bg-music');
+    const bar = document.getElementById('music-bar');
+    const toggleBtn = document.getElementById('music-toggle');
+    let muted = false;
+
+    function loadTrack(idx) {
+      audio.src = playlist[idx];
+      audio.volume = 0.45;
+    }
+
+    audio.addEventListener('ended', () => {
+      trackIdx = (trackIdx + 1) % playlist.length;
+      loadTrack(trackIdx);
+      if (!muted) audio.play().catch(() => {});
+    });
+
+    function tryAutoplay() {
+      loadTrack(0);
+      audio.play().catch(() => { /* autoplay blocked */ });
+      bar.classList.remove('muted');
+      toggleBtn.textContent = '⏸ MUTE';
+    }
+
+    toggleBtn.addEventListener('click', () => {
+      muted = !muted;
+      if (muted) {
+        audio.pause();
+        bar.classList.add('muted');
+        toggleBtn.textContent = '▶ PLAY';
+      } else {
+        if (!audio.src) loadTrack(trackIdx);
+        audio.play().catch(() => {});
+        bar.classList.remove('muted');
+        toggleBtn.textContent = '⏸ MUTE';
+      }
+    });
+  </script>
 </body>
 </html>
