@@ -10,6 +10,7 @@
     <script src="https://raw.githubusercontent.com/sangsar/Game2/refs/heads/main/themes.js" defer></script>
 
     <style>
+        /* استایل‌های اضافی برای هماهنگی */
         :root {
             --gold: #c9a96e;
             --gold-bright: #e0c37b;
@@ -44,7 +45,6 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* ── Atmosphere Canvas ── */
         .atmosphere-canvas {
             position: fixed;
             top: 0;
@@ -56,7 +56,6 @@
             opacity: 0.55;
         }
 
-        /* ── Main Container ── */
         .lang-container {
             position: relative;
             z-index: 1;
@@ -68,9 +67,7 @@
             background: rgba(10, 10, 10, 0.85);
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
-            box-shadow:
-                0 0 80px rgba(0, 0, 0, 0.7),
-                inset 0 0 120px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 0 80px rgba(0, 0, 0, 0.7), inset 0 0 120px rgba(0, 0, 0, 0.4);
             border-radius: 2px;
         }
 
@@ -81,7 +78,6 @@
             }
         }
 
-        /* ── Case Stamp ── */
         .case-stamp {
             display: inline-block;
             font-family: var(--font-mono);
@@ -96,7 +92,6 @@
             text-transform: uppercase;
         }
 
-        /* ── Case Number ── */
         .case-number {
             font-family: var(--font-mono);
             font-size: 0.75rem;
@@ -106,12 +101,11 @@
             opacity: 0.7;
         }
 
-        /* ── Title Wrap ── */
         .title-wrap {
             margin-bottom: 1.8rem;
         }
 
-        /* ===== لوگو (دقیقاً به شکل قبلی) ===== */
+        /* لوگو با استایل فایل خارجی هماهنگ می‌شه */
         .title-en {
             font-family: var(--font-serif);
             font-size: clamp(1.8rem, 4vw, 2.6rem);
@@ -123,7 +117,6 @@
             line-height: 1.2;
         }
 
-        /* ── Case Meta ── */
         .case-meta {
             display: flex;
             flex-wrap: wrap;
@@ -149,21 +142,14 @@
             color: rgba(255, 255, 255, 0.2);
         }
 
-        /* ── Separator ── */
         .separator {
             width: 60%;
             max-width: 280px;
             height: 1px;
             margin: 1.4rem auto;
-            background: linear-gradient(90deg,
-                    transparent,
-                    rgba(200, 170, 110, 0.35) 20%,
-                    rgba(200, 170, 110, 0.55) 50%,
-                    rgba(200, 170, 110, 0.35) 80%,
-                    transparent);
+            background: linear-gradient(90deg, transparent, rgba(200, 170, 110, 0.35) 20%, rgba(200, 170, 110, 0.55) 50%, rgba(200, 170, 110, 0.35) 80%, transparent);
         }
 
-        /* ── Description ── */
         .description {
             font-family: var(--font-serif);
             color: #b0b0b0;
@@ -196,7 +182,6 @@
             }
         }
 
-        /* ── Lang Label ── */
         .lang-label {
             font-family: var(--font-mono);
             font-size: 0.6rem;
@@ -207,7 +192,6 @@
             opacity: 0.6;
         }
 
-        /* ── Buttons ── */
         .buttons {
             display: flex;
             flex-wrap: wrap;
@@ -243,9 +227,7 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: radial-gradient(ellipse at center,
-                    rgba(200, 170, 110, 0.06) 0%,
-                    transparent 70%);
+            background: radial-gradient(ellipse at center, rgba(200, 170, 110, 0.06) 0%, transparent 70%);
             opacity: 0;
             transition: opacity 0.4s ease;
         }
@@ -253,9 +235,7 @@
         .btn:hover {
             border-color: var(--gold);
             color: #f0f0f0;
-            box-shadow:
-                0 0 25px rgba(180, 140, 80, 0.15),
-                inset 0 0 40px rgba(180, 140, 80, 0.04);
+            box-shadow: 0 0 25px rgba(180, 140, 80, 0.15), inset 0 0 40px rgba(180, 140, 80, 0.04);
             transform: translateY(-1px);
             background: rgba(30, 28, 22, 0.85);
         }
@@ -298,7 +278,6 @@
             }
         }
 
-        /* ── Footer Line ── */
         .footer-line {
             margin-top: 2.2rem;
             font-family: var(--font-mono);
@@ -341,9 +320,7 @@
             max-height: 78vh;
             object-fit: contain;
             border: 1px solid rgba(255, 255, 255, 0.06);
-            box-shadow:
-                0 0 60px rgba(0, 0, 0, 0.8),
-                0 0 120px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.8), 0 0 120px rgba(0, 0, 0, 0.5);
             animation: imageFadeIn 0.6s ease forwards;
             -webkit-user-drag: none;
             user-select: none;
@@ -484,14 +461,13 @@
         }
     </style>
 </head>
-<body class="lang-page theme-noir">
+<body>
 
     <!-- Atmosphere Canvas -->
     <canvas class="atmosphere-canvas" id="atmosphereCanvas"></canvas>
 
-    <!-- Music Toggle (Bell Button) -->
-    <button class="music-toggle" id="musicToggle" title="Music On/Off" aria-label="Toggle Music">
-        <!-- Bell SVG -->
+    <!-- Music Toggle -->
+    <button class="music-toggle" id="musicToggle" title="Music On/Off">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <g class="bell-body">
                 <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
@@ -510,8 +486,8 @@
         </div>
     </div>
 
-    <!-- Hidden Audio Element -->
-    <audio id="bgAudio" preload="auto" crossorigin="anonymous"></audio>
+    <!-- Audio Element -->
+    <audio id="bgAudio" preload="auto"></audio>
 
     <!-- Main Content -->
     <div class="lang-container">
@@ -558,9 +534,7 @@
 
     <script>
         (function() {
-            // ─────────────────────────────────────
-            // CONFIGURATION
-            // ─────────────────────────────────────
+            // ==================== تنظیمات ====================
             const IMAGE_URLS = [
                 'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782303150271.png',
                 'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782303780335.png',
@@ -583,106 +557,98 @@
             const STORAGE_KEY_IMG = 'foa_img_idx';
             const STORAGE_KEY_MUSIC = 'foa_music_playing';
 
-            // ─────────────────────────────────────
-            // DOM ELEMENTS
-            // ─────────────────────────────────────
+            // ==================== المان‌ها ====================
             const imageOverlay = document.getElementById('imageOverlay');
             const overlayImage = document.getElementById('overlayImage');
             const overlaySkipBtn = document.getElementById('overlaySkipBtn');
             const overlayCountdown = document.getElementById('overlayCountdown');
             const musicToggle = document.getElementById('musicToggle');
             const bgAudio = document.getElementById('bgAudio');
-            const atmosphereCanvas = document.getElementById('atmosphereCanvas');
 
-            // ─────────────────────────────────────
-            // STATE (اصلاح‌شده)
-            // ─────────────────────────────────────
+            // ==================== وضعیت موزیک (ساده) ====================
             let currentTrackIndex = 0;
-            let musicPlaying = true;          // نیّت کاربر
-            let musicActuallyPlaying = false; // وضعیت واقعی پخش
-            let overlayTimerId = null;
-            let countdownIntervalId = null;
-            let overlayRemainingSeconds = 10;
-            let overlayActive = true;
-            let userInteractedForAudio = false;
+            let isPlaying = false;
 
-            // ─────────────────────────────────────
-            // ATMOSPHERE CANVAS (بدون تغییر)
-            // ─────────────────────────────────────
-            function initAtmosphere() {
-                const canvas = atmosphereCanvas;
-                const ctx = canvas.getContext('2d');
-                let particles = [];
-                const PARTICLE_COUNT = 50;
-
-                function resizeCanvas() {
-                    canvas.width = window.innerWidth;
-                    canvas.height = window.innerHeight;
+            // ==================== تابع‌های موزیک ====================
+            function loadTrack(index) {
+                if (index >= MUSIC_URLS.length) {
+                    // آخر آهنگ → متوقف کن
+                    bgAudio.pause();
+                    isPlaying = false;
+                    musicToggle.classList.add('muted');
+                    return;
                 }
-                resizeCanvas();
-                window.addEventListener('resize', () => {
-                    resizeCanvas();
-                    particles = [];
-                    for (let i = 0; i < PARTICLE_COUNT; i++) {
-                        particles.push(createParticle());
-                    }
-                });
-
-                function createParticle() {
-                    return {
-                        x: Math.random() * canvas.width,
-                        y: Math.random() * canvas.height,
-                        radius: Math.random() * 2.2 + 0.6,
-                        speedY: Math.random() * 0.35 + 0.08,
-                        speedX: (Math.random() - 0.5) * 0.3,
-                        opacity: Math.random() * 0.35 + 0.05,
-                        wobbleAmp: Math.random() * 0.4,
-                        wobbleSpeed: Math.random() * 0.015 + 0.005,
-                        wobbleOffset: Math.random() * Math.PI * 2,
-                    };
-                }
-
-                for (let i = 0; i < PARTICLE_COUNT; i++) {
-                    particles.push(createParticle());
-                }
-
-                let frame = 0;
-
-                function animate() {
-                    frame++;
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                    for (let p of particles) {
-                        p.y -= p.speedY;
-                        p.x += p.speedX + Math.sin(frame * p.wobbleSpeed + p.wobbleOffset) * p.wobbleAmp;
-
-                        if (p.y < -10) {
-                            p.y = canvas.height + 10;
-                            p.x = Math.random() * canvas.width;
-                        }
-                        if (p.x < -20) p.x = canvas.width + 20;
-                        if (p.x > canvas.width + 20) p.x = -20;
-
-                        ctx.beginPath();
-                        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                        ctx.fillStyle = `rgba(190,180,160,${p.opacity})`;
-                        ctx.fill();
-                    }
-
-                    requestAnimationFrame(animate);
-                }
-
-                animate();
+                currentTrackIndex = index;
+                bgAudio.src = MUSIC_URLS[index];
+                bgAudio.load();
             }
 
-            // ─────────────────────────────────────
-            // IMAGE OVERLAY (بدون تغییر)
-            // ─────────────────────────────────────
+            function playTrack() {
+                if (!bgAudio.src || bgAudio.src === window.location.href) {
+                    loadTrack(currentTrackIndex);
+                }
+                bgAudio.play()
+                    .then(() => {
+                        isPlaying = true;
+                        musicToggle.classList.remove('muted');
+                    })
+                    .catch(() => {
+                        isPlaying = false;
+                        musicToggle.classList.add('muted');
+                    });
+            }
+
+            function toggleMusic() {
+                if (isPlaying) {
+                    // قطع
+                    bgAudio.pause();
+                    isPlaying = false;
+                    musicToggle.classList.add('muted');
+                } else {
+                    // وصل
+                    if (!bgAudio.src || bgAudio.src === window.location.href) {
+                        loadTrack(0);
+                    }
+                    playTrack();
+                }
+                // ذخیره وضعیت
+                try {
+                    localStorage.setItem(STORAGE_KEY_MUSIC, isPlaying ? '1' : '0');
+                } catch (e) {}
+            }
+
+            // ==================== رویدادهای موزیک ====================
+            bgAudio.addEventListener('ended', function() {
+                const next = currentTrackIndex + 1;
+                if (next >= MUSIC_URLS.length) {
+                    // آخرین آهنگ تموم شد → متوقف کن
+                    isPlaying = false;
+                    musicToggle.classList.add('muted');
+                    return;
+                }
+                loadTrack(next);
+                playTrack();
+            });
+
+            bgAudio.addEventListener('error', function() {
+                console.warn('خطا در پخش آهنگ:', bgAudio.src);
+                // رد شدن از آهنگ خراب
+                const next = currentTrackIndex + 1;
+                if (next >= MUSIC_URLS.length) {
+                    isPlaying = false;
+                    musicToggle.classList.add('muted');
+                    return;
+                }
+                loadTrack(next);
+                if (isPlaying) playTrack();
+            });
+
+            musicToggle.addEventListener('click', toggleMusic);
+
+            // ==================== Image Overlay ====================
             function getImageIndex() {
                 let idx = parseInt(localStorage.getItem(STORAGE_KEY_IMG), 10);
-                if (isNaN(idx) || idx < 0 || idx >= IMAGE_URLS.length) {
-                    idx = 0;
-                }
+                if (isNaN(idx) || idx < 0 || idx >= IMAGE_URLS.length) idx = 0;
                 return idx;
             }
 
@@ -690,27 +656,28 @@
                 localStorage.setItem(STORAGE_KEY_IMG, String(idx % IMAGE_URLS.length));
             }
 
+            let overlayTimerId = null;
+            let countdownIntervalId = null;
+            let overlayActive = true;
+            let overlayRemainingSeconds = 10;
+
             function showOverlayImage(index) {
-                const url = IMAGE_URLS[index];
-                overlayImage.src = url;
-                overlayImage.alt = 'Prelude Image ' + (index + 1);
+                overlayImage.src = IMAGE_URLS[index];
                 overlayImage.style.display = 'block';
                 imageOverlay.classList.remove('fading-out', 'hidden');
                 overlayActive = true;
                 overlayRemainingSeconds = 10;
-                overlayCountdown.textContent = overlayRemainingSeconds;
+                overlayCountdown.textContent = '10';
             }
 
             function hideOverlay() {
                 if (!overlayActive) return;
                 overlayActive = false;
                 imageOverlay.classList.add('fading-out');
-
                 if (overlayTimerId) clearTimeout(overlayTimerId);
                 if (countdownIntervalId) clearInterval(countdownIntervalId);
                 overlayTimerId = null;
                 countdownIntervalId = null;
-
                 setTimeout(() => {
                     imageOverlay.classList.add('hidden');
                     imageOverlay.classList.remove('fading-out');
@@ -736,221 +703,108 @@
                 }, IMAGE_DISPLAY_DURATION);
             }
 
-            function handleSkipClick() {
+            overlaySkipBtn.addEventListener('click', function() {
                 if (!overlayActive) return;
                 hideOverlay();
-                attemptMusicPlay();
-            }
-
-            overlaySkipBtn.addEventListener('click', handleSkipClick);
+            });
 
             imageOverlay.addEventListener('click', function(e) {
                 if (!overlayActive) return;
                 if (e.target === imageOverlay) {
                     hideOverlay();
-                    attemptMusicPlay();
                 }
             });
 
-            // ─────────────────────────────────────
-            // MUSIC SYSTEM (اصلاح‌شده)
-            // ─────────────────────────────────────
-            function loadTrack(index) {
-                if (index < 0 || index >= MUSIC_URLS.length) {
-                    index = 0;
-                }
-                currentTrackIndex = index;
-                bgAudio.src = MUSIC_URLS[index];
-                bgAudio.load();
-            }
+            overlayImage.addEventListener('error', function() {
+                if (overlayActive) hideOverlay();
+            });
 
-            function playCurrentTrack() {
-                const playPromise = bgAudio.play();
-                if (playPromise !== undefined) {
-                    playPromise
-                        .then(() => {
-                            musicActuallyPlaying = true;
-                            updateMusicToggleUI();
-                        })
-                        .catch((err) => {
-                            console.warn('Playback failed:', err);
-                            musicActuallyPlaying = false;
-                            updateMusicToggleUI();
-                        });
-                } else {
-                    // Fallback برای مرورگرهای قدیمی
-                    musicActuallyPlaying = true;
-                    updateMusicToggleUI();
-                }
-            }
+            // ==================== Atmosphere ====================
+            function initAtmosphere() {
+                const canvas = document.getElementById('atmosphereCanvas');
+                const ctx = canvas.getContext('2d');
+                let particles = [];
+                const COUNT = 50;
 
-            function attemptMusicPlay() {
-                userInteractedForAudio = true;
-                if (musicPlaying && !musicActuallyPlaying) {
-                    if (!bgAudio.src || bgAudio.src === window.location.href) {
-                        loadTrack(currentTrackIndex);
+                function resize() {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                }
+                resize();
+                window.addEventListener('resize', resize);
+
+                function createParticle() {
+                    return {
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height,
+                        radius: Math.random() * 2.2 + 0.6,
+                        speedY: Math.random() * 0.35 + 0.08,
+                        speedX: (Math.random() - 0.5) * 0.3,
+                        opacity: Math.random() * 0.35 + 0.05,
+                        wobbleAmp: Math.random() * 0.4,
+                        wobbleSpeed: Math.random() * 0.015 + 0.005,
+                        wobbleOffset: Math.random() * Math.PI * 2,
+                    };
+                }
+
+                for (let i = 0; i < COUNT; i++) particles.push(createParticle());
+
+                let frame = 0;
+                function animate() {
+                    frame++;
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    for (let p of particles) {
+                        p.y -= p.speedY;
+                        p.x += p.speedX + Math.sin(frame * p.wobbleSpeed + p.wobbleOffset) * p.wobbleAmp;
+                        if (p.y < -10) {
+                            p.y = canvas.height + 10;
+                            p.x = Math.random() * canvas.width;
+                        }
+                        if (p.x < -20) p.x = canvas.width + 20;
+                        if (p.x > canvas.width + 20) p.x = -20;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(190,180,160,${p.opacity})`;
+                        ctx.fill();
                     }
-                    playCurrentTrack();
+                    requestAnimationFrame(animate);
                 }
+                animate();
             }
 
-            function pauseMusic() {
-                bgAudio.pause();
-                musicActuallyPlaying = false;
-                updateMusicToggleUI();
-            }
-
-            function resumeMusic() {
-                if (!bgAudio.src || bgAudio.src === window.location.href) {
-                    loadTrack(currentTrackIndex);
-                }
-                playCurrentTrack();
-            }
-
-            function updateMusicToggleUI() {
-                if (musicPlaying && musicActuallyPlaying) {
-                    musicToggle.classList.remove('muted');
-                } else {
-                    musicToggle.classList.add('muted');
-                }
-            }
-
-            function toggleMusic() {
-                userInteractedForAudio = true;
-                if (musicPlaying) {
-                    // خاموش کردن
-                    musicPlaying = false;
-                    pauseMusic();
-                } else {
-                    // روشن کردن
-                    musicPlaying = true;
-                    resumeMusic();
-                    // اگر resume موفق نشد، UI بعداً توسط playCurrentTrack به‌روز می‌شود
-                    // اما برای جلوگیری از ناهماهنگی، یک به‌روزرسانی فوری انجام می‌دهیم
-                    if (!musicActuallyPlaying) {
-                        // امیدواریم که بعداً موفق شود، ولی برای هماهنگی، mute را برمی‌داریم
-                        musicToggle.classList.remove('muted');
-                    }
-                }
-                try {
-                    localStorage.setItem(STORAGE_KEY_MUSIC, musicPlaying ? '1' : '0');
-                } catch (e) { /* ignore */ }
-            }
-
-            musicToggle.addEventListener('click', toggleMusic);
-
-            // Track ended → next
-            bgAudio.addEventListener('ended', function() {
-                if (!musicPlaying) return;
-
-                const wasLastTrack = (currentTrackIndex >= MUSIC_URLS.length - 1);
-                if (wasLastTrack) {
-                    setImageIndex(0);
-                    currentTrackIndex = 0;
-                } else {
-                    currentTrackIndex++;
-                }
-
-                loadTrack(currentTrackIndex);
-                playCurrentTrack();
-            });
-
-            // Track error → skip
-            bgAudio.addEventListener('error', function() {
-                console.warn('Audio track failed to load:', bgAudio.src);
-                if (!musicPlaying) return;
-
-                const wasLastTrack = (currentTrackIndex >= MUSIC_URLS.length - 1);
-                if (wasLastTrack) {
-                    setImageIndex(0);
-                    currentTrackIndex = 0;
-                } else {
-                    currentTrackIndex++;
-                }
-
-                setTimeout(() => {
-                    loadTrack(currentTrackIndex);
-                    playCurrentTrack();
-                }, 800);
-            });
-
-            // ─────────────────────────────────────
-            // INITIALIZATION (اصلاح‌شده)
-            // ─────────────────────────────────────
+            // ==================== راه‌اندازی ====================
             function init() {
-                // 1. Atmosphere canvas
                 initAtmosphere();
 
-                // 2. Image index
-                const imgIndex = getImageIndex();
-                const nextImgIndex = (imgIndex + 1) % IMAGE_URLS.length;
-                setImageIndex(nextImgIndex);
-
-                showOverlayImage(imgIndex);
+                // تصویر
+                const imgIdx = getImageIndex();
+                setImageIndex((imgIdx + 1) % IMAGE_URLS.length);
+                showOverlayImage(imgIdx);
                 startOverlayCountdown();
 
-                // 3. Restore music intent
+                // وضعیت موزیک از localStorage
                 try {
                     const saved = localStorage.getItem(STORAGE_KEY_MUSIC);
-                    if (saved === '0') {
-                        musicPlaying = false;
-                        musicToggle.classList.add('muted');
-                    } else {
-                        musicPlaying = true;
+                    if (saved === '1') {
+                        isPlaying = true;
                         musicToggle.classList.remove('muted');
+                        loadTrack(0);
+                        // پخش خودکار نمی‌کنیم، کاربر باید بزنه
+                    } else {
+                        isPlaying = false;
+                        musicToggle.classList.add('muted');
                     }
                 } catch (e) {
-                    musicPlaying = true;
+                    isPlaying = false;
+                    musicToggle.classList.add('muted');
                 }
 
-                // 4. Load first track
-                loadTrack(0);
-
-                // 5. Attempt autoplay (با مدیریت خطا)
-                if (musicPlaying) {
-                    const playPromise = bgAudio.play();
-                    if (playPromise !== undefined) {
-                        playPromise
-                            .then(() => {
-                                musicActuallyPlaying = true;
-                                updateMusicToggleUI();
-                            })
-                            .catch(() => {
-                                musicActuallyPlaying = false;
-                                updateMusicToggleUI();
-                                // در اولین تعامل کاربر، دوباره تلاش می‌کنیم
-                            });
-                    }
-                } else {
-                    updateMusicToggleUI();
+                // اگر قبلاً روشن بوده، آهنگ اول رو آماده کن ولی پخش نکن
+                if (isPlaying) {
+                    loadTrack(0);
                 }
-
-                // 6. Global interaction listener برای باز کردن قفل صدا
-                function onUserInteraction() {
-                    if (!userInteractedForAudio && musicPlaying && !musicActuallyPlaying) {
-                        attemptMusicPlay();
-                    }
-                    document.removeEventListener('click', onUserInteraction);
-                    document.removeEventListener('touchstart', onUserInteraction);
-                    document.removeEventListener('keydown', onUserInteraction);
-                }
-                document.addEventListener('click', onUserInteraction, { once: false });
-                document.addEventListener('touchstart', onUserInteraction, { once: false });
-                document.addEventListener('keydown', onUserInteraction, { once: false });
-
-                // 7. Image error handling
-                overlayImage.addEventListener('error', function() {
-                    console.warn('Overlay image failed to load:', overlayImage.src);
-                    if (overlayActive) {
-                        hideOverlay();
-                        attemptMusicPlay();
-                    }
-                });
             }
 
-            // ─────────────────────────────────────
-            // START
-            // ─────────────────────────────────────
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', init);
             } else {
@@ -958,5 +812,6 @@
             }
         })();
     </script>
+
 </body>
 </html>
