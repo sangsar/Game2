@@ -1,59 +1,969 @@
 <!DOCTYPE html>
 <html lang="fa">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fall of Angels | سقوط فرشته‌ها</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fall of Angels | سقوط فرشته‌ها</title>
+    <style>
+        :root {
+            --gold: #c9a96e;
+            --gold-bright: #e0c37b;
+            --gold-dim: #8a6d3b;
+            --bg: #0a0a0a;
+            --text: #c4c4c4;
+            --text-dim: #777;
+            --red-stamp: rgba(180, 40, 40, 0.75);
+            --font-mono: 'Courier New', 'Lucida Console', 'Consolas', monospace;
+            --font-serif: 'Georgia', 'Times New Roman', serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-mono);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+            -webkit-font-smoothing: antialiased;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* ── Atmosphere Canvas ── */
+        .atmosphere-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.55;
+        }
+
+        /* ── Main Container ── */
+        .lang-container {
+            position: relative;
+            z-index: 1;
+            width: 90%;
+            max-width: 620px;
+            padding: 3rem 2.5rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            box-shadow:
+                0 0 80px rgba(0, 0, 0, 0.7),
+                inset 0 0 120px rgba(0, 0, 0, 0.4);
+            border-radius: 2px;
+        }
+
+        @media (max-width: 600px) {
+            .lang-container {
+                padding: 2rem 1.2rem;
+                width: 94%;
+            }
+        }
+
+        /* ── Case Stamp ── */
+        .case-stamp {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.35em;
+            color: var(--red-stamp);
+            border: 1.5px solid var(--red-stamp);
+            padding: 0.35em 1.2em;
+            transform: rotate(-3deg);
+            margin-bottom: 0.6rem;
+            opacity: 0.85;
+            text-transform: uppercase;
+        }
+
+        /* ── Case Number ── */
+        .case-number {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            letter-spacing: 0.25em;
+            color: var(--text-dim);
+            margin-bottom: 2rem;
+            opacity: 0.7;
+        }
+
+        /* ── Title Wrap ── */
+        .title-wrap {
+            margin-bottom: 1.8rem;
+        }
+
+        .title-en {
+            font-family: var(--font-serif);
+            font-size: clamp(1.8rem, 4vw, 2.6rem);
+            font-weight: 400;
+            letter-spacing: 0.15em;
+            color: #e8e8e8;
+            text-transform: uppercase;
+            text-shadow: 0 0 40px rgba(200, 170, 110, 0.25);
+            line-height: 1.2;
+        }
+
+        /* ── Case Meta ── */
+        .case-meta {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.4rem;
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            letter-spacing: 0.3em;
+            color: var(--text-dim);
+            margin-bottom: 1.2rem;
+            text-transform: uppercase;
+            opacity: 0.7;
+        }
+
+        .case-meta span {
+            position: relative;
+        }
+
+        .case-meta span:not(:last-child)::after {
+            content: '│';
+            position: absolute;
+            right: -0.85rem;
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* ── Separator ── */
+        .separator {
+            width: 60%;
+            max-width: 280px;
+            height: 1px;
+            margin: 1.4rem auto;
+            background: linear-gradient(90deg,
+                    transparent,
+                    rgba(200, 170, 110, 0.35) 20%,
+                    rgba(200, 170, 110, 0.55) 50%,
+                    rgba(200, 170, 110, 0.35) 80%,
+                    transparent);
+        }
+
+        /* ── Description ── */
+        .description {
+            font-family: var(--font-serif);
+            color: #b0b0b0;
+            line-height: 1.9;
+            margin-bottom: 0.6rem;
+            font-style: italic;
+            letter-spacing: 0.03em;
+        }
+
+        .description p {
+            margin: 0.3rem 0;
+            font-size: 0.95rem;
+        }
+
+        .description .fa {
+            font-family: 'Tahoma', 'Geneva', sans-serif;
+            font-style: normal;
+            direction: rtl;
+            font-size: 0.9rem;
+            color: #a0a0a0;
+            letter-spacing: 0;
+        }
+
+        @media (max-width: 600px) {
+            .description p {
+                font-size: 0.82rem;
+            }
+            .description .fa {
+                font-size: 0.78rem;
+            }
+        }
+
+        /* ── Lang Label ── */
+        .lang-label {
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            letter-spacing: 0.4em;
+            color: var(--text-dim);
+            margin: 1.6rem 0 1rem;
+            text-transform: uppercase;
+            opacity: 0.6;
+        }
+
+        /* ── Buttons ── */
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 160px;
+            flex: 1;
+            max-width: 200px;
+            padding: 0.9rem 1.2rem;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: #d0d0d0;
+            background: rgba(20, 20, 20, 0.8);
+            border: 1px solid rgba(180, 150, 100, 0.35);
+            cursor: pointer;
+            transition: all 0.35s ease;
+            position: relative;
+            overflow: hidden;
+            border-radius: 1px;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at center,
+                    rgba(200, 170, 110, 0.06) 0%,
+                    transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .btn:hover {
+            border-color: var(--gold);
+            color: #f0f0f0;
+            box-shadow:
+                0 0 25px rgba(180, 140, 80, 0.15),
+                inset 0 0 40px rgba(180, 140, 80, 0.04);
+            transform: translateY(-1px);
+            background: rgba(30, 28, 22, 0.85);
+        }
+
+        .btn:hover::before {
+            opacity: 1;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+            transition: transform 0.15s ease;
+        }
+
+        .btn-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.25em;
+            color: #e0e0e0;
+            margin-bottom: 0.15rem;
+        }
+
+        .btn-sub {
+            font-size: 0.55rem;
+            letter-spacing: 0.2em;
+            color: var(--text-dim);
+            opacity: 0.7;
+        }
+
+        @media (max-width: 480px) {
+            .buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.7rem;
+            }
+            .btn {
+                min-width: 180px;
+                max-width: 100%;
+                width: 100%;
+                padding: 0.75rem 1rem;
+            }
+        }
+
+        /* ── Footer Line ── */
+        .footer-line {
+            margin-top: 2.2rem;
+            font-family: var(--font-mono);
+            font-size: 0.5rem;
+            letter-spacing: 0.35em;
+            color: rgba(255, 255, 255, 0.2);
+            line-height: 1.8;
+            text-transform: uppercase;
+        }
+
+        /* ── Image Overlay ── */
+        .image-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.96);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+            transition: opacity 0.7s ease;
+            pointer-events: all;
+            cursor: default;
+        }
+
+        .image-overlay.fading-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .image-overlay.hidden {
+            display: none;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .image-overlay img {
+            max-width: 92vw;
+            max-height: 78vh;
+            object-fit: contain;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow:
+                0 0 60px rgba(0, 0, 0, 0.8),
+                0 0 120px rgba(0, 0, 0, 0.5);
+            animation: imageFadeIn 0.6s ease forwards;
+            -webkit-user-drag: none;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        @keyframes imageFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.97);
+                filter: blur(2px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+                filter: blur(0);
+            }
+        }
+
+        .overlay-skip-wrap {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-top: 1.2rem;
+        }
+
+        .overlay-skip-btn {
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--gold);
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid var(--gold);
+            padding: 0.45em 1.4em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 1px;
+            white-space: nowrap;
+        }
+
+        .overlay-skip-btn:hover {
+            background: var(--gold);
+            color: #0a0a0a;
+            border-color: var(--gold-bright);
+            box-shadow: 0 0 20px rgba(200, 160, 80, 0.3);
+        }
+
+        .overlay-countdown {
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            letter-spacing: 0.2em;
+            color: var(--gold-dim);
+            min-width: 1.2em;
+            text-align: center;
+            opacity: 0.8;
+        }
+
+        /* ── Music Toggle (Bell) ── */
+        .music-toggle {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 110;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(10, 10, 10, 0.75);
+            border: 1.5px solid var(--gold);
+            color: var(--gold);
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            padding: 0;
+            line-height: 1;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+        }
+
+        .music-toggle:hover {
+            border-color: var(--gold-bright);
+            box-shadow: 0 0 22px rgba(200, 160, 80, 0.3);
+            background: rgba(20, 18, 12, 0.85);
+        }
+
+        .music-toggle:active {
+            transform: scale(0.9);
+            transition: transform 0.12s ease;
+        }
+
+        .music-toggle.muted {
+            border-color: rgba(150, 130, 90, 0.5);
+            color: rgba(180, 150, 100, 0.55);
+        }
+
+        .music-toggle svg {
+            width: 15px;
+            height: 15px;
+            pointer-events: none;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .music-toggle.muted .bell-body {
+            opacity: 0.45;
+        }
+
+        .music-toggle .mute-line {
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        .music-toggle.muted .mute-line {
+            opacity: 1;
+        }
+
+        @media (max-width: 600px) {
+            .music-toggle {
+                top: 10px;
+                right: 10px;
+                width: 32px;
+                height: 32px;
+                font-size: 0.85rem;
+            }
+            .music-toggle svg {
+                width: 13px;
+                height: 13px;
+            }
+        }
+    </style>
 </head>
 <body class="lang-page theme-noir">
 
-  <div class="lang-container">
-    <div class="case-stamp">CLASSIFIED</div>
-    <div class="case-number">F.P.D — #11</div>
+    <!-- Atmosphere Canvas -->
+    <canvas class="atmosphere-canvas" id="atmosphereCanvas"></canvas>
 
-    <div class="title-wrap">
-      <div class="title-en">FALL OF ANGELS</div>
-      <div class="title-divider">◆ ◆ ◆</div>
-      <div class="title-fa">سقوط فرشته‌ها</div>
+    <!-- Music Toggle (Bell Button) -->
+    <button class="music-toggle" id="musicToggle" title="Music On/Off" aria-label="Toggle Music">
+        <!-- Bell SVG -->
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <g class="bell-body">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+            </g>
+            <line class="mute-line" x1="2" y1="2" x2="22" y2="22" />
+        </svg>
+    </button>
+
+    <!-- Image Overlay -->
+    <div class="image-overlay" id="imageOverlay">
+        <img id="overlayImage" src="" alt="Prelude" />
+        <div class="overlay-skip-wrap">
+            <span class="overlay-countdown" id="overlayCountdown">10</span>
+            <button class="overlay-skip-btn" id="overlaySkipBtn">SKIP</button>
+        </div>
     </div>
 
-    <div class="case-meta">
-      <span>FREMONT P.D.</span>
-      <span>HOMICIDE</span>
-      <span>UNSOLVED</span>
+    <!-- Hidden Audio Element -->
+    <audio id="bgAudio" preload="auto" crossorigin="anonymous"></audio>
+
+    <!-- Main Content -->
+    <div class="lang-container">
+        <div class="case-stamp">CLASSIFIED</div>
+        <div class="case-number">F.P.D — #11</div>
+
+        <div class="title-wrap">
+            <div class="title-en">FALL OF ANGELS</div>
+        </div>
+
+        <div class="case-meta">
+            <span>FREMONT P.D.</span>
+            <span>HOMICIDE</span>
+            <span>UNSOLVED</span>
+        </div>
+
+        <div class="separator"></div>
+
+        <div class="description">
+            <p>One day, angels will fall too, just as we did.</p>
+            <p class="fa">روزی فرشته‌ها نیز سقوط خواهند کرد همان گونه که ما کردیم.</p>
+        </div>
+
+        <div class="separator"></div>
+
+        <div class="lang-label">SELECT LANGUAGE — انتخاب زبان</div>
+
+        <div class="buttons">
+            <a class="btn" href="game-fa.html">
+                <span class="btn-label">PERSIAN</span>
+                <span class="btn-sub">نسخه فارسی</span>
+            </a>
+            <a class="btn" href="game-en.html">
+                <span class="btn-label">ENGLISH</span>
+                <span class="btn-sub">English Version</span>
+            </a>
+        </div>
+
+        <div class="footer-line">
+            ████████████████████████████████<br />
+            EVIDENCE FILE — DO NOT DISTRIBUTE — CASE OPEN
+        </div>
     </div>
 
-    <div class="separator"></div>
+    <script>
+        (function() {
+            // ─────────────────────────────────────
+            // CONFIGURATION
+            // ─────────────────────────────────────
+            const IMAGE_URLS = [
+                'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782303150271.png',
+                'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782303780335.png',
+                'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782303829426.png',
+                'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782303879821.png',
+                'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782303927143.png',
+                'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782304117198.png',
+                'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782304316279.png',
+                'https://raw.githubusercontent.com/max300o/Game2-images/refs/heads/main/1782304529088.png'
+            ];
 
-    <div class="description">
-      <p>A quiet town where doors were never locked.<br>Until the angel started his work.</p>
-      <p class="fa">شهری آرام که درهایش هرگز قفل نمی‌شد.<br>تا زمانی که فرشته کارش را آغاز کرد.</p>
-    </div>
+            const MUSIC_URLS = [
+                'https://dl.just-music.ir/music//Soundtrack/Dark/Dark%20Cycle%201%20(2019)/320/02.%20Ein%20Mensch%20-%20Ein%20Schmetterling.mp3',
+                'https://dl.just-music.ir/music//Soundtrack/Dark/Dark%20Cycle%201%20(2019)/320/04.%20Tick%20Tack,%20Tick%20Tack.mp3',
+                'https://dl.just-music.ir/music//Soundtrack/Dark/Dark%20Cycle%201%20(2019)/320/06.%20Apokalypse.mp3',
+                'https://dl.just-music.ir/music//Soundtrack/Dark/Dark%20Cycle%201%20(2019)/320/07.%20Kein%20DeLorean.mp3'
+            ];
 
-    <div class="separator"></div>
+            const IMAGE_DISPLAY_DURATION = 10000; // 10 seconds
+            const STORAGE_KEY_IMG = 'foa_img_idx';
+            const STORAGE_KEY_MUSIC = 'foa_music_playing';
 
-    <div class="lang-label">SELECT LANGUAGE — انتخاب زبان</div>
+            // ─────────────────────────────────────
+            // DOM ELEMENTS
+            // ─────────────────────────────────────
+            const imageOverlay = document.getElementById('imageOverlay');
+            const overlayImage = document.getElementById('overlayImage');
+            const overlaySkipBtn = document.getElementById('overlaySkipBtn');
+            const overlayCountdown = document.getElementById('overlayCountdown');
+            const musicToggle = document.getElementById('musicToggle');
+            const bgAudio = document.getElementById('bgAudio');
+            const atmosphereCanvas = document.getElementById('atmosphereCanvas');
 
-    <div class="buttons">
-      <a class="btn" href="game-fa.html">
-        <span class="btn-label">فارسی</span>
-        <span class="btn-sub">نسخه فارسی</span>
-      </a>
-      <a class="btn" href="game-en.html">
-        <span class="btn-label">ENGLISH</span>
-        <span class="btn-sub">English Version</span>
-      </a>
-    </div>
+            // ─────────────────────────────────────
+            // STATE
+            // ─────────────────────────────────────
+            let currentTrackIndex = 0;
+            let musicPlaying = true; // intent to play
+            let musicActuallyPlaying = false;
+            let overlayTimerId = null;
+            let countdownIntervalId = null;
+            let overlayRemainingSeconds = 10;
+            let overlayActive = true;
+            let userInteractedForAudio = false;
 
-    <div class="footer-line">
-      ████████████████████████████████<br>
-      EVIDENCE FILE — DO NOT DISTRIBUTE — CASE OPEN
-    </div>
-  </div>
+            // ─────────────────────────────────────
+            // ATMOSPHERE CANVAS
+            // ─────────────────────────────────────
+            function initAtmosphere() {
+                const canvas = atmosphereCanvas;
+                const ctx = canvas.getContext('2d');
+                let particles = [];
+                const PARTICLE_COUNT = 50;
 
-  <canvas class="atmosphere-canvas"></canvas>
-  <script src="themes.js"></script>
-  <script>initAtmosphere();</script>
+                function resizeCanvas() {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                }
+                resizeCanvas();
+                window.addEventListener('resize', () => {
+                    resizeCanvas();
+                    // Reinitialize particles on resize
+                    particles = [];
+                    for (let i = 0; i < PARTICLE_COUNT; i++) {
+                        particles.push(createParticle());
+                    }
+                });
+
+                function createParticle() {
+                    return {
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height,
+                        radius: Math.random() * 2.2 + 0.6,
+                        speedY: Math.random() * 0.35 + 0.08,
+                        speedX: (Math.random() - 0.5) * 0.3,
+                        opacity: Math.random() * 0.35 + 0.05,
+                        wobbleAmp: Math.random() * 0.4,
+                        wobbleSpeed: Math.random() * 0.015 + 0.005,
+                        wobbleOffset: Math.random() * Math.PI * 2,
+                    };
+                }
+
+                for (let i = 0; i < PARTICLE_COUNT; i++) {
+                    particles.push(createParticle());
+                }
+
+                let frame = 0;
+
+                function animate() {
+                    frame++;
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                    for (let p of particles) {
+                        p.y -= p.speedY;
+                        p.x += p.speedX + Math.sin(frame * p.wobbleSpeed + p.wobbleOffset) * p.wobbleAmp;
+
+                        // Wrap around
+                        if (p.y < -10) {
+                            p.y = canvas.height + 10;
+                            p.x = Math.random() * canvas.width;
+                        }
+                        if (p.x < -20) p.x = canvas.width + 20;
+                        if (p.x > canvas.width + 20) p.x = -20;
+
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(190,180,160,${p.opacity})`;
+                        ctx.fill();
+                    }
+
+                    requestAnimationFrame(animate);
+                }
+
+                animate();
+            }
+
+            // ─────────────────────────────────────
+            // IMAGE OVERLAY
+            // ─────────────────────────────────────
+            function getImageIndex() {
+                let idx = parseInt(localStorage.getItem(STORAGE_KEY_IMG), 10);
+                if (isNaN(idx) || idx < 0 || idx >= IMAGE_URLS.length) {
+                    idx = 0;
+                }
+                return idx;
+            }
+
+            function setImageIndex(idx) {
+                localStorage.setItem(STORAGE_KEY_IMG, String(idx % IMAGE_URLS.length));
+            }
+
+            function showOverlayImage(index) {
+                const url = IMAGE_URLS[index];
+                overlayImage.src = url;
+                overlayImage.alt = 'Prelude Image ' + (index + 1);
+                overlayImage.style.display = 'block';
+                imageOverlay.classList.remove('fading-out', 'hidden');
+                overlayActive = true;
+                overlayRemainingSeconds = 10;
+                overlayCountdown.textContent = overlayRemainingSeconds;
+            }
+
+            function hideOverlay() {
+                if (!overlayActive) return;
+                overlayActive = false;
+                imageOverlay.classList.add('fading-out');
+
+                // Clear timers
+                if (overlayTimerId) clearTimeout(overlayTimerId);
+                if (countdownIntervalId) clearInterval(countdownIntervalId);
+                overlayTimerId = null;
+                countdownIntervalId = null;
+
+                // After fade animation, fully hide
+                setTimeout(() => {
+                    imageOverlay.classList.add('hidden');
+                    imageOverlay.classList.remove('fading-out');
+                }, 750);
+            }
+
+            function startOverlayCountdown() {
+                // Update countdown every second
+                countdownIntervalId = setInterval(() => {
+                    overlayRemainingSeconds--;
+                    if (overlayRemainingSeconds <= 0) {
+                        overlayRemainingSeconds = 0;
+                        overlayCountdown.textContent = '0';
+                        clearInterval(countdownIntervalId);
+                        countdownIntervalId = null;
+                        hideOverlay();
+                    } else {
+                        overlayCountdown.textContent = overlayRemainingSeconds;
+                    }
+                }, 1000);
+
+                // Auto-hide after full duration
+                overlayTimerId = setTimeout(() => {
+                    hideOverlay();
+                }, IMAGE_DISPLAY_DURATION);
+            }
+
+            function handleSkipClick() {
+                if (!overlayActive) return;
+                hideOverlay();
+                // Ensure music plays on user interaction
+                attemptMusicPlay();
+            }
+
+            overlaySkipBtn.addEventListener('click', handleSkipClick);
+
+            // Also allow clicking anywhere on the overlay to skip (except the image itself)
+            imageOverlay.addEventListener('click', function(e) {
+                if (!overlayActive) return;
+                // Only skip if clicking the background, not the image or skip button
+                if (e.target === imageOverlay) {
+                    hideOverlay();
+                    attemptMusicPlay();
+                }
+            });
+
+            // ─────────────────────────────────────
+            // MUSIC SYSTEM
+            // ─────────────────────────────────────
+            function loadTrack(index) {
+                if (index < 0 || index >= MUSIC_URLS.length) {
+                    index = 0;
+                }
+                currentTrackIndex = index;
+                bgAudio.src = MUSIC_URLS[index];
+                bgAudio.load();
+            }
+
+            function playCurrentTrack() {
+                const playPromise = bgAudio.play();
+                if (playPromise !== undefined) {
+                    playPromise
+                        .then(() => {
+                            musicActuallyPlaying = true;
+                            updateMusicToggleUI();
+                        })
+                        .catch(() => {
+                            // Autoplay blocked - will retry on user interaction
+                            musicActuallyPlaying = false;
+                            updateMusicToggleUI();
+                        });
+                }
+            }
+
+            function attemptMusicPlay() {
+                userInteractedForAudio = true;
+                if (!musicActuallyPlaying && musicPlaying) {
+                    // Ensure a track is loaded
+                    if (!bgAudio.src || bgAudio.src === window.location.href) {
+                        loadTrack(currentTrackIndex);
+                    }
+                    playCurrentTrack();
+                }
+            }
+
+            function pauseMusic() {
+                bgAudio.pause();
+                musicActuallyPlaying = false;
+                updateMusicToggleUI();
+            }
+
+            function resumeMusic() {
+                if (!bgAudio.src || bgAudio.src === window.location.href) {
+                    loadTrack(currentTrackIndex);
+                }
+                playCurrentTrack();
+            }
+
+            function updateMusicToggleUI() {
+                if (musicPlaying && musicActuallyPlaying) {
+                    musicToggle.classList.remove('muted');
+                } else {
+                    musicToggle.classList.add('muted');
+                }
+            }
+
+            function toggleMusic() {
+                userInteractedForAudio = true;
+                if (musicPlaying) {
+                    // Currently "on" → turn off
+                    musicPlaying = false;
+                    pauseMusic();
+                    musicToggle.classList.add('muted');
+                } else {
+                    // Currently "off" → turn on
+                    musicPlaying = true;
+                    resumeMusic();
+                    // UI updated in playCurrentTrack promise or directly
+                    if (!musicActuallyPlaying) {
+                        // If still not playing, update UI optimistically
+                        musicToggle.classList.remove('muted');
+                    }
+                }
+                // Save intent
+                try {
+                    localStorage.setItem(STORAGE_KEY_MUSIC, musicPlaying ? '1' : '0');
+                } catch (e) { /* ignore */ }
+            }
+
+            musicToggle.addEventListener('click', toggleMusic);
+
+            // Track ended → play next
+            bgAudio.addEventListener('ended', function() {
+                if (!musicPlaying) return;
+
+                const wasLastTrack = (currentTrackIndex >= MUSIC_URLS.length - 1);
+
+                if (wasLastTrack) {
+                    // Full cycle completed → reset image index to 0
+                    setImageIndex(0);
+                    currentTrackIndex = 0;
+                } else {
+                    currentTrackIndex++;
+                }
+
+                loadTrack(currentTrackIndex);
+                playCurrentTrack();
+            });
+
+            // Track error → skip to next after a short delay
+            bgAudio.addEventListener('error', function() {
+                console.warn('Audio track failed to load:', bgAudio.src);
+                if (!musicPlaying) return;
+                const wasLastTrack = (currentTrackIndex >= MUSIC_URLS.length - 1);
+                if (wasLastTrack) {
+                    setImageIndex(0);
+                    currentTrackIndex = 0;
+                } else {
+                    currentTrackIndex++;
+                }
+                setTimeout(() => {
+                    loadTrack(currentTrackIndex);
+                    playCurrentTrack();
+                }, 800);
+            });
+
+            // ─────────────────────────────────────
+            // INITIALIZATION
+            // ─────────────────────────────────────
+            function init() {
+                // 1. Atmosphere canvas
+                initAtmosphere();
+
+                // 2. Determine image index (sequential rotation via localStorage)
+                const imgIndex = getImageIndex();
+                const nextImgIndex = (imgIndex + 1) % IMAGE_URLS.length;
+                setImageIndex(nextImgIndex);
+
+                // 3. Show overlay with the selected image
+                showOverlayImage(imgIndex);
+                startOverlayCountdown();
+
+                // 4. Restore music intent
+                try {
+                    const saved = localStorage.getItem(STORAGE_KEY_MUSIC);
+                    if (saved === '0') {
+                        musicPlaying = false;
+                        musicToggle.classList.add('muted');
+                    } else {
+                        musicPlaying = true;
+                        musicToggle.classList.remove('muted');
+                    }
+                } catch (e) {
+                    musicPlaying = true;
+                }
+
+                // 5. Load first track & attempt autoplay
+                loadTrack(0);
+                if (musicPlaying) {
+                    // Attempt autoplay (may be blocked)
+                    const playPromise = bgAudio.play();
+                    if (playPromise !== undefined) {
+                        playPromise
+                            .then(() => {
+                                musicActuallyPlaying = true;
+                                updateMusicToggleUI();
+                            })
+                            .catch(() => {
+                                // Blocked - will play on first user interaction
+                                musicActuallyPlaying = false;
+                                updateMusicToggleUI();
+                            });
+                    }
+                } else {
+                    updateMusicToggleUI();
+                }
+
+                // 6. Global user interaction listener to unlock audio
+                function onUserInteraction() {
+                    if (!userInteractedForAudio && musicPlaying && !musicActuallyPlaying) {
+                        attemptMusicPlay();
+                    }
+                    // Remove once triggered
+                    document.removeEventListener('click', onUserInteraction);
+                    document.removeEventListener('touchstart', onUserInteraction);
+                    document.removeEventListener('keydown', onUserInteraction);
+                }
+                document.addEventListener('click', onUserInteraction, { once: false });
+                document.addEventListener('touchstart', onUserInteraction, { once: false });
+                document.addEventListener('keydown', onUserInteraction, { once: false });
+
+                // 7. Handle image load error → skip overlay immediately
+                overlayImage.addEventListener('error', function() {
+                    console.warn('Overlay image failed to load:', overlayImage.src);
+                    if (overlayActive) {
+                        hideOverlay();
+                        attemptMusicPlay();
+                    }
+                });
+
+                // 8. Handle image load success
+                overlayImage.addEventListener('load', function() {
+                    // Image loaded successfully - overlay remains visible
+                });
+            }
+
+            // ─────────────────────────────────────
+            // START
+            // ─────────────────────────────────────
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+        })();
+    </script>
 </body>
 </html>
