@@ -12,7 +12,8 @@
             --bg: #0a0a0a;
             --text: #c4c4c4;
             --text-dim: #777;
-            --red-stamp: rgba(180, 40, 40, 0.75);
+            --red-stamp: rgba(180, 40, 40, 0.8);
+            --red-bright: #c0392b;
             --font-mono: 'Courier New', 'Lucida Console', 'Consolas', monospace;
             --font-serif: 'Georgia', 'Times New Roman', serif;
         }
@@ -37,6 +38,10 @@
             user-select: none;
             -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent;
+            background-image:
+                radial-gradient(ellipse at 50% 30%, rgba(180, 140, 80, 0.03) 0%, transparent 60%),
+                radial-gradient(ellipse at 20% 70%, rgba(160, 40, 40, 0.02) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 60%, rgba(180, 140, 80, 0.02) 0%, transparent 50%);
         }
 
         /* ── Atmosphere Canvas ── */
@@ -56,23 +61,55 @@
             position: relative;
             z-index: 1;
             width: 90%;
-            max-width: 620px;
-            padding: 3rem 2.5rem;
+            max-width: 640px;
+            padding: 2.5rem 2.5rem 3rem;
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            background: rgba(10, 10, 10, 0.85);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(10, 10, 10, 0.88);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
             box-shadow:
-                0 0 80px rgba(0, 0, 0, 0.7),
-                inset 0 0 120px rgba(0, 0, 0, 0.4);
-            border-radius: 2px;
+                0 0 100px rgba(0, 0, 0, 0.75),
+                0 0 200px rgba(0, 0, 0, 0.4),
+                inset 0 0 140px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.02);
+            border-radius: 3px;
+            transition: all 0.4s ease;
+        }
+
+        /* ── Decorative corner accents ── */
+        .lang-container::before,
+        .lang-container::after {
+            content: '';
+            position: absolute;
+            width: 28px;
+            height: 28px;
+            pointer-events: none;
+            z-index: 2;
+            opacity: 0.5;
+        }
+        .lang-container::before {
+            top: -1px;
+            left: -1px;
+            border-top: 2px solid var(--gold);
+            border-left: 2px solid var(--gold);
+        }
+        .lang-container::after {
+            bottom: -1px;
+            right: -1px;
+            border-bottom: 2px solid var(--gold);
+            border-right: 2px solid var(--gold);
         }
 
         @media (max-width: 600px) {
             .lang-container {
-                padding: 2rem 1.2rem;
+                padding: 1.8rem 1.2rem 2.2rem;
                 width: 94%;
+            }
+            .lang-container::before,
+            .lang-container::after {
+                width: 18px;
+                height: 18px;
             }
         }
 
@@ -80,41 +117,89 @@
         .case-stamp {
             display: inline-block;
             font-family: var(--font-mono);
-            font-size: 0.7rem;
-            letter-spacing: 0.35em;
+            font-size: 0.68rem;
+            letter-spacing: 0.4em;
             color: var(--red-stamp);
             border: 1.5px solid var(--red-stamp);
-            padding: 0.35em 1.2em;
-            transform: rotate(-3deg);
-            margin-bottom: 0.6rem;
-            opacity: 0.85;
+            padding: 0.3em 1em;
+            transform: rotate(-2.5deg);
+            margin-bottom: 0.5rem;
+            opacity: 0.9;
             text-transform: uppercase;
+            text-shadow: 0 0 12px rgba(180, 40, 40, 0.4);
+            box-shadow: 0 0 18px rgba(180, 40, 40, 0.08);
+            position: relative;
+        }
+        .case-stamp::after {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border: 1px dashed rgba(180, 40, 40, 0.25);
+            pointer-events: none;
+            border-radius: 2px;
+            opacity: 0.5;
         }
 
         /* ── Case Number ── */
         .case-number {
             font-family: var(--font-mono);
-            font-size: 0.75rem;
-            letter-spacing: 0.25em;
+            font-size: 0.72rem;
+            letter-spacing: 0.3em;
             color: var(--text-dim);
-            margin-bottom: 2rem;
+            margin-bottom: 1.6rem;
             opacity: 0.7;
+        }
+
+        /* ── Logo / Emblem Area ── */
+        .emblem-wrap {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+        }
+        .emblem-svg {
+            width: clamp(260px, 50vw, 340px);
+            height: auto;
+            display: block;
+            filter: drop-shadow(0 0 30px rgba(200, 170, 110, 0.2));
+            animation: emblemGlow 4s ease-in-out infinite;
+        }
+        @keyframes emblemGlow {
+            0%,
+            100% {
+                filter: drop-shadow(0 0 30px rgba(200, 170, 110, 0.2));
+            }
+            50% {
+                filter: drop-shadow(0 0 45px rgba(200, 170, 110, 0.35));
+            }
         }
 
         /* ── Title Wrap ── */
         .title-wrap {
-            margin-bottom: 1.8rem;
+            margin-bottom: 1.2rem;
+            position: relative;
         }
-
         .title-en {
             font-family: var(--font-serif);
-            font-size: clamp(1.8rem, 4vw, 2.6rem);
+            font-size: clamp(1.6rem, 3.8vw, 2.4rem);
             font-weight: 400;
-            letter-spacing: 0.15em;
+            letter-spacing: 0.18em;
             color: #e8e8e8;
             text-transform: uppercase;
-            text-shadow: 0 0 40px rgba(200, 170, 110, 0.25);
+            text-shadow:
+                0 0 50px rgba(200, 170, 110, 0.3),
+                0 2px 4px rgba(0, 0, 0, 0.6);
             line-height: 1.2;
+        }
+        .title-sub {
+            font-family: var(--font-mono);
+            font-size: 0.55rem;
+            letter-spacing: 0.5em;
+            color: var(--gold-dim);
+            text-transform: uppercase;
+            margin-top: 0.3rem;
+            opacity: 0.7;
         }
 
         /* ── Case Meta ── */
@@ -124,18 +209,16 @@
             justify-content: center;
             gap: 1.4rem;
             font-family: var(--font-mono);
-            font-size: 0.65rem;
-            letter-spacing: 0.3em;
+            font-size: 0.62rem;
+            letter-spacing: 0.35em;
             color: var(--text-dim);
-            margin-bottom: 1.2rem;
+            margin-bottom: 1rem;
             text-transform: uppercase;
             opacity: 0.7;
         }
-
         .case-meta span {
             position: relative;
         }
-
         .case-meta span:not(:last-child)::after {
             content: '│';
             position: absolute;
@@ -145,16 +228,43 @@
 
         /* ── Separator ── */
         .separator {
-            width: 60%;
-            max-width: 280px;
+            width: 55%;
+            max-width: 250px;
             height: 1px;
-            margin: 1.4rem auto;
+            margin: 1.2rem auto;
             background: linear-gradient(90deg,
                     transparent,
-                    rgba(200, 170, 110, 0.35) 20%,
-                    rgba(200, 170, 110, 0.55) 50%,
-                    rgba(200, 170, 110, 0.35) 80%,
+                    rgba(200, 170, 110, 0.3) 15%,
+                    rgba(200, 170, 110, 0.6) 50%,
+                    rgba(200, 170, 110, 0.3) 85%,
                     transparent);
+        }
+        .separator.double {
+            height: auto;
+            background: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+        }
+        .separator.double .sep-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg,
+                    transparent,
+                    rgba(200, 170, 110, 0.35) 30%,
+                    rgba(200, 170, 110, 0.5) 70%,
+                    transparent);
+        }
+        .separator.double .sep-dot {
+            width: 5px;
+            height: 5px;
+            background: var(--gold);
+            border-radius: 50%;
+            margin: 0 10px;
+            flex-shrink: 0;
+            opacity: 0.6;
+            box-shadow: 0 0 8px rgba(200, 170, 110, 0.5);
         }
 
         /* ── Description ── */
@@ -162,41 +272,38 @@
             font-family: var(--font-serif);
             color: #b0b0b0;
             line-height: 1.9;
-            margin-bottom: 0.6rem;
+            margin-bottom: 0.4rem;
             font-style: italic;
             letter-spacing: 0.03em;
         }
-
         .description p {
             margin: 0.3rem 0;
-            font-size: 0.95rem;
+            font-size: 0.93rem;
         }
-
         .description .fa {
             font-family: 'Tahoma', 'Geneva', sans-serif;
             font-style: normal;
             direction: rtl;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             color: #a0a0a0;
             letter-spacing: 0;
         }
-
         @media (max-width: 600px) {
             .description p {
-                font-size: 0.82rem;
+                font-size: 0.8rem;
             }
             .description .fa {
-                font-size: 0.78rem;
+                font-size: 0.76rem;
             }
         }
 
         /* ── Lang Label ── */
         .lang-label {
             font-family: var(--font-mono);
-            font-size: 0.6rem;
-            letter-spacing: 0.4em;
+            font-size: 0.58rem;
+            letter-spacing: 0.45em;
             color: var(--text-dim);
-            margin: 1.6rem 0 1rem;
+            margin: 1.4rem 0 1rem;
             text-transform: uppercase;
             opacity: 0.6;
         }
@@ -208,7 +315,6 @@
             justify-content: center;
             gap: 1rem;
         }
-
         .btn {
             display: inline-flex;
             flex-direction: column;
@@ -216,11 +322,11 @@
             justify-content: center;
             min-width: 160px;
             flex: 1;
-            max-width: 200px;
-            padding: 0.9rem 1.2rem;
+            max-width: 210px;
+            padding: 0.85rem 1.2rem;
             font-family: var(--font-mono);
-            font-size: 0.75rem;
-            letter-spacing: 0.2em;
+            font-size: 0.72rem;
+            letter-spacing: 0.22em;
             text-transform: uppercase;
             text-decoration: none;
             color: #d0d0d0;
@@ -232,52 +338,45 @@
             overflow: hidden;
             border-radius: 1px;
         }
-
         .btn::before {
             content: '';
             position: absolute;
             inset: 0;
             background: radial-gradient(ellipse at center,
-                    rgba(200, 170, 110, 0.06) 0%,
+                    rgba(200, 170, 110, 0.07) 0%,
                     transparent 70%);
             opacity: 0;
             transition: opacity 0.4s ease;
         }
-
         .btn:hover {
             border-color: var(--gold);
             color: #f0f0f0;
             box-shadow:
-                0 0 25px rgba(180, 140, 80, 0.15),
-                inset 0 0 40px rgba(180, 140, 80, 0.04);
+                0 0 30px rgba(180, 140, 80, 0.18),
+                inset 0 0 50px rgba(180, 140, 80, 0.05);
             transform: translateY(-1px);
-            background: rgba(30, 28, 22, 0.85);
+            background: rgba(30, 28, 22, 0.88);
         }
-
         .btn:hover::before {
             opacity: 1;
         }
-
         .btn:active {
             transform: scale(0.97);
             transition: transform 0.15s ease;
         }
-
         .btn-label {
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             font-weight: 600;
-            letter-spacing: 0.25em;
+            letter-spacing: 0.28em;
             color: #e0e0e0;
-            margin-bottom: 0.15rem;
+            margin-bottom: 0.12rem;
         }
-
         .btn-sub {
-            font-size: 0.55rem;
-            letter-spacing: 0.2em;
+            font-size: 0.52rem;
+            letter-spacing: 0.22em;
             color: var(--text-dim);
             opacity: 0.7;
         }
-
         @media (max-width: 480px) {
             .buttons {
                 flex-direction: column;
@@ -288,19 +387,20 @@
                 min-width: 180px;
                 max-width: 100%;
                 width: 100%;
-                padding: 0.75rem 1rem;
+                padding: 0.7rem 1rem;
             }
         }
 
         /* ── Footer Line ── */
         .footer-line {
-            margin-top: 2.2rem;
+            margin-top: 2rem;
             font-family: var(--font-mono);
-            font-size: 0.5rem;
-            letter-spacing: 0.35em;
-            color: rgba(255, 255, 255, 0.2);
+            font-size: 0.48rem;
+            letter-spacing: 0.4em;
+            color: rgba(255, 255, 255, 0.18);
             line-height: 1.8;
             text-transform: uppercase;
+            word-break: break-all;
         }
 
         /* ── Image Overlay ── */
@@ -308,7 +408,7 @@
             position: fixed;
             inset: 0;
             z-index: 100;
-            background: rgba(0, 0, 0, 0.96);
+            background: #000;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -318,37 +418,67 @@
             pointer-events: all;
             cursor: default;
         }
-
         .image-overlay.fading-out {
             opacity: 0;
             pointer-events: none;
         }
-
         .image-overlay.hidden {
             display: none;
             opacity: 0;
             pointer-events: none;
         }
-
+        .image-overlay .img-placeholder {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .image-overlay .img-placeholder .loader-ring {
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(200, 170, 110, 0.25);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .image-overlay.loading .img-placeholder .loader-ring {
+            opacity: 1;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
         .image-overlay img {
             max-width: 92vw;
             max-height: 78vh;
             object-fit: contain;
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             box-shadow:
-                0 0 60px rgba(0, 0, 0, 0.8),
-                0 0 120px rgba(0, 0, 0, 0.5);
-            animation: imageFadeIn 0.6s ease forwards;
+                0 0 80px rgba(0, 0, 0, 0.9),
+                0 0 160px rgba(0, 0, 0, 0.6);
+            animation: imageFadeIn 0.7s ease forwards;
             -webkit-user-drag: none;
             user-select: none;
             pointer-events: none;
+            position: relative;
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 0.5s ease;
         }
-
+        .image-overlay img.loaded {
+            opacity: 1;
+        }
         @keyframes imageFadeIn {
             from {
                 opacity: 0;
-                transform: scale(0.97);
-                filter: blur(2px);
+                transform: scale(0.96);
+                filter: blur(3px);
             }
             to {
                 opacity: 1;
@@ -356,42 +486,40 @@
                 filter: blur(0);
             }
         }
-
         .overlay-skip-wrap {
             display: flex;
             align-items: center;
             gap: 0.6rem;
             margin-top: 1.2rem;
+            position: relative;
+            z-index: 2;
         }
-
         .overlay-skip-btn {
             font-family: var(--font-mono);
-            font-size: 0.6rem;
-            letter-spacing: 0.3em;
+            font-size: 0.58rem;
+            letter-spacing: 0.35em;
             text-transform: uppercase;
             color: var(--gold);
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.75);
             border: 1px solid var(--gold);
-            padding: 0.45em 1.4em;
+            padding: 0.45em 1.5em;
             cursor: pointer;
             transition: all 0.3s ease;
             border-radius: 1px;
             white-space: nowrap;
         }
-
         .overlay-skip-btn:hover {
             background: var(--gold);
             color: #0a0a0a;
             border-color: var(--gold-bright);
-            box-shadow: 0 0 20px rgba(200, 160, 80, 0.3);
+            box-shadow: 0 0 24px rgba(200, 160, 80, 0.35);
         }
-
         .overlay-countdown {
             font-family: var(--font-mono);
-            font-size: 0.6rem;
-            letter-spacing: 0.2em;
+            font-size: 0.58rem;
+            letter-spacing: 0.25em;
             color: var(--gold-dim);
-            min-width: 1.2em;
+            min-width: 1.4em;
             text-align: center;
             opacity: 0.8;
         }
@@ -402,10 +530,10 @@
             top: 16px;
             right: 16px;
             z-index: 110;
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
-            background: rgba(10, 10, 10, 0.75);
+            background: rgba(10, 10, 10, 0.78);
             border: 1.5px solid var(--gold);
             color: var(--gold);
             cursor: pointer;
@@ -414,67 +542,81 @@
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
             padding: 0;
             line-height: 1;
             outline: none;
             -webkit-tap-highlight-color: transparent;
-            box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 16px rgba(0, 0, 0, 0.55);
         }
-
         .music-toggle:hover {
             border-color: var(--gold-bright);
-            box-shadow: 0 0 22px rgba(200, 160, 80, 0.3);
-            background: rgba(20, 18, 12, 0.85);
+            box-shadow: 0 0 26px rgba(200, 160, 80, 0.35);
+            background: rgba(20, 18, 12, 0.88);
         }
-
         .music-toggle:active {
             transform: scale(0.9);
             transition: transform 0.12s ease;
         }
-
         .music-toggle.muted {
-            border-color: rgba(150, 130, 90, 0.5);
-            color: rgba(180, 150, 100, 0.55);
+            border-color: rgba(140, 120, 80, 0.45);
+            color: rgba(170, 140, 90, 0.5);
         }
-
         .music-toggle svg {
-            width: 15px;
-            height: 15px;
+            width: 16px;
+            height: 16px;
             pointer-events: none;
             fill: none;
             stroke: currentColor;
             stroke-width: 2;
             stroke-linecap: round;
             stroke-linejoin: round;
+            transition: all 0.3s ease;
         }
-
         .music-toggle.muted .bell-body {
-            opacity: 0.45;
+            opacity: 0.4;
         }
-
         .music-toggle .mute-line {
             opacity: 0;
-            transition: opacity 0.25s ease;
+            transition: opacity 0.3s ease;
         }
-
         .music-toggle.muted .mute-line {
             opacity: 1;
         }
-
         @media (max-width: 600px) {
             .music-toggle {
                 top: 10px;
                 right: 10px;
-                width: 32px;
-                height: 32px;
+                width: 34px;
+                height: 34px;
                 font-size: 0.85rem;
             }
             .music-toggle svg {
-                width: 13px;
-                height: 13px;
+                width: 14px;
+                height: 14px;
             }
+        }
+
+        /* ── Crime tape accent ── */
+        .crime-tape {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.5rem;
+            letter-spacing: 0.5em;
+            color: #1a1a1a;
+            background: repeating-linear-gradient(45deg,
+                    var(--gold-dim),
+                    var(--gold-dim) 8px,
+                    #1a1a1a 8px,
+                    #1a1a1a 16px);
+            padding: 0.25em 1.2em;
+            margin: 0.8rem auto 0;
+            text-transform: uppercase;
+            opacity: 0.5;
+            border-radius: 1px;
+            max-width: 200px;
+            text-align: center;
         }
     </style>
 </head>
@@ -485,7 +627,6 @@
 
     <!-- Music Toggle (Bell Button) -->
     <button class="music-toggle" id="musicToggle" title="Music On/Off" aria-label="Toggle Music">
-        <!-- Bell SVG -->
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <g class="bell-body">
                 <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
@@ -497,7 +638,15 @@
 
     <!-- Image Overlay -->
     <div class="image-overlay" id="imageOverlay">
-        <img id="overlayImage" src="" alt="Prelude" />
+        <div class="img-placeholder">
+            <div class="loader-ring"></div>
+        </div>
+        <img
+        id="overlayImage"
+        src=""
+        alt=""
+        crossorigin="anonymous"
+        />
         <div class="overlay-skip-wrap">
             <span class="overlay-countdown" id="overlayCountdown">10</span>
             <button class="overlay-skip-btn" id="overlaySkipBtn">SKIP</button>
@@ -512,8 +661,68 @@
         <div class="case-stamp">CLASSIFIED</div>
         <div class="case-number">F.P.D — #11</div>
 
+        <!-- Enhanced Logo / Emblem -->
+        <div class="emblem-wrap">
+            <svg class="emblem-svg" viewBox="0 0 340 120" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <filter id="glow">
+                        <feGaussianBlur stdDeviation="2.5" result="blur" />
+                        <feMerge>
+                            <feMergeNode in="blur" />
+                            <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                    </filter>
+                    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#c9a96e" stop-opacity="0.9" />
+                        <stop offset="50%" stop-color="#e0c37b" stop-opacity="1" />
+                        <stop offset="100%" stop-color="#8a6d3b" stop-opacity="0.8" />
+                    </linearGradient>
+                    <linearGradient id="wingGradL" x1="100%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#c9a96e" stop-opacity="0.7" />
+                        <stop offset="100%" stop-color="#5a4520" stop-opacity="0.25" />
+                    </linearGradient>
+                    <linearGradient id="wingGradR" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#c9a96e" stop-opacity="0.7" />
+                        <stop offset="100%" stop-color="#5a4520" stop-opacity="0.25" />
+                    </linearGradient>
+                </defs>
+                <!-- Left Wing - geometric fragments -->
+                <g filter="url(#glow)" opacity="0.7">
+                    <polygon points="170,55 120,30 140,50 100,38 130,55 90,50 125,62 85,65 120,72 95,80 130,78 110,90 150,82 140,98 165,85"
+                    fill="none" stroke="url(#wingGradL)" stroke-width="1.2" stroke-linejoin="round" />
+                    <polygon points="170,55 130,35 145,52 110,42 135,56 100,52 128,60 105,64 125,68 110,74 132,72 120,82 148,74 142,90 162,78"
+                    fill="rgba(200,170,110,0.04)" stroke="none" />
+                    <!-- Wing detail lines -->
+                    <line x1="170" y1="55" x2="95" y2="45" stroke="rgba(200,170,110,0.35)" stroke-width="0.6" />
+                    <line x1="170" y1="60" x2="100" y2="58" stroke="rgba(200,170,110,0.3)" stroke-width="0.5" />
+                    <line x1="170" y1="66" x2="105" y2="70" stroke="rgba(200,170,110,0.28)" stroke-width="0.5" />
+                </g>
+                <!-- Right Wing - geometric fragments -->
+                <g filter="url(#glow)" opacity="0.7">
+                    <polygon points="170,55 220,30 200,50 240,38 210,55 250,50 215,62 255,65 220,72 245,80 210,78 230,90 190,82 200,98 175,85"
+                    fill="none" stroke="url(#wingGradR)" stroke-width="1.2" stroke-linejoin="round" />
+                    <polygon points="170,55 210,35 195,52 230,42 205,56 240,52 212,60 235,64 215,68 230,74 208,72 220,82 192,74 198,90 178,78"
+                    fill="rgba(200,170,110,0.04)" stroke="none" />
+                    <line x1="170" y1="55" x2="245" y2="45" stroke="rgba(200,170,110,0.35)" stroke-width="0.6" />
+                    <line x1="170" y1="60" x2="240" y2="58" stroke="rgba(200,170,110,0.3)" stroke-width="0.5" />
+                    <line x1="170" y1="66" x2="235" y2="70" stroke="rgba(200,170,110,0.28)" stroke-width="0.5" />
+                </g>
+                <!-- Central Emblem -->
+                <circle cx="170" cy="58" r="14" fill="none" stroke="url(#goldGrad)" stroke-width="1.8" filter="url(#glow)" />
+                <circle cx="170" cy="58" r="8" fill="none" stroke="rgba(200,170,110,0.5)" stroke-width="0.8" />
+                <circle cx="170" cy="58" r="3" fill="rgba(200,170,110,0.7)" filter="url(#glow)" />
+                <!-- Small diamond at center -->
+                <rect x="167" y="55" width="6" height="6" rx="0.5" fill="none" stroke="rgba(255,220,160,0.7)" stroke-width="0.8"
+                transform="rotate(45 170 58)" />
+                <!-- Subtle halo arcs -->
+                <path d="M140 40 Q170 28 200 40" fill="none" stroke="rgba(200,170,110,0.2)" stroke-width="0.5" />
+                <path d="M135 75 Q170 88 205 75" fill="none" stroke="rgba(200,170,110,0.15)" stroke-width="0.5" />
+            </svg>
+        </div>
+
         <div class="title-wrap">
             <div class="title-en">FALL OF ANGELS</div>
+            <div class="title-sub">Fremont Police Department — Case File</div>
         </div>
 
         <div class="case-meta">
@@ -522,14 +731,22 @@
             <span>UNSOLVED</span>
         </div>
 
-        <div class="separator"></div>
+        <div class="separator double">
+            <span class="sep-line"></span>
+            <span class="sep-dot"></span>
+            <span class="sep-line"></span>
+        </div>
 
         <div class="description">
             <p>One day, angels will fall too, just as we did.</p>
             <p class="fa">روزی فرشته‌ها نیز سقوط خواهند کرد همان گونه که ما کردیم.</p>
         </div>
 
-        <div class="separator"></div>
+        <div class="separator double">
+            <span class="sep-line"></span>
+            <span class="sep-dot"></span>
+            <span class="sep-line"></span>
+        </div>
 
         <div class="lang-label">SELECT LANGUAGE — انتخاب زبان</div>
 
@@ -543,6 +760,8 @@
                 <span class="btn-sub">English Version</span>
             </a>
         </div>
+
+        <div class="crime-tape">EVIDENCE — DO NOT CROSS</div>
 
         <div class="footer-line">
             ████████████████████████████████<br />
@@ -592,13 +811,13 @@
             // STATE
             // ─────────────────────────────────────
             let currentTrackIndex = 0;
-            let musicPlaying = true; // intent to play
-            let musicActuallyPlaying = false;
+            let musicEnabled = true; // user intent
             let overlayTimerId = null;
             let countdownIntervalId = null;
             let overlayRemainingSeconds = 10;
             let overlayActive = true;
-            let userInteractedForAudio = false;
+            let userHasInteracted = false;
+            let audioInitialized = false;
 
             // ─────────────────────────────────────
             // ATMOSPHERE CANVAS
@@ -616,7 +835,6 @@
                 resizeCanvas();
                 window.addEventListener('resize', () => {
                     resizeCanvas();
-                    // Reinitialize particles on resize
                     particles = [];
                     for (let i = 0; i < PARTICLE_COUNT; i++) {
                         particles.push(createParticle());
@@ -636,39 +854,47 @@
                         wobbleOffset: Math.random() * Math.PI * 2,
                     };
                 }
-
                 for (let i = 0; i < PARTICLE_COUNT; i++) {
                     particles.push(createParticle());
                 }
-
                 let frame = 0;
 
                 function animate() {
                     frame++;
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
                     for (let p of particles) {
                         p.y -= p.speedY;
                         p.x += p.speedX + Math.sin(frame * p.wobbleSpeed + p.wobbleOffset) * p.wobbleAmp;
-
-                        // Wrap around
                         if (p.y < -10) {
                             p.y = canvas.height + 10;
                             p.x = Math.random() * canvas.width;
                         }
                         if (p.x < -20) p.x = canvas.width + 20;
                         if (p.x > canvas.width + 20) p.x = -20;
-
                         ctx.beginPath();
                         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
                         ctx.fillStyle = `rgba(190,180,160,${p.opacity})`;
                         ctx.fill();
                     }
-
                     requestAnimationFrame(animate);
                 }
-
                 animate();
+            }
+
+            // ─────────────────────────────────────
+            // IMAGE PRELOADING
+            // ─────────────────────────────────────
+            function preloadImages(urls) {
+                return Promise.all(
+                    urls.map(url => {
+                        return new Promise((resolve) => {
+                            const img = new Image();
+                            img.onload = () => resolve(true);
+                            img.onerror = () => resolve(false);
+                            img.src = url;
+                        });
+                    })
+                );
             }
 
             // ─────────────────────────────────────
@@ -688,9 +914,10 @@
 
             function showOverlayImage(index) {
                 const url = IMAGE_URLS[index];
+                overlayImage.classList.remove('loaded');
                 overlayImage.src = url;
-                overlayImage.alt = 'Prelude Image ' + (index + 1);
-                overlayImage.style.display = 'block';
+                overlayImage.alt = ''; // No text during load
+                imageOverlay.classList.add('loading');
                 imageOverlay.classList.remove('fading-out', 'hidden');
                 overlayActive = true;
                 overlayRemainingSeconds = 10;
@@ -700,15 +927,12 @@
             function hideOverlay() {
                 if (!overlayActive) return;
                 overlayActive = false;
+                imageOverlay.classList.remove('loading');
                 imageOverlay.classList.add('fading-out');
-
-                // Clear timers
                 if (overlayTimerId) clearTimeout(overlayTimerId);
                 if (countdownIntervalId) clearInterval(countdownIntervalId);
                 overlayTimerId = null;
                 countdownIntervalId = null;
-
-                // After fade animation, fully hide
                 setTimeout(() => {
                     imageOverlay.classList.add('hidden');
                     imageOverlay.classList.remove('fading-out');
@@ -716,7 +940,6 @@
             }
 
             function startOverlayCountdown() {
-                // Update countdown every second
                 countdownIntervalId = setInterval(() => {
                     overlayRemainingSeconds--;
                     if (overlayRemainingSeconds <= 0) {
@@ -729,8 +952,6 @@
                         overlayCountdown.textContent = overlayRemainingSeconds;
                     }
                 }, 1000);
-
-                // Auto-hide after full duration
                 overlayTimerId = setTimeout(() => {
                     hideOverlay();
                 }, IMAGE_DISPLAY_DURATION);
@@ -739,76 +960,56 @@
             function handleSkipClick() {
                 if (!overlayActive) return;
                 hideOverlay();
-                // Ensure music plays on user interaction
-                attemptMusicPlay();
+                userHasInteracted = true;
+                ensureAudioAfterInteraction();
             }
 
             overlaySkipBtn.addEventListener('click', handleSkipClick);
-
-            // Also allow clicking anywhere on the overlay to skip (except the image itself)
             imageOverlay.addEventListener('click', function(e) {
                 if (!overlayActive) return;
-                // Only skip if clicking the background, not the image or skip button
                 if (e.target === imageOverlay) {
                     hideOverlay();
-                    attemptMusicPlay();
+                    userHasInteracted = true;
+                    ensureAudioAfterInteraction();
                 }
             });
 
             // ─────────────────────────────────────
-            // MUSIC SYSTEM
+            // MUSIC SYSTEM (SIMPLIFIED & ROBUST)
             // ─────────────────────────────────────
             function loadTrack(index) {
-                if (index < 0 || index >= MUSIC_URLS.length) {
-                    index = 0;
-                }
+                if (index < 0 || index >= MUSIC_URLS.length) index = 0;
                 currentTrackIndex = index;
                 bgAudio.src = MUSIC_URLS[index];
                 bgAudio.load();
+                audioInitialized = true;
             }
 
-            function playCurrentTrack() {
-                const playPromise = bgAudio.play();
-                if (playPromise !== undefined) {
-                    playPromise
+            function playAudio() {
+                if (!bgAudio.src || bgAudio.src === window.location.href) {
+                    loadTrack(currentTrackIndex);
+                }
+                const promise = bgAudio.play();
+                if (promise !== undefined) {
+                    promise
                         .then(() => {
-                            musicActuallyPlaying = true;
-                            updateMusicToggleUI();
+                            updateBellUI();
                         })
-                        .catch(() => {
-                            // Autoplay blocked - will retry on user interaction
-                            musicActuallyPlaying = false;
-                            updateMusicToggleUI();
+                        .catch((err) => {
+                            console.warn('Audio play blocked:', err.message);
+                            updateBellUI();
                         });
                 }
             }
 
-            function attemptMusicPlay() {
-                userInteractedForAudio = true;
-                if (!musicActuallyPlaying && musicPlaying) {
-                    // Ensure a track is loaded
-                    if (!bgAudio.src || bgAudio.src === window.location.href) {
-                        loadTrack(currentTrackIndex);
-                    }
-                    playCurrentTrack();
-                }
-            }
-
-            function pauseMusic() {
+            function pauseAudio() {
                 bgAudio.pause();
-                musicActuallyPlaying = false;
-                updateMusicToggleUI();
+                updateBellUI();
             }
 
-            function resumeMusic() {
-                if (!bgAudio.src || bgAudio.src === window.location.href) {
-                    loadTrack(currentTrackIndex);
-                }
-                playCurrentTrack();
-            }
-
-            function updateMusicToggleUI() {
-                if (musicPlaying && musicActuallyPlaying) {
+            function updateBellUI() {
+                const isActuallyPlaying = !bgAudio.paused && !bgAudio.ended && bgAudio.readyState > 2;
+                if (musicEnabled && isActuallyPlaying) {
                     musicToggle.classList.remove('muted');
                 } else {
                     musicToggle.classList.add('muted');
@@ -816,52 +1017,59 @@
             }
 
             function toggleMusic() {
-                userInteractedForAudio = true;
-                if (musicPlaying) {
-                    // Currently "on" → turn off
-                    musicPlaying = false;
-                    pauseMusic();
-                    musicToggle.classList.add('muted');
+                userHasInteracted = true;
+                const isActuallyPlaying = !bgAudio.paused && !bgAudio.ended && bgAudio.readyState > 2;
+
+                if (musicEnabled && isActuallyPlaying) {
+                    // Currently playing → pause
+                    musicEnabled = false;
+                    pauseAudio();
                 } else {
-                    // Currently "off" → turn on
-                    musicPlaying = true;
-                    resumeMusic();
-                    // UI updated in playCurrentTrack promise or directly
-                    if (!musicActuallyPlaying) {
-                        // If still not playing, update UI optimistically
-                        musicToggle.classList.remove('muted');
+                    // Currently paused/stopped → play
+                    musicEnabled = true;
+                    if (!audioInitialized) {
+                        loadTrack(currentTrackIndex);
                     }
+                    playAudio();
                 }
-                // Save intent
                 try {
-                    localStorage.setItem(STORAGE_KEY_MUSIC, musicPlaying ? '1' : '0');
+                    localStorage.setItem(STORAGE_KEY_MUSIC, musicEnabled ? '1' : '0');
                 } catch (e) { /* ignore */ }
+                updateBellUI();
             }
 
-            musicToggle.addEventListener('click', toggleMusic);
+            function ensureAudioAfterInteraction() {
+                if (!audioInitialized) {
+                    loadTrack(currentTrackIndex);
+                }
+                if (musicEnabled && (bgAudio.paused || bgAudio.ended || bgAudio.readyState <= 2)) {
+                    playAudio();
+                }
+            }
+
+            musicToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                toggleMusic();
+            });
 
             // Track ended → play next
             bgAudio.addEventListener('ended', function() {
-                if (!musicPlaying) return;
-
+                if (!musicEnabled) return;
                 const wasLastTrack = (currentTrackIndex >= MUSIC_URLS.length - 1);
-
                 if (wasLastTrack) {
-                    // Full cycle completed → reset image index to 0
                     setImageIndex(0);
                     currentTrackIndex = 0;
                 } else {
                     currentTrackIndex++;
                 }
-
                 loadTrack(currentTrackIndex);
-                playCurrentTrack();
+                playAudio();
             });
 
-            // Track error → skip to next after a short delay
+            // Track error → skip to next
             bgAudio.addEventListener('error', function() {
-                console.warn('Audio track failed to load:', bgAudio.src);
-                if (!musicPlaying) return;
+                console.warn('Audio track failed:', bgAudio.src);
+                if (!musicEnabled) return;
                 const wasLastTrack = (currentTrackIndex >= MUSIC_URLS.length - 1);
                 if (wasLastTrack) {
                     setImageIndex(0);
@@ -871,9 +1079,15 @@
                 }
                 setTimeout(() => {
                     loadTrack(currentTrackIndex);
-                    playCurrentTrack();
+                    playAudio();
                 }, 800);
             });
+
+            // Update bell UI on play/pause events
+            bgAudio.addEventListener('play', updateBellUI);
+            bgAudio.addEventListener('pause', updateBellUI);
+            bgAudio.addEventListener('playing', updateBellUI);
+            bgAudio.addEventListener('waiting', updateBellUI);
 
             // ─────────────────────────────────────
             // INITIALIZATION
@@ -882,77 +1096,70 @@
                 // 1. Atmosphere canvas
                 initAtmosphere();
 
-                // 2. Determine image index (sequential rotation via localStorage)
+                // 2. Determine image index
                 const imgIndex = getImageIndex();
                 const nextImgIndex = (imgIndex + 1) % IMAGE_URLS.length;
                 setImageIndex(nextImgIndex);
 
-                // 3. Show overlay with the selected image
+                // 3. Show overlay
                 showOverlayImage(imgIndex);
                 startOverlayCountdown();
 
-                // 4. Restore music intent
+                // 4. Handle image load success
+                overlayImage.addEventListener('load', function() {
+                    imageOverlay.classList.remove('loading');
+                    overlayImage.classList.add('loaded');
+                });
+
+                // 5. Handle image load error
+                overlayImage.addEventListener('error', function() {
+                    console.warn('Overlay image failed:', overlayImage.src);
+                    imageOverlay.classList.remove('loading');
+                    if (overlayActive) {
+                        hideOverlay();
+                        userHasInteracted = true;
+                        ensureAudioAfterInteraction();
+                    }
+                });
+
+                // 6. Restore music preference
                 try {
                     const saved = localStorage.getItem(STORAGE_KEY_MUSIC);
                     if (saved === '0') {
-                        musicPlaying = false;
+                        musicEnabled = false;
                         musicToggle.classList.add('muted');
                     } else {
-                        musicPlaying = true;
+                        musicEnabled = true;
                         musicToggle.classList.remove('muted');
                     }
                 } catch (e) {
-                    musicPlaying = true;
+                    musicEnabled = true;
                 }
 
-                // 5. Load first track & attempt autoplay
+                // 7. Preload images & initialize audio
+                preloadImages(IMAGE_URLS).then(() => {
+                    // Images are cached, subsequent displays will be fast
+                });
+
+                // 8. Load first track (but don't autoplay - browsers block it)
                 loadTrack(0);
-                if (musicPlaying) {
-                    // Attempt autoplay (may be blocked)
-                    const playPromise = bgAudio.play();
-                    if (playPromise !== undefined) {
-                        playPromise
-                            .then(() => {
-                                musicActuallyPlaying = true;
-                                updateMusicToggleUI();
-                            })
-                            .catch(() => {
-                                // Blocked - will play on first user interaction
-                                musicActuallyPlaying = false;
-                                updateMusicToggleUI();
-                            });
+
+                // 9. Global user interaction listener (one-time)
+                function onFirstInteraction() {
+                    if (!userHasInteracted) {
+                        userHasInteracted = true;
+                        ensureAudioAfterInteraction();
                     }
-                } else {
-                    updateMusicToggleUI();
+                    document.removeEventListener('click', onFirstInteraction);
+                    document.removeEventListener('touchstart', onFirstInteraction);
+                    document.removeEventListener('keydown', onFirstInteraction);
                 }
+                document.addEventListener('click', onFirstInteraction, { once: false });
+                document.addEventListener('touchstart', onFirstInteraction, { once: false });
+                document.addEventListener('keydown', onFirstInteraction, { once: false });
 
-                // 6. Global user interaction listener to unlock audio
-                function onUserInteraction() {
-                    if (!userInteractedForAudio && musicPlaying && !musicActuallyPlaying) {
-                        attemptMusicPlay();
-                    }
-                    // Remove once triggered
-                    document.removeEventListener('click', onUserInteraction);
-                    document.removeEventListener('touchstart', onUserInteraction);
-                    document.removeEventListener('keydown', onUserInteraction);
-                }
-                document.addEventListener('click', onUserInteraction, { once: false });
-                document.addEventListener('touchstart', onUserInteraction, { once: false });
-                document.addEventListener('keydown', onUserInteraction, { once: false });
-
-                // 7. Handle image load error → skip overlay immediately
-                overlayImage.addEventListener('error', function() {
-                    console.warn('Overlay image failed to load:', overlayImage.src);
-                    if (overlayActive) {
-                        hideOverlay();
-                        attemptMusicPlay();
-                    }
-                });
-
-                // 8. Handle image load success
-                overlayImage.addEventListener('load', function() {
-                    // Image loaded successfully - overlay remains visible
-                });
+                // 10. Initial UI sync
+                updateBellUI();
             }
 
             // ─────────────────────────────────────
