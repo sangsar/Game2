@@ -1739,7 +1739,6 @@ const STORY_PERSIAN = {
 //  Evaluated from final param totals at end-game
 // ─────────────────────────────────────────────
 const PROFILES = [
-const PROFILES = [
   {
     id: 'pragmatist',
     label: 'مرد بدون قانون',
