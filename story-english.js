@@ -1739,42 +1739,36 @@ const STORY_ENGLISH = {
 // ─────────────────────────────────────────────
 const PROFILES = [
   {
-    // High justice + high resolve → The Idealist Detective
-    id: 'idealist',
-    label: 'Idealist Detective',
-    condition: (p) => p.justice >= 10 && p.resolve >= 8,
-    text: `You believe in the law as the only shield between order and chaos. Even when the system failed and innocent people like Brian died, you never strayed from the path. That consistency is admirable — but sometimes blind. You fight for what should be, not always for what is.`,
-  },
-  {
-    // High empathy + high doubt → The Broken Witness
-    id: 'broken',
-    label: 'Broken Witness',
-    condition: (p) => p.empathy >= 12 && p.doubt >= 10,
-    text: `Each victim took a piece of you with them. You saw the system fail, you saw the innocent die, and yet you still felt — maybe deeper than anyone around you. That sensitivity is both your strength and your wound. You're defined not by the victory, but by the ones you lost.`,
-  },
-  {
-    // High pragmatism + low justice → The Ends Justify
     id: 'pragmatist',
     label: 'Lawless Man',
-    condition: (p) => p.pragmatism >= 10 && p.justice <= 4,
+    condition: (p) => p.pragmatism >= 27 && p.justice <= 16,
     text: `For you, the result always trumps the method. You knew what William did was wrong — but you kept going. Maybe for Blake, maybe for the case, maybe because you never truly believed in what you were sacrificing. In the end, you and Paul are not so different.`,
   },
   {
-    // High resolve + high pragmatism → The Relentless
+    id: 'broken',
+    label: 'Broken Witness',
+    condition: (p) => p.empathy >= 29 && p.doubt >= 27,
+    text: `Each victim took a piece of you with them. You saw the system fail, you saw the innocent die, and yet you still felt — maybe deeper than anyone around you. That sensitivity is both your strength and your wound. You're defined not by the victory, but by the ones you lost.`,
+  },
+  {
     id: 'relentless',
     label: 'Relentless',
-    condition: (p) => p.resolve >= 12 && p.pragmatism >= 8,
+    condition: (p) => p.resolve >= 51 && p.pragmatism >= 29,
     text: `You were a machine. You chased the murders, pulled the threads, and even when everything fell apart, you kept going. That resolve didn't save people like Roger Robinson — but it put Paul on death row. Sometimes victory is just a matter of holding on.`,
   },
   {
-    // High empathy + high justice → The Guardian
     id: 'guardian',
     label: 'The Guardian',
-    condition: (p) => p.empathy >= 10 && p.justice >= 8,
+    condition: (p) => p.empathy >= 26 && p.justice >= 23,
     text: `You took sides with the victims, not just with the case. You heard Mary's voice, you saw Roger Robinson's eyes, and it showed in your decisions. That humanity slowed you down — but it was that same humanity that made the difference.`,
   },
   {
-    // Default → The Gray Detective
+    id: 'idealist',
+    label: 'Idealist Detective',
+    condition: (p) => p.justice >= 24 && p.resolve >= 48,
+    text: `You believe in the law as the only shield between order and chaos. Even when the system failed and innocent people like Brian died, you never strayed from the path. That consistency is admirable — but sometimes blind. You fight for what should be, not always for what is.`,
+  },
+  {
     id: 'gray',
     label: 'Gray Detective',
     condition: () => true,
